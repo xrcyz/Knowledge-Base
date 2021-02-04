@@ -32,7 +32,7 @@ What about images? An image is a function f(x,y) on a plane that describes inten
 
 A neural networks successively transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, when to jump in mario kart) form clusters. Then we can classify a new point by how closely it maps to each cluster. 
 
-[Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
+[Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).\n
 [Essay](http://colah.github.io/posts/2015-01-Visualizing-Representations/#neural-networks-transform-space)
 
 **What is a support vector machine?**
@@ -43,7 +43,7 @@ TBA.
 
 TBA.
 
-**What is back-propagation?"
+**What is back-propagation?"**
 
 [math](http://colah.github.io/posts/2015-08-Backprop/).
 
