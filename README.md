@@ -32,8 +32,13 @@ What about images? An image is a function f(x,y) on a plane that describes inten
 
 A neural networks successively transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, when to jump in mario kart) form clusters. Then we can classify a new point by how closely it maps to each cluster. 
 
-[Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).\n
-[Essay](http://colah.github.io/posts/2015-01-Visualizing-Representations/#neural-networks-transform-space)
+[Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
+
+[Essay](http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/)
+
+**What is an auto-encoder?**
+
+A neural network that maps a high-dimensional input to a low-dimensional output. Example: vectorisation of a pixel array. 
 
 **What is a support vector machine?**
 
@@ -55,15 +60,21 @@ In fancy language: If a data set is not linearly separable in N dimensional spac
 
 **What is a convolutional layer?**
 
-A convolutional neural network is doing a fancy moving weighted average. Consider the N-period weighted average of a time series. Each element of the weighted-average performs a sumproduct of the previous N elements by some weighting (the connection weights). The convolution function takes this sumproduct, adds an offset (the bias) and feeds in into a [logistic function](https://en.wikipedia.org/wiki/Logistic_function) to return a number between 0 and 1. It's equivalent to a function that returns true or false when the moving weighted average is higher or lower than some threshold. That's it. The weights are modified such that the weighted average returns higher or lower on certain distributions of values, which effectively turns it into a feature detection function. 
+A convolutional layer is doing a fancy moving weighted average. Consider the N-period weighted average of a time series. Each element of the weighted-average performs a sumproduct of the previous N elements by some weighting. The convolution function takes this sumproduct, adds an offset (the bias) and feeds in into a [logistic function](https://en.wikipedia.org/wiki/Logistic_function) to return a number between 0 and 1. It's equivalent to a function that returns true or false when the moving weighted average is higher or lower than some threshold. That's it. The weights are modified such that the weighted average returns higher or lower on certain distributions of values, which effectively turns it into a feature detection function. 
+
+The set of weights (shared between all points in the logistic-moving-sumproduct function) is referred to as the 'kernel'. 
 
 In the 2D case, the "weighted moving average" is now a moving matrix dot product; and instead of mapping a series to another series, we map an array to another array. 
+
+**What is a feature map?**
+
+The output of a convolutional layer. 
 
 **What is a pooling layer?**
 
 A pooling layer takes the max/average/sum of a block of values. The idea is that reduces the array size while preserving important features. Pooling seems to be applied to the output of the convolutional layers (the "feature maps"). 
 
-**What is an LTSM layer?**
+**What is an LSTM layer?**
 
 So far [this](https://tedfmyers.com/2019/03/09/machine-learning-long-short-term-memory-cells/) seems to be the least confusing take. 
 - An LTSM has state, an array of some values that is passed forward. The state is zero at time zero. 
@@ -72,7 +83,7 @@ So far [this](https://tedfmyers.com/2019/03/09/machine-learning-long-short-term-
 - The new cell state = (previous_state * forget_gate) + (memory_in * ignore_gate). 
 - Final output = tanh(new_state) * output_gate
 
-The gates are all sigmoid, the memory in/out are tanh. 
+The gates are all sigmoid, the memory in/out are tanh. I'm unclear if a gate has multiple layers.
 
 **What is a Variational Auto-Encoder?**
 
