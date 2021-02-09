@@ -36,9 +36,24 @@ A neural networks successively transforms points from one coordinate system into
 
 [Essay](http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/)
 
+**What is back-propagation?"**
+
+[math](http://colah.github.io/posts/2015-08-Backprop/).
+
 **What is an auto-encoder?**
 
-A neural network that maps a high-dimensional input to a low-dimensional output. Example: vectorisation of a pixel array. 
+We start with a high-dimensional vector (such as a pixel array), map it to a low-dimensional vector (the inputs to a decoder function), then map that back to a high-dimensional vector (decoded pixel array). If you can train the output layer to match the input layer, then the middle layer must represent a lookup key of some kind.
+
+**What is a Variational Auto-Encoder?**
+
+A variational auto-encoder maps the input to an array of of tuples <mean, standard deviation>. The inputs to the decoder function are chosen from the probability distribution of possible encodings (an n-dimensional bell curve). This smears the data a bit so that it fills in gaps in the latent space, allegedly giving us a smoother transition from one feature to another (such as bearded to non-bearded). In other words, "values which are nearby to each other in latent space should have similar reconstructions". 
+
+Apparently if you force the network to learn a wider distribution, it encourages the encoder to decorrelate the encoded vector elements, presumably so that pulling one lever doesn't mess with two dials. 
+
+Finally, assuming a continuous latent space, you can then sample from this space as a generative model. 
+
+* [Variational auto-encoders](https://www.jeremyjordan.me/variational-autoencoders)
+* [Intro to adversarial auto-encoders](https://rubikscode.net/2019/01/14/introduction-to-adversarial-autoencoders/)
 
 **What is a support vector machine?**
 
@@ -47,10 +62,6 @@ TBA.
 **What is t-SNE?**
 
 TBA.
-
-**What is back-propagation?"**
-
-[math](http://colah.github.io/posts/2015-08-Backprop/).
 
 **What is a kernel in machine learning?**
 
@@ -85,7 +96,7 @@ So far [this](https://tedfmyers.com/2019/03/09/machine-learning-long-short-term-
 
 The gates are all sigmoid, the memory in/out are tanh. I'm unclear if a gate has multiple layers.
 
-**What is a Variational Auto-Encoder?**
+**What is a Generative Adversarial Network?**
 
 TBA.
 
