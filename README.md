@@ -28,6 +28,18 @@ We want to know what frequencies, if any, are present in a function. To do that,
 
 What about images? An image is a function f(x,y) on a plane that describes intensity at each point. As the 1D case, we can express this landscape as a sum of interfering waves on a surface. To extract the waves, we can rotate the image by the wave heading, wrap the image around a cylinder, then each cross-section of the cylinder maps to a one-dimensional fourier transform. We want to know which "frequency" (x,y) matches a wave, so we can do a second fourier transform where rotation is the heading and vector magnitude is the current step along the cylinder. This should return an intensity at each (x,y) which peaks if it matches a wave.
 
+**What is supervised and unsupervised machine learning?**
+
+TBA.
+
+**What is a support vector machine?**
+
+TBA.
+
+**What is a one-hot vector?**
+
+This: {0, 0, 1, 0, ..., 0}. The array represents a classification, each index represents a class, and a one-hot vector says this definitely 100% belongs to class <index>. 
+
 **What is a neural network?**
 
 A neural networks successively transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, when to jump in mario kart) form clusters. Then we can classify a new point by how closely it maps to each cluster. 
@@ -46,7 +58,7 @@ We start with a high-dimensional vector (such as a pixel array), map it to a low
 
 **What is a Variational Auto-Encoder?**
 
-A variational auto-encoder maps the input to an array of of tuples <mean, standard deviation>. The inputs to the decoder function are chosen from the probability distribution of possible encodings (an n-dimensional bell curve). This smears the data a bit so that it fills in gaps in the latent space, allegedly giving us a smoother transition from one feature to another (such as bearded to non-bearded). In other words, "values which are nearby to each other in latent space should have similar reconstructions". 
+A variational auto-encoder maps the input to an array of of tuples <mean, standard deviation>. The inputs to the decoder function are chosen from the probability distribution of possible encodings (an n-dimensional bell curve). This smears the data a bit so that it fills in gaps in the latent space, allegedly giving us a smoother transition from one feature to another (such as bearded to non-bearded). In other words, "values which are nearby to each other in latent space should have similar reconstructions". This allows us to interpolate between latent vectors in a way that might not work with a direct auto-encoder. 
 
 Apparently if you force the network to learn a wider distribution, it encourages the encoder to decorrelate the encoded vector elements, presumably so that pulling one lever doesn't mess with two dials. 
 
@@ -55,13 +67,15 @@ Finally, assuming a continuous latent space, you can then sample from this space
 * [Variational auto-encoders](https://www.jeremyjordan.me/variational-autoencoders)
 * [Intro to adversarial auto-encoders](https://rubikscode.net/2019/01/14/introduction-to-adversarial-autoencoders/)
 
-**What is a support vector machine?**
+**What is few-shot, one-shot, zero-shot learning?**
 
-TBA.
+Learn a new category from just a few, one, or zero examples. The network learns a superclass ("3D object", or "human face"). It is then trained to extract the superclass from the input (a 3D model teapot from a photo). Now given one photo of a teapot, we can extrapolate with some level of confidence to another picture of a teapot, since they should both map to the same latent teapot representation. 
+
+Given that you can class objects different ways (shape, colour, texture, ...), I presume that the superclass is implicit in the training regime. 
 
 **What is t-SNE?**
 
-TBA.
+Given a high-dimensional data set, draw a force-directed graph in low-dimensional space that preserves point-to-point distances.
 
 **What is a kernel in machine learning?**
 
@@ -118,9 +132,13 @@ TBA.
 
 **What is a policy?**
 
-TBA.
+A policy is the function that maps a state to an action. The network weights are the parameters of the policy. 
 
 **What is reinforcement learning?**
+
+TBA.
+
+**What is Q-learning?**
 
 TBA.
 
@@ -131,3 +149,7 @@ TBA.
 **What is a graph neural network?**
 
 No idea.
+
+**What is neural rendering?**
+
+TBA.
