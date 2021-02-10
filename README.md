@@ -4,9 +4,21 @@
 
 TBA.
 
-**What are reaction-diffusion models?**
+**What are some fun project ideas?**
 
-TBA.
+- neural networks
+- reaction-diffusion models
+- diffusion-limited aggregation
+- flocking simulation
+- cellular automata
+- genetic algorithms 
+- simulated annealing 
+- physarum transport networks 
+- auxin growth models
+- ant colony algorithm 
+- lambda flow reactor
+
+See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
 
 **What is the difference between dot product and element-wise multiplication?**
 
@@ -72,6 +84,8 @@ Finally, assuming a continuous latent space, you can then sample from this space
 Learn a new category from just a few, one, or zero examples. The network learns a superclass ("3D object", or "human face"). It is then trained to extract the superclass from the input (a 3D model teapot from a photo). Now given one photo of a teapot, we can extrapolate with some level of confidence to another picture of a teapot, since they should both map to the same latent teapot representation. 
 
 Given that you can class objects different ways (shape, colour, texture, ...), I presume that the superclass is implicit in the training regime. 
+
+[This paper](https://arxiv.org/abs/1606.05579) applies it to recognising procedurally generated 2D shapes. If the latent representation successfully encodes the factors of the procedural function, then classes of objects should all map to similar regions in the latent space. 
 
 **What is t-SNE?**
 
