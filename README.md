@@ -6,6 +6,9 @@ TBA.
 
 **What are some fun project ideas?**
 
+- dungeon generator
+- asteroid field generator
+- minecraft
 - neural networks
 - reaction-diffusion models
 - diffusion-limited aggregation
@@ -54,13 +57,17 @@ This: {0, 0, 1, 0, ..., 0}. The array represents a classification, each index re
 
 **What is a neural network?**
 
-A neural networks successively transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, when to jump in mario kart) form clusters. Then we can classify a new point by how closely it maps to each cluster. 
+A neural networks successively transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, action prompts) form clusters. Then we can classify a new data point by how closely it maps to each cluster. 
 
 [Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
 
 [Essay](http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/)
 
 **What is back-propagation?"**
+
+Back-propogation is like a reverse neural network. We start with an error array (difference between output nodes and target values). Layer by layer we construct the next error array as a weighted sum of the previous error array. The backprop weights are the normalised forward-prop weights (they sum to 1.0). 
+
+We then adjust the weights feeding into each node as a function of the node's error value. 
 
 [math](http://colah.github.io/posts/2015-08-Backprop/).
 
