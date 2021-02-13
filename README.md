@@ -75,6 +75,8 @@ We then adjust the weights feeding into each node as a function of the node's er
 
 We start with a high-dimensional vector (such as a pixel array), map it to a low-dimensional vector (the inputs to a decoder function), then map that back to a high-dimensional vector (decoded pixel array). If you can train the output layer to match the input layer, then the middle layer must represent a lookup key of some kind.
 
+Conspiracy theory: "vanilla" neural nets are also auto-encoders. Say we want to classify points (x,y) as being above or below f(x). We take the points (x,y) and transform them until we can draw a straight line between points above and points below. Are we not *de facto* encoding f(x) into a line function? 
+
 **What is a Variational Auto-Encoder?**
 
 A variational auto-encoder maps the input to an array of of tuples <mean, standard deviation>. The inputs to the decoder function are chosen from the probability distribution of possible encodings (an n-dimensional bell curve). This smears the data a bit so that it fills in gaps in the latent space, allegedly giving us a smoother transition from one feature to another (such as bearded to non-bearded). In other words, "values which are nearby to each other in latent space should have similar reconstructions". This allows us to interpolate between latent vectors in a way that might not work with a direct auto-encoder. 
