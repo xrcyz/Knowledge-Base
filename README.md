@@ -75,7 +75,9 @@ We then adjust the weights feeding into each node as a function of the node's er
 
 We start with a high-dimensional vector (such as a pixel array), map it to a low-dimensional vector (the inputs to a decoder function), then map that back to a high-dimensional vector (decoded pixel array). If you can train the output layer to match the input layer, then the middle layer must represent a lookup key of some kind.
 
-Conspiracy theory: "vanilla" neural nets are also auto-encoders. Say we want to classify points (x,y) as being above or below f(x). We take the points (x,y) and transform them until we can draw a straight line between points above and points below. Are we not *de facto* encoding f(x) into a line function? 
+Possibly redundant observation: "vanilla" neural nets are also "encoding" data, its just that we explicitly define the "latent representation". Suppose we make a neural net to map a 3D vector to a 1D length along a Hilbert curve. This can be seen as "one half" of an auto-encoder, the second half of which would decode the 1D vector back to its 3D vector. The point of interest is that in an auto-encoder, the network can choose whatever space-filling curve it likes.
+
+Project idea: write an auto-encoder to map vectors in a 3D cube down to 1D and back to 3D. Then plot the curve and see what it looks like. 
 
 **What is a Variational Auto-Encoder?**
 
