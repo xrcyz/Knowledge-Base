@@ -145,7 +145,7 @@ TBA.
 
 **What is a Gaussian Mixture Model?**
 
-TBA.
+A guassian mixture model is [a superposition of overlapping bell curves](https://www.statisticshowto.com/gaussian-mixture-model/).
 
 **What is a Transformer in machine learning?**
 
