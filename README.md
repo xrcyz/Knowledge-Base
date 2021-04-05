@@ -4,7 +4,7 @@
 Let's look at how it is used:
 - ComputeShader has a method called `FindKernel` which, given a function name, returns an integer.
 - ComputeShader has a method called `Dispatch` which takes a `int kernelIndex` parameter. 
-- ComputeShader has a method called `SetTexture` - Buffers and textures are set _per-kernel_. 
+- ComputeShader has a method called `SetTexture` which sets buffers and textures _per-kernel_. 
 - In the shader code, we define `#pragma kernel FunctionName` 
 - In the shader code, we implement `void FunctionName(...)` 
 
