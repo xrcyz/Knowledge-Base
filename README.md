@@ -12,6 +12,8 @@ Note that each instance of the function is not a kernel, because we get exactly 
 
 The fact that we use `#pragma kernel` tells us that the kernel is an abstraction that is separate from the function implementation. Calling `Dispatch` on the kernel calls the function in parallel for all coordinates in the input object. 
 
+(`Dispatch` dispatches a grid of work groups. `numthreads` defines the dimensions of each work group. We roughly want `work groups * num threads` equal to the [warp](https://www.google.com/search?q=nvidia+warp) size in hardware, to max out all processors on a batch of jobs. The hardware is a grid of factories, and if you don't bottleneck the capacity of each factory, then the spare capacity is wasted.)
+
 **What is a hash in shader programming?**
 
 It maps an input number to a pseudo-random output number. 
