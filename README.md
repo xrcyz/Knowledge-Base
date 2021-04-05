@@ -1,8 +1,18 @@
 # Knowledge Base
 
+**What is a kernel in shader programming?**
+Let's look at how it is used:
+- ComputeShader has a method called `FindKernel` which maps a function name to an integer.
+- ComputeShader has a method called `Dispatch` which takes a `int kernelIndex` parameter. 
+- ComputeShader has a method called `SetTexture` - Buffers and textures are set _per-kernel_. 
+- In the shader code, we define `#pragma kernel FunctionName` 
+- In the shader code, we implement `void FunctionName(...)` 
+
+Note that each instance of the function is not a kernel, because we get exactly one index integer. So we can say that the kernel is a template for some behaviour at every coordinate of an input array. 
+
 **What is a hash in shader programming?**
 
-TBA.
+It maps an input number to a pseudo-random output number. 
 
 **What are some fun project ideas?**
 
