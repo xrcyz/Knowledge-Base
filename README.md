@@ -2,7 +2,7 @@
 
 **What is a kernel in shader programming?**
 Let's look at how it is used:
-- ComputeShader has a method called `FindKernel` which maps a function name to an integer.
+- ComputeShader has a method called `FindKernel` which, given a function name, returns an integer.
 - ComputeShader has a method called `Dispatch` which takes a `int kernelIndex` parameter. 
 - ComputeShader has a method called `SetTexture` - Buffers and textures are set _per-kernel_. 
 - In the shader code, we define `#pragma kernel FunctionName` 
