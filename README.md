@@ -8,7 +8,9 @@ Let's look at how it is used:
 - In the shader code, we define `#pragma kernel FunctionName` 
 - In the shader code, we implement `void FunctionName(...)` 
 
-Note that each instance of the function is not a kernel, because we get exactly one index integer. So we can say that the kernel is a template for some behaviour at every coordinate of an input array. 
+Note that each instance of the function is not a kernel, because we get exactly one index integer. So we can say that the kernel is a template for some behaviour at every coordinate of an input object. 
+
+The fact that we use `#pragma kernel` tells us that the kernel is an abstraction that is separate from the function implementation. Calling `Dispatch` on the kernel calls the function in parallel for all coordinates in the input object. 
 
 **What is a hash in shader programming?**
 
