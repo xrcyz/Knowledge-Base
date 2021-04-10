@@ -1,5 +1,25 @@
 # Knowledge Base
 
+**What are some fun project ideas?**
+
+- dungeon generator
+- asteroid field generator
+- minecraft
+- neural networks
+- reaction-diffusion models
+- diffusion-limited aggregation
+- flocking simulation
+- cellular automata
+- genetic algorithms 
+- simulated annealing 
+- physarum transport networks 
+- ant colony algorithm 
+- auxin growth models / leaf venation / wing venation patterns
+- lambda flow reactor / artificial chemistry / grammar rules
+- graph grammer aggregation
+
+See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
+
 **What is a kernel in shader programming?**
 Let's look at how it is used:
 - ComputeShader has a method called `FindKernel` which, given a function name, returns an integer.
@@ -17,25 +37,6 @@ The fact that we use `#pragma kernel` tells us that the kernel is an abstraction
 **What is a hash in shader programming?**
 
 It maps an input number to a pseudo-random output number. 
-
-**What are some fun project ideas?**
-
-- dungeon generator
-- asteroid field generator
-- minecraft
-- neural networks
-- reaction-diffusion models
-- diffusion-limited aggregation
-- flocking simulation
-- cellular automata
-- genetic algorithms 
-- simulated annealing 
-- physarum transport networks 
-- auxin growth models
-- ant colony algorithm 
-- lambda flow reactor
-
-See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
 
 **What is the difference between dot product and element-wise multiplication?**
 
