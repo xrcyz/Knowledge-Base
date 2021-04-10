@@ -2,9 +2,9 @@
 
 **What are some fun project ideas?**
 
-- dungeon generator / urban layout modelling
-- asteroid field generator
 - minecraft
+- dungeon generator
+- asteroid field generator
 - neural networks
 - reaction-diffusion models
 - diffusion-limited aggregation
@@ -14,9 +14,9 @@
 - simulated annealing 
 - physarum transport networks 
 - ant colony algorithm 
-- auxin growth models / leaf venation / wing venation patterns
-- lambda flow reactor / artificial chemistry / grammar rules
-- graph grammer aggregation
+- auxin growth models
+- leaf venation / wing venation / drainage patterns / urban layout synthesis
+- graph grammar aggregation
 
 See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
 
