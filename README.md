@@ -2,7 +2,7 @@
 
 **What are some fun project ideas?**
 
-- dungeon generator
+- dungeon generator / urban layout modelling
 - asteroid field generator
 - minecraft
 - neural networks
