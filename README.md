@@ -17,6 +17,7 @@
 - auxin growth models
 - leaf venation / wing venation / drainage patterns / urban layout synthesis
 - graph grammar aggregation
+- Metropolis-Hastings algorithm
 
 See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
 
