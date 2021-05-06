@@ -23,7 +23,7 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 
 **What is a kernel in shader programming?**
 Let's look at how it is used:
-- ComputeShader has a method called `FindKernel` which, given a function name, returns an integer.
+- ComputeShader has a method called `FindKernel` which, given a function name, returns an index.
 - ComputeShader has a method called `Dispatch` which takes a `int kernelIndex` parameter. 
 - ComputeShader has a method called `SetTexture` which sets buffers and textures _per-kernel_. 
 - In the shader code, we define `#pragma kernel FunctionName` 
@@ -31,13 +31,13 @@ Let's look at how it is used:
 
 Note that each instance of the function is not a kernel, because we get exactly one index integer. So we can say that the kernel is a template for some behaviour at every coordinate of an input object. 
 
-The fact that we use `#pragma kernel` tells us that the kernel is an abstraction that is separate from the function implementation. Calling `Dispatch` on the kernel calls the function in parallel for all coordinates in the input object. 
+The fact that we use `#pragma kernel` tells us that the kernel is an abstraction that is separate from the function implementation. Calling `Dispatch` on the kernel calls the function in parallel for all coordinates in the input object. Each invocation of a kernel within a batch is assumed independent.
 
 (`Dispatch` dispatches a grid of work groups. `numthreads` defines the dimensions of each work group. We roughly want `work groups * num threads` equal to the [warp](https://www.google.com/search?q=nvidia+warp) size in hardware, to max out all processors on a batch of jobs. The hardware is a grid of factories, and if you don't bottleneck the capacity of each factory, then the spare capacity is wasted.)
 
 **What is a hash in shader programming?**
 
-It maps an input number to a pseudo-random output number. 
+It maps an input number (or vector) to a pseudo-random output number (or vector). 
 
 **What is the difference between dot product and element-wise multiplication?**
 
@@ -69,7 +69,7 @@ TBA.
 
 **What is a one-hot vector?**
 
-This: {0, 0, 1, 0, ..., 0}. The array represents a classification, each index represents a class, and a one-hot vector says this definitely 100% belongs to class <index>. 
+This: {0, 0, 1, 0, 0}. A one-hot vector has all components set to zero except for one element. The vector represents the probability that an item is classified as element A, B, C, etc.
 
 **What is a neural network?**
 
@@ -177,7 +177,7 @@ A policy is the function that maps a state to an action. The network weights are
 
 **What is reinforcement learning?**
 
-TBA.
+Reinforcement learning algorithms can be viewed as a procedure that maps an agent’s experience to a policy that obtains high cumulative reward over the course of training. 
 
 **What is Q-learning?**
 
