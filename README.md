@@ -173,15 +173,41 @@ TBA.
 
 **What is a policy?**
 
-A policy is the function that maps a state to an action. The network weights are the parameters of the policy. 
+The policy map `π` gives the probability of taking action `a` when in state `s`.
 
 **What is reinforcement learning?**
 
-Reinforcement learning algorithms can be viewed as a procedure that maps an agent’s experience to a policy that obtains high cumulative reward over the course of training. 
+Reinforcement learning is a class of methods (such as Q-learning) that iteratively sample the environment for a graph of states with inter-state action weights.
+
+Action selection is controlled by the `ϵ` "greedy" parameter, which controls the chance of random exploration vs. exploitation.
+
+The value function 'V' gives the expected return when starting in state `s` and following policy `π` thereafter. (The difference between Q and V appears to be simply that Q takes the first action as input, whereas V follows the policy directly). 
+
+Some nice readable code [here](https://github.com/jcoreyes/reinforcement-learning).
 
 **What is Q-learning?**
 
-TBA.
+Q-learning is a fancy ant colony algorithm where agents (ants) navigate a Q-table (weighted graph) following the highest Q value (pheremone), where the Q value is iteratively updated with a learning rate and discount factor (diffusion). The Q-table is initialised with random values, which facilitates an initial random search. 
+
+Presumably we plug in a neural network to learn the Q(s, a) as a function instead of a table.
+
+[Procedure:](https://www.cse.unsw.edu.au/~cs9417ml/RL1/algorithms.html)
+1. Initialize the Q-values table Q(s, a)
+2. Observe the current state `s`
+3. Choose an action `a` that maximises Q(s, a) (ϵ-greedy)
+4. Take the action, observe the reward 'r', as well as the new state 's''. 
+5. Update the Q-value for the state using the observed reward and the maximum reward possible for the next state (discount cumulative reward).
+6. Set the state to the new state, repeat until terminal state is reached. 
+
+The reason Q-learning is called 'off-policy' is that it estimates the total discounted future reward for state-action pairs assuming a greedy policy were followed, despite the fact that it's not following a greedy policy.
+
+> The exploration process stops when it reaches a goal state and collects the reward, which becomes that final transition's Q value. Now in a subsequent training episode, when the exploration process reaches that predecessor state, the backup process uses the above equality to update the current Q value of the predecessor state. Next time its predecessor is visited that state's Q value gets updated, and so on back down the line (Mitchell's [book](http://incompleteideas.net/book/the-book-2nd.html) describes a more efficient way of doing this by storing all the computations and replaying them later). Provided every state is visited infinitely often this process eventually computes the optimal Q. [[source]]
+
+[source]: https://datascience.stackexchange.com/questions/9832/what-is-the-q-function-and-what-is-the-v-function-in-reinforcement-learning
+
+**What is neural rendering?**
+
+A neural network that maps a camera-object pair to a viewport pixel array. Given camera position and a 3D object, what is the expected camera render output?
 
 **What is a Neural Turing Machine?**
 
@@ -190,7 +216,3 @@ TBA.
 **What is a graph neural network?**
 
 No idea.
-
-**What is neural rendering?**
-
-TBA.
