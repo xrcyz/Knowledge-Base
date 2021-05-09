@@ -114,10 +114,6 @@ Given that you can class objects different ways (shape, colour, texture, ...), I
 
 [This paper](https://arxiv.org/abs/1606.05579) applies it to recognising procedurally generated 2D shapes. If the latent representation successfully encodes the factors of the procedural function, then classes of objects should all map to similar regions in the latent space. 
 
-**What is t-SNE?**
-
-Given a high-dimensional data set, draw a force-directed graph in low-dimensional space that preserves point-to-point distances.
-
 **What is a kernel in machine learning?**
 
 A kernel is a matrix of weights which are multiplied with the input to extract relevant features. 
@@ -140,17 +136,6 @@ The output of a convolutional layer.
 
 A pooling layer takes the max/average/sum of a block of values. The idea is that reduces the array size while preserving important features. Pooling seems to be applied to the output of the convolutional layers (the "feature maps"). 
 
-**What is an LSTM layer?**
-
-So far [this](https://tedfmyers.com/2019/03/09/machine-learning-long-short-term-memory-cells/) seems to be the least confusing take. 
-- An LTSM has state, an array of some values that is passed forward. The state is zero at time zero. 
-- At each time step, the LTSM reads in the new input array + the previous output array.
-- The combined inputs feed into four different neural networks: forget_gate, ignore_gate, memory_in, and output_gate
-- The new cell state = (previous_state * forget_gate) + (memory_in * ignore_gate). 
-- Final output = tanh(new_state) * output_gate
-
-The gates are all sigmoid, the memory in/out are tanh. I'm unclear if a gate has multiple layers.
-
 **What is a Generative Adversarial Network?**
 
 TBA.
@@ -163,14 +148,6 @@ TBA.
 
 A guassian mixture model is [a superposition of overlapping bell curves](https://www.statisticshowto.com/gaussian-mixture-model/).
 
-**What is a Transformer in machine learning?**
-
-TBA.
-
-**What is an attention mechanism in machine learning?**
-
-TBA.
-
 **What is a policy?**
 
 The policy map `π` gives the probability of taking action `a` when in state `s`.
@@ -181,15 +158,26 @@ Reinforcement learning is a class of methods (such as Q-learning) that iterative
 
 Action selection is controlled by the `ϵ` "greedy" parameter, which controls the chance of random exploration vs. exploitation.
 
-The value function 'V' gives the expected return when starting in state `s` and following policy `π` thereafter. (The difference between Q and V appears to be simply that Q takes the first action as input, whereas V follows the policy directly). 
-
 Some nice readable code [here](https://github.com/jcoreyes/reinforcement-learning).
+
+**What is online / offline learning?**
+
+A learning method is online if the agents incrementally update their parameters (of the policy, value function, or model) while they observe a stream of experience. 
+
+**What are sparse rewards?**
+
+Sparse rewards give little or no clues about intermediate steps to reach the goal. 
+
+This [article](https://deepmind.com/blog/article/capture-the-flag-science) describes agents that learn to play a multiplayer game with only a binary reward (win or fail). 
 
 **What is Q-learning?**
 
-Q-learning is a fancy ant colony algorithm where agents (ants) navigate a Q-table (weighted graph) following the highest Q value (pheremone), where the Q value is iteratively updated with a learning rate and discount factor (diffusion). The Q-table is initialised with random values, which facilitates an initial random search. 
+Q-learning is a fancy ant colony algorithm where agents navigate a graph, following the highest pheremone (the Q value), and laying pheremone as they go (updating the Q value). The graph of Q edges is initialised with random values, which facilitates an initial random search, but converges upon a gradient towards the target(s) as Q values are diffused downstream by the update rule. 
 
-Presumably we plug in a neural network to learn the Q(s, a) as a function instead of a table.
+If we think about an action as an edge on a graph of state nodes, then the Q value is the direct cost of traversing the edge, plus the estimated cost of all subsequent edges that would be traversed following policy `π`. Since this is defined recursively, we only have to sample the next edge selected by the policy, since that edge weight should converge towards the discounted sum of future costs. The learning rate is used to limit the rate at which new information is accepted into an edge, so that unexpected outliers don't corrupt the graph.
+
+- The quality function `Q` gives the the expected return from state `s` and action `a` and following policy `π` thereafter. 
+- The value function `V` gives the expected return when starting in state `s` and following policy `π` thereafter.
 
 [Procedure:](https://www.cse.unsw.edu.au/~cs9417ml/RL1/algorithms.html)
 1. Initialize the Q-values table Q(s, a)
@@ -201,9 +189,48 @@ Presumably we plug in a neural network to learn the Q(s, a) as a function instea
 
 The reason Q-learning is called 'off-policy' is that it estimates the total discounted future reward for state-action pairs assuming a greedy policy were followed, despite the fact that it's not following a greedy policy.
 
-> The exploration process stops when it reaches a goal state and collects the reward, which becomes that final transition's Q value. Now in a subsequent training episode, when the exploration process reaches that predecessor state, the backup process uses the above equality to update the current Q value of the predecessor state. Next time its predecessor is visited that state's Q value gets updated, and so on back down the line (Mitchell's [book](http://incompleteideas.net/book/the-book-2nd.html) describes a more efficient way of doing this by storing all the computations and replaying them later). Provided every state is visited infinitely often this process eventually computes the optimal Q. [[source]]
+> The exploration process stops when it reaches a goal state and collects the reward, which becomes that final transition's Q value. Now in a subsequent training episode, when the exploration process reaches that predecessor state, the backup process uses the above equality to update the current Q value of the predecessor state. Next time its predecessor is visited that state's Q value gets updated, and so on back down the line (Mitchell's [book](http://incompleteideas.net/book/the-book-2nd.html) describes a more efficient way of doing this by storing all the computations and replaying them later). Provided every state is visited infinitely often this process eventually computes the optimal Q. [[source]](https://datascience.stackexchange.com/questions/9832/what-is-the-q-function-and-what-is-the-v-function-in-reinforcement-learning)
 
-[source]: https://datascience.stackexchange.com/questions/9832/what-is-the-q-function-and-what-is-the-v-function-in-reinforcement-learning
+There is a really nice walkthrough [here](https://blog.floydhub.com/an-introduction-to-q-learning-reinforcement-learning/).
+
+**What is Deep Q-Learning?**
+
+A neural network is optimised to predict the Q function. The generation of new episodes is interleaved with neural network training. 
+
+**What is a replay buffer?**
+
+A replay buffer can be used for offline learning, which may be cheaper or faster than running the training environment, and allows experiences to be sampled at a different order and frequency than found in the raw data (prioritising rare, surprising, frustrating, new, foundational, or otherwise useful experiences). 
+
+Interestingly, this is based on experience [replay sequences](https://deepmind.com/blog/article/replay-in-biological-and-artificial-neural-networks) observed in sleeping rats. (There is an interesting term in this article, 'imagination replay'. It should be possible to train an agent that, given some state as input, can reconstruct a plausible previous state, such as the 3D model of an unbroken vase. It is also notable that you can dream about crashing a car, but it is extremely inadvisable to do it in real life.)
+
+> First, each step of experience is potentially used in many weight updates, which allows for greater data efficiency. Second, learning directly from consecutive samples is inefficient, due to the strong correlations between the samples. Third, when learning on-policy the current parameters determine the next data sample that the parameters are trained on \[potential infinite loop]. [[source]](https://arxiv.org/pdf/1312.5602v1.pdf)
+
+**What is actor-critic framework?**
+
+TBA.
+
+**What is an LSTM layer?**
+
+So far [this](https://tedfmyers.com/2019/03/09/machine-learning-long-short-term-memory-cells/) seems to be the least confusing take. 
+- An LTSM has state, an array of some values that is passed forward. The state is zero at time zero. 
+- At each time step, the LTSM reads in the new input array + the previous output array.
+- The combined inputs feed into four different neural networks: forget_gate, ignore_gate, memory_in, and output_gate
+- The new cell state = (previous_state * forget_gate) + (memory_in * ignore_gate). 
+- Final output = tanh(new_state) * output_gate
+
+The gates are all sigmoid, the memory in/out are tanh. I'm unclear if a gate has multiple layers.
+
+**What is a Transformer in machine learning?**
+
+TBA.
+
+**What is an attention mechanism in machine learning?**
+
+TBA.
+
+**What is t-SNE?**
+
+Given a high-dimensional data set, draw a force-directed graph in low-dimensional space that preserves point-to-point distances. 
 
 **What is neural rendering?**
 
