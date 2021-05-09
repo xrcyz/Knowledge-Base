@@ -150,7 +150,7 @@ A guassian mixture model is [a superposition of overlapping bell curves](https:/
 
 **What is a policy?**
 
-The policy map `π` gives the probability of taking action `a` when in state `s`.
+The policy tells us which action to take in state `s`. It can be deterministic `π(s) = a` or stochastic `π(a, s) = probability of taking action`.
 
 **What is reinforcement learning?**
 
@@ -174,7 +174,7 @@ This [article](https://deepmind.com/blog/article/capture-the-flag-science) descr
 
 Q-learning is a fancy ant colony algorithm where agents navigate a graph, following the highest pheremone (the Q value), and laying pheremone as they go (updating the Q value). The graph of Q edges is initialised with random values, which facilitates an initial random search, but converges upon a gradient towards the target(s) as Q values are diffused downstream by the update rule. 
 
-If we think about an action as an edge on a graph of state nodes, then the Q value is the direct cost of traversing the edge, plus the estimated cost of all subsequent edges that would be traversed following policy `π`. Since this is defined recursively, we only have to sample the next edge selected by the policy, since that edge weight should converge towards the discounted sum of future costs. The learning rate is used to limit the rate at which new information is accepted into an edge, so that unexpected outliers don't corrupt the graph.
+If we think about an action as an edge on a graph of state nodes, then the Q value is the direct cost of traversing the edge, plus the estimated cost of all subsequent edges that would be traversed following policy `π`. Since this is defined recursively, we only have to sample the next edge selected by the policy, since that edge weight should converge towards the discounted sum of future costs. The learning rate is used to limit the rate at which new information is accepted into an edge, as a hedge against variable action rewards. (A single action such as flip_coin can lead to 2 states, so maybe it is not an edge after all?).
 
 - The quality function `Q` gives the the expected return from state `s` and action `a` and following policy `π` thereafter. 
 - The value function `V` gives the expected return when starting in state `s` and following policy `π` thereafter.
@@ -182,20 +182,24 @@ If we think about an action as an edge on a graph of state nodes, then the Q val
 [Procedure:](https://www.cse.unsw.edu.au/~cs9417ml/RL1/algorithms.html)
 1. Initialize the Q-values table Q(s, a)
 2. Observe the current state `s`
-3. Choose an action `a` that maximises Q(s, a) (ϵ-greedy)
+3. Choose action `a` from `s` with max Q
 4. Take the action, observe the reward 'r', as well as the new state 's''. 
-5. Update the Q-value for the state using the observed reward and the maximum reward possible for the next state (discount cumulative reward).
+5. Update the traversed Q-value using the observed reward and the maximum reward possible for the next state (discount cumulative reward).
 6. Set the state to the new state, repeat until terminal state is reached. 
 
-The reason Q-learning is called 'off-policy' is that it estimates the total discounted future reward for state-action pairs assuming a greedy policy were followed, despite the fact that it's not following a greedy policy.
+The reason Q-learning is called 'off-policy' is that it estimates the total discounted future reward for state-action pairs assuming a greedy policy were followed, despite the fact that it's not following a greedy policy. 
 
 > The exploration process stops when it reaches a goal state and collects the reward, which becomes that final transition's Q value. Now in a subsequent training episode, when the exploration process reaches that predecessor state, the backup process uses the above equality to update the current Q value of the predecessor state. Next time its predecessor is visited that state's Q value gets updated, and so on back down the line (Mitchell's [book](http://incompleteideas.net/book/the-book-2nd.html) describes a more efficient way of doing this by storing all the computations and replaying them later). Provided every state is visited infinitely often this process eventually computes the optimal Q. [[source]](https://datascience.stackexchange.com/questions/9832/what-is-the-q-function-and-what-is-the-v-function-in-reinforcement-learning)
+
+> The key is that, in Q-learning, the agent does not know state transition probabilities or rewards. The agent only discovers that there is a reward for going from one state to another via a given action when it does so and receives a reward. Similarly, it only figures out what transitions are available from a given state by ending up in that state and looking at its options. If state transitions are stochastic, it learns the probability of transitioning between states by observing how frequently different transitions occur. [[source]](https://stackoverflow.com/questions/28937803/what-is-the-difference-between-q-learning-and-value-iteration)
+
+> The most common policy scenarios with Q learning are that it will converge on (learn) the values associated with a given target policy, or that it has been used iteratively to learn the values of the greedy policy with respect to its own previous values. The latter choice - using Q learning to find an optimal policy, using [generalised policy iteration](http://incompleteideas.net/book/first/ebook/node46.html#:%7E:text=We%20use%20the%20term%20generalized,details%20of%20the%20two%20processes.&text=The%20evaluation%20and%20improvement%20processes%20in%20GPI%20can,as%20both%20competing%20and%20cooperating.) - is by far the most common use of it. [[source]](https://ai.stackexchange.com/questions/25971/what-is-a-learned-policy-in-q-learning)
 
 There is a really nice walkthrough [here](https://blog.floydhub.com/an-introduction-to-q-learning-reinforcement-learning/).
 
 **What is Deep Q-Learning?**
 
-A neural network is optimised to predict the Q function. The generation of new episodes is interleaved with neural network training. 
+A neural network is optimised to approximate the Q function. The generation of new episodes is interleaved with neural network training. 
 
 **What is a replay buffer?**
 
@@ -205,11 +209,19 @@ Interestingly, this is based on experience [replay sequences](https://deepmind.c
 
 > First, each step of experience is potentially used in many weight updates, which allows for greater data efficiency. Second, learning directly from consecutive samples is inefficient, due to the strong correlations between the samples. Third, when learning on-policy the current parameters determine the next data sample that the parameters are trained on \[potential infinite loop]. [[source]](https://arxiv.org/pdf/1312.5602v1.pdf)
 
+**What is policy gradient?**
+
+Policy gradient methods learn the policy directly with a parameterized function (as opposed to learning Q values). 
+
 **What is actor-critic framework?**
 
-TBA.
+Actor-critic learns the value function and the policy function. 
 
-**What is an LSTM layer?**
+> New trajectories are generated by actors. Asynchronously, model parameters are updated by learners, using a replay buffer that stores trajectories. [[source]](https://storage.googleapis.com/deepmind-media/research/alphastar/AlphaStar_unformatted.pdf)
+
+Interesting note in the above paper, in addition to the binary win condition, is a reward for style points (eg. execute a certain strategy). I imagine this leads to better generalisation, since (across the population) the objective is to win by a variety of methods. It also trained predator agents ('Exploiters') to execute adversarial attacks against the learning population. 
+
+**What is an LSTM layer and why?**
 
 So far [this](https://tedfmyers.com/2019/03/09/machine-learning-long-short-term-memory-cells/) seems to be the least confusing take. 
 - An LTSM has state, an array of some values that is passed forward. The state is zero at time zero. 
