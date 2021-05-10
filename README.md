@@ -154,7 +154,9 @@ The policy tells us which action to take in state `s`. It can be deterministic `
 
 **What is reinforcement learning?**
 
-Reinforcement learning is a class of methods (such as Q-learning) that iteratively sample the environment for a graph of states with inter-state action weights.
+> Reinforcement learning is defined not by characterizing learning methods, but by characterizing a learning problem. [[source]](http://incompleteideas.net/book/first/ebook/node7.html)
+
+Reinforcement learning is generally characterised by having a set of states, actions, goals, and agents that have partial or full observability of the world state. 
 
 Action selection is controlled by the `ϵ` "greedy" parameter, which controls the chance of random exploration vs. exploitation.
 
@@ -172,20 +174,24 @@ This [article](https://deepmind.com/blog/article/capture-the-flag-science) descr
 
 **What is Q-learning?**
 
-Q-learning is a fancy ant colony algorithm where agents navigate a graph, following the highest pheremone (the Q value), and laying pheremone as they go (updating the Q value). The graph of Q edges is initialised with random values, which facilitates an initial random search, but converges upon a gradient towards the target(s) as Q values are diffused downstream by the update rule. 
+Q-learning begins with an agent in an environment. The agent has a function to map observations onto states, which are discrete nodes in a markov process. Upon visiting a state, the agent may observe what actions are available from that state. The state and the action form a key into a lookup table, which returns an estimated quality value Q for taking that action. The lookup table may be initialised with zero or random values; whenever an agent executes a state-action pair then the observed Q value is written back into the lookup table. The new Q value is calculated as a weighted sum of the old value (average the returns over rollouts), the observed reward, plus a fraction of the highest Q value in the next visited state. In this way, nodes with high Q values diffuse backwards through the action paths. The Q-table should converge on the values associated with the target policy.
 
-If we think about an action as an edge on a graph of state nodes, then the Q value is the direct cost of traversing the edge, plus the estimated cost of all subsequent edges that would be traversed following policy `π`. Since this is defined recursively, we only have to sample the next edge selected by the policy, since that edge weight should converge towards the discounted sum of future costs. The learning rate is used to limit the rate at which new information is accepted into an edge, as a hedge against variable action rewards. (A single action such as flip_coin can lead to 2 states, so maybe it is not an edge after all?).
+This bears a lot in common with other agent sims like ant colony and physarum simulations, where agents leave trails for others to pick up.
+
+[![gif](https://i.stack.imgur.com/Bn6MY.gif)](https://stackoverflow.com/questions/56777123/questions-about-deep-q-learning)
 
 - The quality function `Q` gives the the expected return from state `s` and action `a` and following policy `π` thereafter. 
 - The value function `V` gives the expected return when starting in state `s` and following policy `π` thereafter.
+- R is the reward function.
+- Gamma is the learning rate.
 
-[Procedure:](https://www.cse.unsw.edu.au/~cs9417ml/RL1/algorithms.html)
-1. Initialize the Q-values table Q(s, a)
-2. Observe the current state `s`
-3. Choose action `a` from `s` with max Q
-4. Take the action, observe the reward 'r', as well as the new state 's''. 
-5. Update the traversed Q-value using the observed reward and the maximum reward possible for the next state (discount cumulative reward).
-6. Set the state to the new state, repeat until terminal state is reached. 
+[Procedure:](hhttps://leonardoaraujosantos.gitbook.io/artificial-inteligence/artificial_intelligence/reinforcement_learning/qlearning_simple)
+1. Initialize the Q matrix with zeroes
+2. Select a random initial state
+3. For each episode (set of actions that starts on the initial state and ends on the goal state)
+  - Select an action for the current state (flip a coin for exploit or explore)
+  - Execute the action and observe the next state
+  - Update the Q value `Q(state, action) = R(state, action) + Gamma * Max(Q(nextState, allActions))`
 
 The reason Q-learning is called 'off-policy' is that it estimates the total discounted future reward for state-action pairs assuming a greedy policy were followed, despite the fact that it's not following a greedy policy. 
 
@@ -196,6 +202,7 @@ The reason Q-learning is called 'off-policy' is that it estimates the total disc
 > The most common policy scenarios with Q learning are that it will converge on (learn) the values associated with a given target policy, or that it has been used iteratively to learn the values of the greedy policy with respect to its own previous values. The latter choice - using Q learning to find an optimal policy, using [generalised policy iteration](http://incompleteideas.net/book/first/ebook/node46.html#:%7E:text=We%20use%20the%20term%20generalized,details%20of%20the%20two%20processes.&text=The%20evaluation%20and%20improvement%20processes%20in%20GPI%20can,as%20both%20competing%20and%20cooperating.) - is by far the most common use of it. [[source]](https://ai.stackexchange.com/questions/25971/what-is-a-learned-policy-in-q-learning)
 
 There is a really nice walkthrough [here](https://blog.floydhub.com/an-introduction-to-q-learning-reinforcement-learning/).
+Also [this](https://leonardoaraujosantos.gitbook.io/artificial-inteligence/artificial_intelligence/reinforcement_learning/qlearning_simple).
 
 **What is Deep Q-Learning?**
 
