@@ -16,7 +16,7 @@
 - ant colony algorithm 
 - auxin growth models
 - leaf venation / wing venation / drainage patterns / urban layout synthesis
-- graph grammar aggregation
+- [graph grammar aggregation](https://www.youtube.com/channel/UCAEB6v6pULTAbKl9aM_EDZw)
 - Metropolis-Hastings algorithm
 
 See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
