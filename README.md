@@ -16,10 +16,30 @@
 - ant colony algorithm 
 - auxin growth models
 - leaf venation / wing venation / drainage patterns / urban layout synthesis
-- [graph grammar aggregation](https://www.youtube.com/channel/UCAEB6v6pULTAbKl9aM_EDZw)
+- ant nest morphogenesis
 - Metropolis-Hastings algorithm
+- quality diversity search / curiosity search / novelty search / open-ended exploration
+- reinforcement learning
 
 See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
+
+**Inspirational work**
+- [antibiotic gradient resistance](https://www.youtube.com/watch?v=plVk4NVIUh8)
+- [evolution of evolvability](https://www.youtube.com/watch?v=i-qe-2PLkIc)
+- [ant colony algorithm](https://www.youtube.com/watch?v=yZ1rSASM2Rg)
+- [ant nest morphogenesis](https://www.researchgate.net/publication/260546781_A_computational_model_of_ant_nest_morphogenesis)
+- [alien coral morphogenesis](https://www.joelsimon.net/corals.html)
+- [neural cellular automata](https://distill.pub/2020/growing-ca/)
+- [neural cellular automata 2](https://znah.net/hexells)
+- [neural networks failing to learn Game of Life](https://arxiv.org/abs/2009.01398)
+- [neural network quine](https://arxiv.org/abs/1803.05859)
+- [graph grammar aggregation](https://www.youtube.com/channel/UCAEB6v6pULTAbKl9aM_EDZw)
+- [automated scientist](https://advances.sciencemag.org/content/6/5/eaay4237)
+- [MAP-Elites algorithm](https://arxiv.org/abs/1504.04909)
+- [artificial language](https://www.joelsimon.net/dimensions-of-dialogue.html)
+- curiosity algorithm [paper](https://advances.sciencemag.org/content/6/5/eaay4237) and [code](https://github.com/croningp/dropfactory_exploration)
+- [information-limited pathfinding](https://www.youtube.com/watch?v=qXZt-B7iUyw)
+- [animated evolutionary strategies](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
 
 **What is a kernel in shader programming?**
 Let's look at how it is used:
