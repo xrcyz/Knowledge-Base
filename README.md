@@ -24,6 +24,7 @@
 See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
 
 **Inspirational work**
+- [Cogmind procedural map generation](https://www.gridsagegames.com/blog/2014/06/procedural-map-generation/)
 - [antibiotic gradient resistance](https://www.youtube.com/watch?v=plVk4NVIUh8)
 - [evolution of evolvability](https://www.youtube.com/watch?v=i-qe-2PLkIc)
 - [ant colony algorithm](https://www.youtube.com/watch?v=yZ1rSASM2Rg)
