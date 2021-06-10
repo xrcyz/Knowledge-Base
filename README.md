@@ -77,7 +77,14 @@ Multiply aka Hamard Product
 
 We want to know what frequencies, if any, are present in a function. To do that, transform the function to polar coordinates (each data point becomes a vector with magnitude f(y) and a rotation). The rotation step is a multiple of the frequency we are inspecting. We sum the vectors to get a "centroid" of the function in polar coordinates. The further this centroid is from origin, the greater the effect of this frequency. If we repeat this process for all frequencies from zero to N, and plot the result (the magnitude of each centroid), we get the fourier transform charts that show up in google images. 
 
-What about images? An image is a function f(x,y) on a plane that describes intensity at each point. As the 1D case, we can express this landscape as a sum of interfering waves on a surface. To extract the waves, we can rotate the image by the wave heading, wrap the image around a cylinder, then each cross-section of the cylinder maps to a one-dimensional fourier transform. We want to know which "frequency" (x,y) matches a wave, so we can do a second fourier transform where rotation is the heading and vector magnitude is the current step along the cylinder. This should return an intensity at each (x,y) which peaks if it matches a wave.
+What about images? 
+
+**Why should I care about machine learning?**
+
+- A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
+- With a little sauce you can run a neural net backwards, to generate a point above or below the classifying line. This can be used for generating novel samples (faces, art, ...). 
+- If you hook up a classifier ("encoder") with a declassifier ("decoder"), you get an autoencoder. This can be used to find compressed representations of data, and to discover hidden relationships within the data.
+- If you have a training environment, and you train neural net to classify actions, then you get reinforcement learning.
 
 **What is supervised and unsupervised machine learning?**
 
