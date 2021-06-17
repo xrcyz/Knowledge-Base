@@ -23,14 +23,6 @@
 
 See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
 
-**What is the hype with machine learning?**
-
-- A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
-- With a little sauce you can run a neural net backwards, to generate a point above or below the classifying line. This can be used for generating novel samples (faces, art, ...). 
-- If you hook up a classifier ("encoder") with a declassifier ("decoder"), you get an autoencoder. This can be used to find compressed representations of data, and to discover hidden relationships within the data.
-- If you hook up a decoder with an encoder you get a generative adversarial network. 
-- If you have a training environment, and you train neural net to classify actions, then you get reinforcement learning.
-
 **Inspirational work**
 - [Cogmind procedural map generation](https://www.gridsagegames.com/blog/2014/06/procedural-map-generation/)
 - [antibiotic gradient resistance](https://www.youtube.com/watch?v=plVk4NVIUh8)
@@ -49,43 +41,42 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 - [information-limited pathfinding](https://www.youtube.com/watch?v=qXZt-B7iUyw)
 - [animated evolutionary strategies](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
 
-**What is a kernel in shader programming?**
-Let's look at how it is used:
-- ComputeShader has a method called `FindKernel` which, given a function name, returns an index.
-- ComputeShader has a method called `Dispatch` which takes a `int kernelIndex` parameter. 
-- ComputeShader has a method called `SetTexture` which sets buffers and textures _per-kernel_. 
-- In the shader code, we define `#pragma kernel FunctionName` 
-- In the shader code, we implement `void FunctionName(...)` 
+**What is the hype with machine learning?**
 
-Note that each instance of the function is not a kernel, because we get exactly one index integer. So we can say that the kernel is a template for some behaviour at every coordinate of an input object. 
+- A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
+- With a little sauce you can run a neural net backwards, to generate a point above or below the classifying line. This can be used for generating novel samples (faces, art, ...). 
+- If you hook up a classifier ("encoder") with a declassifier ("decoder"), you get an autoencoder. This can be used to find compressed representations of data, and to discover hidden relationships within the data.
+- If you hook up a decoder with an encoder you get a generative adversarial network. 
+- If you have a training environment, and you train neural net to classify actions, then you get reinforcement learning.
 
-The fact that we use `#pragma kernel` tells us that the kernel is an abstraction that is separate from the function implementation. Calling `Dispatch` on the kernel calls the function in parallel for all coordinates in the input object. Each invocation of a kernel within a batch is assumed independent.
+**How do neural networks arrive at an answer?**
 
-(`Dispatch` dispatches a grid of work groups. `numthreads` defines the dimensions of each work group. We roughly want `work groups * num threads` equal to the [warp](https://www.google.com/search?q=nvidia+warp) size in hardware, to max out all processors on a batch of jobs. The hardware is a grid of factories, and if you don't bottleneck the capacity of each factory, then the spare capacity is wasted.)
+Neural networks are just chains of [boolean operators](https://en.wikipedia.org/wiki/Logistic_function) in a trench coat. 
 
-**What is a hash in shader programming?**
-
-It maps an input number (or vector) to a pseudo-random output number (or vector). 
-
-**What is the difference between dot product and element-wise multiplication?**
-
-From [here](https://stackoverflow.com/a/48201957):
-```
-Dot product
-|A, B| . |E, F| = |A*E+B*G, A*F+B*H|
-|C, D|   |G, H|   |C*E+D*G, C*F+D*H|
-
-Multiply aka Hamard Product
-|A, B| ⊙ |E, F| = |A*E, B*F|
-|C, D|    |G, H|   |C*G, D*H|
+Here is a "neural network" to classify a dog as above or below age 5. Throw `y=\frac{1}{1+e^{-(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
 
 ```
+let ageThreshold = 5; //this is the "bias"
+let ageIsGreaterThanFive = 1 / (1 + exp(-(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
+```
 
-**What is a Fourier Transform?**
+Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogrebra](https://www.geogebra.org/3d) see the `logicalAnd` shape. 
 
-We want to know what frequencies, if any, are present in a function. To do that, transform the function to polar coordinates (each data point becomes a vector with magnitude f(y) and a rotation). The rotation step is a multiple of the frequency we are inspecting. We sum the vectors to get a "centroid" of the function in polar coordinates. The further this centroid is from origin, the greater the effect of this frequency. If we repeat this process for all frequencies from zero to N, and plot the result (the magnitude of each centroid), we get the fourier transform charts that show up in google images. 
+```
+//first layer
+let ageThreshold = 5;
+let ageIsGreaterThanFive = 1 / (1 + exp(-(dog.age - ageThreshold))); 
 
-What about images? 
+let heightThreshold = 1;
+let heightIsGreaterThanOne = 1 / (1 + exp(-(dog.height - heightThreshold))); 
+
+//second layer
+let [x, y] = [ageIsGreaterThanFive, heightIsGreaterThanOne]; //a vector in the unit square
+let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y))); 
+
+```
+
+In the above, the line `(1.5 - x - y)` is used to test if a point is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, while the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
 
 **What is supervised and unsupervised machine learning?**
 
@@ -101,7 +92,7 @@ This: {0, 0, 1, 0, 0}. A one-hot vector has all components set to zero except fo
 
 **What is a neural network?**
 
-A neural networks successively transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, action prompts) form clusters. Then we can classify a new data point by how closely it maps to each cluster. 
+A neural networks transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, action prompts) form clusters. Then we can classify a new data point by how closely it maps to each cluster. 
 
 [Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
 
@@ -289,4 +280,47 @@ A neural network that maps a camera-object pair to a viewport pixel array. Given
 
 **What is a graph neural network?**
 
+TBA.
+
+**What is a Fourier Transform?**
+
+We want to know what frequencies, if any, are present in a function. To do that, transform the function to polar coordinates (each data point becomes a vector with magnitude f(y) and a rotation). The rotation step is a multiple of the frequency we are inspecting. We sum the vectors to get a "centroid" of the function in polar coordinates. The further this centroid is from origin, the greater the effect of this frequency. If we repeat this process for all frequencies from zero to N, and plot the result (the magnitude of each centroid), we get the fourier transform charts that show up in google images. 
+
+What about images? What about "power spectrum"?
+
 No idea.
+
+**What is a kernel in shader programming?**
+
+> "A kernel roughly corresponds to extracting the body of a loop to a function, so that the function can be executed in parallel in hardware."
+
+Let's look at how it is used:
+- ComputeShader has a method called `FindKernel` which, given a function name, returns an index.
+- ComputeShader has a method called `Dispatch` which takes a `int kernelIndex` parameter. 
+- ComputeShader has a method called `SetTexture` which sets buffers and textures _per-kernel_. 
+- In the shader code, we define `#pragma kernel FunctionName` 
+- In the shader code, we implement `void FunctionName(...)` 
+
+Note that each instance of the function is not a kernel, because we get exactly one index integer. So we can say that the kernel is a template for some behaviour at every coordinate of an input object. 
+
+The fact that we use `#pragma kernel` tells us that the kernel is an abstraction that is separate from the function implementation. Calling `Dispatch` on the kernel calls the function in parallel for all coordinates in the input object. Each invocation of a kernel within a batch is assumed independent.
+
+(`Dispatch` dispatches a grid of work groups. `numthreads` defines the dimensions of each work group. We roughly want `work groups * num threads` equal to the [warp](https://www.google.com/search?q=nvidia+warp) size in hardware, to max out all processors on a batch of jobs. The hardware is a grid of factories, and if you don't bottleneck the capacity of each factory, then the spare capacity is wasted.)
+
+**What is a hash in shader programming?**
+
+It maps an input number (or vector) to a pseudo-random output number (or vector). 
+
+**What is the difference between dot product and element-wise multiplication?**
+
+From [here](https://stackoverflow.com/a/48201957):
+```
+Dot product
+|A, B| . |E, F| = |A*E+B*G, A*F+B*H|
+|C, D|   |G, H|   |C*E+D*G, C*F+D*H|
+
+Multiply aka Hamard Product
+|A, B| ⊙ |E, F| = |A*E, B*F|
+|C, D|    |G, H|   |C*G, D*H|
+
+```
