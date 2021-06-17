@@ -60,7 +60,7 @@ let ageThreshold = 5; //this is the "bias"
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
 ```
 
-Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogrebra](https://www.geogebra.org/3d) to try it out. 
+Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogebra](https://www.geogebra.org/3d) to try it out. 
 
 ```
 //second layer
