@@ -53,22 +53,22 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 
 Neural networks are just chains of [boolean operators](https://en.wikipedia.org/wiki/Logistic_function) in a trench coat. 
 
-Here is a "neural network" to classify a dog as above or below age 5. Throw `y=\frac{1}{1+e^{-(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
+Here is a "neural network" to classify a dog as above or below age 5. Throw `y=\frac{1}{1+e^{-10*(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
 
 ```
 let ageThreshold = 5; //this is the "bias"
-let ageIsGreaterThanFive = 1 / (1 + exp(-(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
+let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
 ```
 
-Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogrebra](https://www.geogebra.org/3d) see the `logicalAnd` shape. 
+Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogrebra](https://www.geogebra.org/3d) to try it out. 
 
 ```
 //first layer
 let ageThreshold = 5;
-let ageIsGreaterThanFive = 1 / (1 + exp(-(dog.age - ageThreshold))); 
+let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); 
 
 let heightThreshold = 1;
-let heightIsGreaterThanOne = 1 / (1 + exp(-(dog.height - heightThreshold))); 
+let heightIsGreaterThanOne = 1 / (1 + exp(-10*(dog.height - heightThreshold))); 
 
 //second layer
 let [x, y] = [ageIsGreaterThanFive, heightIsGreaterThanOne]; //a vector in the unit square
@@ -77,6 +77,24 @@ let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y)));
 ```
 
 In the above, the line `(1.5 - x - y)` is used to test if a point is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, while the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
+
+Suppose now we want to solve the XOR problem. Given `[x,y]` in the first layer, we can define four neurons `[A,B,C,D]` in the hidden layer
+```
+let A = (!x && y); 
+let B = (x && y);
+let C = (x && !y);
+let D = (!x && !y);
+
+A = 1 / (1 + exp(-10 * (-0.5 - x + y))); //test for (0,1)
+B = 1 / (1 + exp(-10 * (-1.5 + x + y))); //test for (1,1)
+C = 1 / (1 + exp(-10 * (-0.5 + x - y))); //test for (1,0)
+D = 1 / (1 + exp(-10 * ( 0.5 - x - y))); //test for (0,0)
+```
+
+In the output layer, we know to strongly penalize `B` and `D`, while strongly rewarding `A` and `C`. 
+```
+let output = 1 / (1 + exp(-10*(A + C - B - D))); 
+```
 
 **What is supervised and unsupervised machine learning?**
 
