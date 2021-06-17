@@ -63,14 +63,14 @@ let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //return
 Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogrebra](https://www.geogebra.org/3d) to try it out. 
 
 ```
-//first layer
+//second layer
 let ageThreshold = 5;
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); 
 
 let heightThreshold = 1;
 let heightIsGreaterThanOne = 1 / (1 + exp(-10*(dog.height - heightThreshold))); 
 
-//second layer
+//output layer
 let [x, y] = [ageIsGreaterThanFive, heightIsGreaterThanOne]; //a vector in the unit square
 let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y))); 
 
