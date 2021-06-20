@@ -44,10 +44,11 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 **What is the hype with machine learning?**
 
 - A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
-- With a little sauce you can run a neural net backwards, to generate a point above or below the classifying line. This can be used for generating novel samples (faces, art, ...). 
-- If you hook up a classifier ("encoder") with a declassifier ("decoder"), you get an autoencoder. This can be used to find compressed representations of data, and to discover hidden relationships within the data.
-- If you hook up a decoder with an encoder you get a generative adversarial network. 
-- If you have a training environment, and you train neural net to classify actions, then you get reinforcement learning.
+- With a little sauce you can run the neural net in reverse, starting with a classification working backwards to a sample point. This can be used for generating novel samples (faces, art, ...). 
+- If you take a generator, and feed it back into a classifier,then you get a generative adversarial network. This trains the generator to match training data.
+- If you take a classifier, and feed it into a generator, then you get an autoencoder. This trains the encoder to find efficient descriptors of the training data.
+- If you you take a classifier, and train it in on actions in an environment, then you get Q learning. This matches states to actions for highest reward.
+- If you take a series of classifiers, and use them to map an image to a bank of class arrays, then you get a convolutional neural net. The individual classifiers ("kernels") are trained to extract features from an image. 
 
 **How do neural networks arrive at an answer?**
 
