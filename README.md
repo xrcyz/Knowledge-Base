@@ -54,14 +54,14 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 
 Neural networks are just chains of [boolean operators](https://en.wikipedia.org/wiki/Logistic_function) in a trench coat. 
 
-Here is a "neural network" to classify a dog as above or below age 5. Throw `y=\frac{1}{1+e^{-10*(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
+Here is a "neural network" to classify a dog as above or below age 5. Paste `y=\frac{1}{1+e^{-10*(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
 
 ```
 let ageThreshold = 5; //this is the "bias"
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
 ```
 
-Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Throw `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogebra](https://www.geogebra.org/3d) to try it out. 
+Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Paste `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogebra](https://www.geogebra.org/3d) to try it out. 
 
 ```
 //second layer
@@ -92,7 +92,7 @@ C = 1 / (1 + exp(-10 * (-0.5 + x - y))); //test for (1,0)
 D = 1 / (1 + exp(-10 * ( 0.5 - x - y))); //test for (0,0)
 ```
 
-In the output layer, we can naively assume that the conditions `[A,B,C,D]` are exclusive, so we can apply the logistic operator to the sum. (For extra credit, consider how the weights might be used to derive a truth value for the input coordinate `[0.49, 0.75]`). 
+In the output layer, we can naively assume that the conditions `[A,B,C,D]` are exclusive, so we can apply the logistic operator to the sum. (For extra credit, consider how the weighted sum might be used to derive a truth value for the input coordinate `[0.49, 0.75]`). 
 
 ```
 let output = 1 / (1 + exp(-10*(A + C - B - D))); 
