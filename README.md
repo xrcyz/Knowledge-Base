@@ -77,14 +77,14 @@ let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y)));
 
 ```
 
-In the above, the line `(1.5 - x - y)` is used to test if a point is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, while the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
+In the above, the line `(y = 1.5 - x)` is used to test if a point is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, while the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
 
 Suppose now we want to solve the XOR problem. Given `[x,y]` in the first layer, we can define four neurons `[A,B,C,D]` in the hidden layer
 ```
-let A = (!x && y); 
-let B = (x && y);
-let C = (x && !y);
-let D = (!x && !y);
+let A = (!x && y); //false true
+let B = (x && y); //true true
+let C = (x && !y); //true false
+let D = (!x && !y); //false false
 
 A = 1 / (1 + exp(-10 * (-0.5 - x + y))); //test for (0,1)
 B = 1 / (1 + exp(-10 * (-1.5 + x + y))); //test for (1,1)
@@ -92,10 +92,15 @@ C = 1 / (1 + exp(-10 * (-0.5 + x - y))); //test for (1,0)
 D = 1 / (1 + exp(-10 * ( 0.5 - x - y))); //test for (0,0)
 ```
 
-In the output layer, we know to strongly penalize `B` and `D`, while strongly rewarding `A` and `C`. 
+In the output layer, we can naively assume that the conditions `[A,B,C,D]` are exclusive, so we can apply the logistic operator to the sum. (For extra credit, consider how the weights might be used to derive a truth value for the input coordinate `[0.49, 0.75]`). 
+
 ```
 let output = 1 / (1 + exp(-10*(A + C - B - D))); 
 ```
+
+You can see the above XOR neural network configuration being derived [here](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false).
+
+[![tensorflow playground](/tensorflow%20playground%20XOR.png)](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false)
 
 **What is supervised and unsupervised machine learning?**
 
