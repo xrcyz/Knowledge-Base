@@ -118,14 +118,29 @@ if(self == 0 && neighbors == 3) return 1
 else return 0
 ```
 
-For layer one of the neural network, we will want:
+Layer one of the neural network is going to calculate the basic booleans:
 
 ```
 let (self == 1) = 1 / (1 + exp(-10*(self - 0.5))); 
-
-let sumNeighbors = A + B + C + D + E + F + G + H;
-let (neighbors > 1) = 1 / (1 + exp(-10*(  ))); 
+let (neighbors > 1) = 1 / (1 + exp(-10*( sumNeighbors - 1.5 ))); 
+let (neighbors > 2) = 1 / (1 + exp(-10*( sumNeighbors - 2.5 ))); 
+let (neighbors > 3) = 1 / (1 + exp(-10*( sumNeighbors - 3.5 ))); 
 ```
+
+Layer two recombines the outputs into complex booleans:
+
+```
+let (self == 0 && neighbors == 3) = (!(self == 1) && (neighbors > 2) && !(neighbors > 3)) //need to test for (0,1,0)
+```
+
+In order to test for point (0,1,0), we need to define a plane that divides the vertex of a unit cube from the rest of the cube. Some messing around in [Geogebra](https://www.geogebra.org/3d) gives us `plane = -x + y - z - 0.5`.
+```
+let x = (self == 1);
+let y = (neighbors > 2);
+let z = (neighbors > 3);
+let (self == 0 && neighbors == 3) = 1 / (1 + exp(-10*(-x + y - z - 0.5))) 
+```
+
 
 
 **What is supervised and unsupervised machine learning?**
