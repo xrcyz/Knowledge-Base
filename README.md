@@ -54,12 +54,16 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 
 Neural networks are just chains of [boolean operators](https://en.wikipedia.org/wiki/Logistic_function) in a trench coat. 
 
+***Conditional IF***
+
 Here is a "neural network" to classify a dog as above or below age 5. Paste `y=\frac{1}{1+e^{-10*(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
 
 ```
 let ageThreshold = 5; //this is the "bias"
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
 ```
+
+***Conditional AND***
 
 Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Paste `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogebra](https://www.geogebra.org/3d) to try it out. 
 
@@ -78,6 +82,8 @@ let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y)));
 ```
 
 In the above, the line `(y = 1.5 - x)` is used to test if a point is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, while the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
+
+***Conditional XOR***
 
 Suppose now we want to solve the XOR problem. Given `[x,y]` in the first layer, we can define four neurons `[A,B,C,D]` in the hidden layer
 ```
@@ -101,6 +107,26 @@ let output = 1 / (1 + exp(-10*(A + C - B - D)));
 You can see the above XOR neural network configuration being derived [here](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false).
 
 [![tensorflow playground](/tensorflow%20playground%20XOR.png)](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false)
+
+***Conway's Game of Life***
+
+The rules for [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) are:
+
+```
+if(self == 1 && neighbors == (2|3)) return 1
+if(self == 0 && neighbors == 3) return 1
+else return 0
+```
+
+For layer one of the neural network, we will want:
+
+```
+let (self == 1) = 1 / (1 + exp(-10*(self - 0.5))); 
+
+let sumNeighbors = A + B + C + D + E + F + G + H;
+let (neighbors > 1) = 1 / (1 + exp(-10*(  ))); 
+```
+
 
 **What is supervised and unsupervised machine learning?**
 
