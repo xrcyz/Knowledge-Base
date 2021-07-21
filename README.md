@@ -122,9 +122,9 @@ Layer one of the neural network is going to calculate the basic booleans:
 
 ```
 let (self == 1) = 1 / (1 + exp(-10*(self - 0.5))); 
-let (neighbors > 1) = 1 / (1 + exp(-10*( sumNeighbors - 1.5 ))); 
-let (neighbors > 2) = 1 / (1 + exp(-10*( sumNeighbors - 2.5 ))); 
-let (neighbors > 3) = 1 / (1 + exp(-10*( sumNeighbors - 3.5 ))); 
+let (neighbors > 1) = 1 / (1 + exp(-10*( neighbors.sum() - 1.5 ))); 
+let (neighbors > 2) = 1 / (1 + exp(-10*( neighbors.sum() - 2.5 ))); 
+let (neighbors > 3) = 1 / (1 + exp(-10*( neighbors.sum() - 3.5 ))); 
 ```
 
 Layer two recombines the outputs into complex booleans:
@@ -133,12 +133,32 @@ Layer two recombines the outputs into complex booleans:
 let (self == 0 && neighbors == 3) = (!(self == 1) && (neighbors > 2) && !(neighbors > 3)) //need to test for (0,1,0)
 ```
 
-In order to test for point (0,1,0), we need to define a plane that divides the vertex of a unit cube from the rest of the cube. Some messing around in [Geogebra](https://www.geogebra.org/3d) gives us `plane = -x + y - z - 0.5`.
+In order to test for point (0,1,0), we need to define a plane that separates the vertex of a unit cube from the rest of the cube. Some messing around in [Geogebra](https://www.geogebra.org/3d) gives us `plane = -x + y - z - 0.5`.
 ```
 let x = (self == 1);
 let y = (neighbors > 2);
 let z = (neighbors > 3);
-let (self == 0 && neighbors == 3) = 1 / (1 + exp(-10*(-x + y - z - 0.5))) 
+let (self == 0 && neighbors == 3) = 1 / (1 + exp(-10*(-x + y - z - 0.5)));
+```
+
+And for the second neuron in the second layer: 
+
+```
+let (self == 1 && neighbors == (2|3)) = ((self == 1) && (neighbors > 1) && !(neighbors > 3)) //need to test for (1,1,0)
+
+let x = (self == 1);
+let y = (neighbors > 1);
+let z = (neighbors > 3);
+
+let (self == 1 && neighbors == (2|3)) = 1 / (1 + exp(-10*(x + y - z - 1.5)));
+```
+
+In the third layer, we want to return `(self == 0 && neighbors == 3) || (self == 1 && neighbors == (2|3))`, which we can get by testing if the sum of the values is greater than zero. 
+
+```
+let condition1 = (self == 0 && neighbors == 3);
+let condition2 = (self == 1 && neighbors == (2|3));
+let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 ))); 
 ```
 
 
