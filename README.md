@@ -153,13 +153,14 @@ let z = (neighbors > 3);
 let (self == 1 && neighbors == (2|3)) = 1 / (1 + exp(-10*(x + y - z - 1.5)));
 ```
 
-In the third layer, we want to return `(self == 0 && neighbors == 3) || (self == 1 && neighbors == (2|3))`, which we can get by testing if the sum of the values is greater than zero. 
+In the output layer, we want to return `(self == 0 && neighbors == 3) || (self == 1 && neighbors == (2|3))`, which we can get by testing if the sum of the values is greater than zero. 
 
 ```
 let condition1 = (self == 0 && neighbors == 3);
 let condition2 = (self == 1 && neighbors == (2|3));
 let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 ))); 
 ```
+You can view test implementation in the browser [here](https://openprocessing.org/sketch/1236584).
 
 
 
