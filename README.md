@@ -161,7 +161,7 @@ Using this perspective, we can take a guess at how other convolutional neural ne
 
 This [visualisation](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [Adam Harley](http://www.cs.cmu.edu/~aharley/) shows the filters and layers used to classify handwritten digits. Convolution layer 1 contains six filters, in which every pixel represents the output of a kernel, and each kernel is performing a logical test on the corresponding region of the source image. Filters 1 and 6 detect horizontal edges, filters 3 and 4 detect diagonal edges, filter 2 detects vertical edges, and filter 5 remains a mystery for the ages. In the next layer, Downsampling layer 1, the "max pooling" operation performs a logical OR by preserving the max values. 
 
-What is Convolution layer 2 doing? Most likely it is combining the earlier booleans to generate complex booleans, still localised to areas of the image. For example, a combined vertical plus horizontal test might be used in classifying 4 and 7. 
+In Convolution layer 2, the kernel has been extended to three dimensions, so it can compare results across a stack of filters for one region of the image. This could be used to, for example, multiply horizontal and vertical detectors into a corner detector. 
 
 
 **What is the hype with machine learning?**
