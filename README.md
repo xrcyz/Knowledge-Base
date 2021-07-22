@@ -106,7 +106,7 @@ let output = 1 / (1 + exp(-10*(A + C - B - D)));
 
 You can see the above XOR neural network configuration being derived [here](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false).
 
-[![tensorflow playground](/tensorflow%20playground%20XOR.png)](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false)
+[![tensorflow playground](/images/tensorflow%20playground%20XOR.png)](http://playground.tensorflow.org/#activation=sigmoid&batchSize=30&dataset=xor&regDataset=reg-plane&learningRate=0.1&regularizationRate=0&noise=0&networkShape=4,1&seed=0.21709&showTestData=true&discretize=false&percTrainData=70&x=true&y=true&xTimesY=false&xSquared=false&ySquared=false&cosX=false&sinX=false&cosY=false&sinY=false&collectStats=false&problem=classification&initZero=false&hideText=false&batchSize_hide=false)
 
 ***Conway's Game of Life***
 
@@ -162,7 +162,13 @@ let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 )));
 ```
 You can view test implementation in the browser [here](https://openprocessing.org/sketch/1236584).
 
+Interestingly, since every cell in a cellular automata applies this neural network as the update rule, then this is technically a "convolutional neural network". The four layers (9 inputs, 4 hidden, 2 hidden, 1 out) of our neural network form the "kernel" or "filter"; a grid of kernels is applied to the input image to manufacture the output image. Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
 
+Using this perspective, we can take a guess at how a convolutional neural network performs its computations. 
+
+[![Interactive Node-Link Visualisation of Convolutional Neural Networks](/images/aharley%20cnn%20visualisation.png)](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html)
+
+The image above is an [Interactive Node-Link Visualisation of Convolutional Neural Networks](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [Adam Harley](http://www.cs.cmu.edu/~aharley/)..
 
 **What is supervised and unsupervised machine learning?**
 
