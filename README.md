@@ -41,15 +41,6 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 - [information-limited pathfinding](https://www.youtube.com/watch?v=qXZt-B7iUyw)
 - [animated evolutionary strategies](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
 
-**What is the hype with machine learning?**
-
-- A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
-- With a little sauce you can run the neural net in reverse, starting with a classification working backwards to a sample point. This can be used for generating novel samples (faces, art, ...). 
-- If you take a generator, and feed it back into a classifier,then you get a generative adversarial network. This trains the generator to match training data.
-- If you take a classifier, and feed it into a generator, then you get an autoencoder. This trains the encoder to find efficient descriptors of the training data.
-- If you you take a classifier, and train it in on actions in an environment, then you get Q learning. This matches states to actions for highest reward.
-- If you take a series of classifiers, and use them to map an image to a bank of class arrays, then you get a convolutional neural net. The individual classifiers ("kernels") are trained to extract features from an image. 
-
 **How do neural networks arrive at an answer?**
 
 Neural networks are just chains of [boolean operators](https://en.wikipedia.org/wiki/Logistic_function) in a trench coat. 
@@ -160,15 +151,27 @@ let condition1 = (self == 0 && neighbors == 3);
 let condition2 = (self == 1 && neighbors == (2|3));
 let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 ))); 
 ```
-You can view test implementation in the browser [here](https://openprocessing.org/sketch/1236584).
+You can test this implementation in the browser [here](https://openprocessing.org/sketch/1236584).
 
-Interestingly, since every cell in a cellular automata applies this neural network as the update rule, then this is technically a "convolutional neural network". The four layers (9 inputs, 4 hidden, 2 hidden, 1 out) of our neural network form the "kernel" or "filter"; a grid of kernels is applied to the input image to manufacture the output image. Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
+Interestingly, since every cell in the cellular automata shares the same update rule, then this is technically a "convolutional neural network". The four layers (9 inputs, 4 hidden, 2 hidden, 1 out) of our neural network form the "kernel", and a grid of kernels are applied to the input image to calculate the output image (the next state of the cellular automata). Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
 
-Using this perspective, we can take a guess at how a convolutional neural network performs its computations. 
+Using this perspective, we can take a guess at how other convolutional neural networks perform their computations. 
 
 [![Interactive Node-Link Visualisation of Convolutional Neural Networks](/images/aharley%20cnn%20visualisation.png)](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html)
 
-The image above is an [Interactive Node-Link Visualisation of Convolutional Neural Networks](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [Adam Harley](http://www.cs.cmu.edu/~aharley/)..
+This [visualisation](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [Adam Harley](http://www.cs.cmu.edu/~aharley/) shows the filters and layers used to classify handwritten digits. Convolution layer 1 contains six filters, in which every pixel represents the output of a kernel, and each kernel is performing a logical test on the corresponding region of the source image. Filters 1 and 6 detect horizontal edges, filters 3 and 4 detect diagonal edges, filter 2 detects vertical edges, and filter 5 remains a mystery for the ages. In the next layer, Downsampling layer 1, the "max pooling" operation performs a logical OR by preserving the max values. 
+
+What is Convolution layer 2 doing? Most likely it is combining the earlier booleans to generate complex booleans, still localised to areas of the image. For example, a combined vertical plus horizontal test might be used in classifying 4 and 7. 
+
+
+**What is the hype with machine learning?**
+
+- A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
+- With a little sauce you can run the neural net in reverse, starting with a classification working backwards to a sample point. This can be used for generating novel samples (faces, art, ...). 
+- If you take a generator, and feed it back into a classifier,then you get a generative adversarial network. This trains the generator to match training data.
+- If you take a classifier, and feed it into a generator, then you get an autoencoder. This trains the encoder to find efficient descriptors of the training data.
+- If you you take a classifier, and train it in on actions in an environment, then you get Q learning. This matches states to actions for highest reward.
+- If you take a series of classifiers, and use them to map an image to a bank of class arrays, then you get a convolutional neural net. The individual classifiers ("kernels") are trained to extract features from an image. 
 
 **What is supervised and unsupervised machine learning?**
 
