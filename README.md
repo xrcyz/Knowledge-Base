@@ -153,7 +153,7 @@ let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 )));
 ```
 You can test this implementation in the browser [here](https://openprocessing.org/sketch/1236584).
 
-At this point we have a working cellular automata. The rules for Conway's game of life are encoded in the weights and biases. We can modify these parameters to explore the space of possible CAs. 
+At this point we have a working cellular automata. The rules for Conway's game of life are encoded in the weights and biases. We can modify these parameters to explore for alternative rulesets. 
 
 Here is one such variant:
 
