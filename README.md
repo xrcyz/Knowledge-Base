@@ -167,10 +167,19 @@ let g = (self == 1 && neighbors == (2|3)) = 1 / (1 + exp(-3.848*(a + b - d - 1.6
 let output = 1 / (1 + exp(-9.591*( f + g - 0.455))); 
 ```
 
-Can we reverse-engineer the program that is encoded in the math? As it turns out, yes, we can nest the above formulas and plot a single function `f(x,y)` where `x` is the neighbor sum and `y` is the self-value. This decision surface is very similar to Conway's rules for two and three neighbors, with the addition of a new cell state: an empty cell with two neighbors can bootstrap itself up to a ~50% activated state.
+[![neural game of life](/images/neural%20game%20of%20life.png)](https://openprocessing.org/sketch/1237046)
+
+Can we reverse-engineer the program that is encoded in the math? As it turns out, yes, we can nest the above formulas and plot a single function `f(x,y)` where `x` is the neighbor sum and `y` is the self-value. This decision surface yields an almost identical rule set to Conway's rules, with an additional rule: an inactive cell with two neighbors can bootstrap itself up to 25% activation. 
+
+```
+//approximation of the decision surface
+if(self >= 0.75 && 2   <= neighbors < 3.5) return 1
+if(self <  0.75 && 2.5 <  neighbors < 3.5) return 1
+if(self < 1     && 2   <= neighbors < 3)   return (neighbors - 2)
+else return 0.05
+```
 
 ![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
-
 
 ***Convnets***
 
