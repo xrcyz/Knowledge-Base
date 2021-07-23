@@ -153,6 +153,27 @@ let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 )));
 ```
 You can test this implementation in the browser [here](https://openprocessing.org/sketch/1236584).
 
+At this point we have a working cellular automata. The rules for Conway's game of life are encoded in the weights and biases. We can modify these parameters to explore the space of possible CAs. 
+
+Here is one such variant:
+
+```
+let a = (self == 1) = 1 / (1 + exp(-7.24*(self - 0.5))); 
+let b = (neighbors > 1) = 1 / (1 + exp(-4.584*( neighbors.sum() - 1.5 ))); 
+let c = (neighbors > 2) = 1 / (1 + exp(-2.869*( neighbors.sum() - 2.5 ))); 
+let d = (neighbors > 3) = 1 / (1 + exp(-7.912( neighbors.sum() - 3.8 ))); 
+let f = (self == 0 && neighbors == 3) = 1 / (1 + exp(-2.799*(-a + c - d - 0.48)));
+let g = (self == 1 && neighbors == (2|3)) = 1 / (1 + exp(-3.848*(a + b - d - 1.66)));
+let output = 1 / (1 + exp(-9.591*( f + g - 0.455))); 
+```
+
+Can we reverse-engineer the program that is encoded in the math? As it turns out, yes, we can nest the above formulas and plot a single function `f(x,y)` where `x` is the neighbor sum and `y` is the self-value. This decision surface is very similar to Conway's rules for two and three neighbors, with the addition of a new cell state: an empty cell with two neighbors can bootstrap itself up to a ~50% activated state.
+
+![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
+
+
+***Convnets***
+
 Interestingly, since every cell in the cellular automata shares the same update rule, then this is technically a "convolutional neural network". The four layers (9 inputs, 4 hidden, 2 hidden, 1 out) of our neural network form the "kernel", and a grid of kernels are applied to the input image to calculate the output image (the next state of the cellular automata). Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
 
 Using this perspective, we can take a guess at how other convolutional neural networks perform their computations. 
