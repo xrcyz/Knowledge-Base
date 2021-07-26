@@ -169,17 +169,21 @@ let output = 1 / (1 + exp(-9.591*( f + g - 0.455)));
 
 [![neural game of life](/images/neural%20game%20of%20life.png)](https://openprocessing.org/sketch/1237046)
 
-Can we reverse-engineer the program that is encoded in the math? As it turns out, yes, we can nest the above formulas and plot a single function `f(x,y)` where `x` is the neighbor sum and `y` is the self-value. This decision surface yields an almost identical rule set to Conway's rules, with an additional rule: an inactive cell with two neighbors can bootstrap itself up to 25% activation. 
+Can we reverse-engineer the program that is encoded in the math? As it turns out, yes, we can nest the above formulas and plot a single function `f(x,y)` where `x` is the neighbor sum and `y` is the self-value. This decision surface yields an almost identical rule set to Conway's rules, with an additional rule: an inactive cell with two neighbors can bootstrap itself up to one-third activation. 
 
-```
-//approximation of the decision surface
-if(self >= 0.75 && 2   <= neighbors < 3.5) return 1
-if(self <  0.75 && 2.5 <  neighbors < 3.5) return 1
-if(self < 1     && 2   <= neighbors < 3)   return (neighbors - 2)
-else return 0.05
-```
+| self : neighbors | 0 | 1 | 2 | 3 | 4 |
+| --- | --- | --- | --- | --- | --- |
+| 0.00 | 0.08 | 0.08 | 0.27 | 0.96 | 0.15 |
+| 0.25 | 0.06 | 0.06 | 0.23 | 0.95 | 0.11 |
+| 0.50 | 0.02 | 0.03 | 0.32 | 0.93 | 0.04 |
+| 0.75 | 0.02 | 0.03 | 0.32 | 0.93 | 0.04 |
+| 1.00 | 0.03 | 0.04 | 0.93 | 0.99 | 0.05 |
 
 ![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
+
+This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training inputs to training outputs, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the return value of the surface f(self,world) includes the next self value (see also: RNNs, Q-learning). 
+
+Project idea: CA grid, 3D plot of decision surface, sliders for weights and biases, and a fading heatmap of cell states on the surface.  
 
 ***Convnets***
 
