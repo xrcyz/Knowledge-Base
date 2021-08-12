@@ -181,7 +181,7 @@ Can we reverse-engineer the program that is encoded in the math? As it turns out
 
 ![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
 
-This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training inputs to training outputs, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the return value of the surface f(self,world) includes the next self value (see also: RNNs, Q-learning). 
+This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the return value of the surface f(self,world) includes the next self value (see also: RNNs, Q-learning). 
 
 Project idea: CA grid, 3D plot of decision surface, sliders for weights and biases, and a fading heatmap of cell states on the surface.  
 
