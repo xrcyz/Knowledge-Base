@@ -197,6 +197,32 @@ This [visualisation](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [
 
 In Convolution layer 2, the kernel has been extended to three dimensions, so it can compare results across a stack of filters for one region of the image. This could be used to, for example, multiply horizontal and vertical detectors into a corner detector. 
 
+**How does back-propagation work?**
+
+Let us return to the example of a logical AND statement, where `[x,y]` are bounded `[0..1]`:
+
+```
+let AndXY = 1 / (1 + exp(10 * (1.5 - x - y))); 
+```
+
+In a traditional neural net formulation, each input has its own weight, and so would be written like this:
+
+```
+let AndXY = 1 / (1 + exp(15 - 10*x - 10*y))); 
+```
+
+Each weight can be independently modified to change the decision surface. We can set this up in [Geogebra](https://www.geogebra.org/3d) with `z=\frac{1}{1+e^{a*x+b*y+c)}}` and drag the sliders to see what happens.
+- Remember that the form `a*x+b*y+c` is equivalent to the line `y=(-a*x-c)/b`.
+- The function `f(x,y)=a*x+b*y+c` returns positive or negative values for points above and below the line. 
+- The logistic function maps positive and negative numbers to the range `[0..1]`.
+- Dragging `a` rotates the line around `y=-c/b`, a point on the y-axis.
+- Dragging `b` rotates the line around `x=-c/a`, a point onf the x-axis. (The slope of the equivalent line, `x=(-b*y-c)/a`, is `b/a`).
+- In addition to rotating the line, you can scale `[a,b,c]` together in such a way that the line is not rotated or translated, but the function `f(x,y)=a*x+b*y+c` returns a more extreme value. This causes a sharper slope on the logistic function as a result. 
+
+Back-propagation is the method of adjusting `[a,b,c]` until the decision surface returns the values we expect. 
+
+
+
 
 **What is the hype with machine learning?**
 
