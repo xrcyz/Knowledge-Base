@@ -208,7 +208,7 @@ let AndXY = 1 / (1 + exp(10 * (1.5 - x - y)));
 In a traditional neural net formulation, each input has its own weight, and so would be written like this:
 
 ```
-let AndXY = 1 / (1 + exp(15 - 10*x - 10*y))); 
+let AndXY = 1 / (1 + exp(a*x + b*y + c))); 
 ```
 
 Each weight can be independently modified to change the decision surface. We can set this up in [Geogebra](https://www.geogebra.org/3d) with `z=\frac{1}{1+e^{a*x+b*y+c)}}` and drag the sliders to see what happens.
