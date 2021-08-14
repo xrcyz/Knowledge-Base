@@ -240,7 +240,7 @@ This returns the values:
 How much should we modify weight `a`? 
 - The derivative of `f(x,y)=a*x+b*y+c` with respect to `a` is `x`. Example: when you increase `a` by one unit, then `f(x,y)` increases by one unit of `x`. 
 - The derivative of the [logistic function](https://en.wikipedia.org/wiki/Logistic_function) with respect to the input `f(x,y)` is `z*(1-z)`. 
-- The derivative of the loss fuction (half squared error) with respect to the logistic function is just the error (z - expected value). 
+- The derivative of the loss function (half squared error) with respect to the logistic function is just the error (z - expected value). 
 
 Using the chain rule, the product of these derivatives is the rate of change of error with respect to `a`. 
 
@@ -252,7 +252,7 @@ dLoss/dc = 1 * z * (1 - z) * (z - t)
 
 The term `z * (1 - z) * (z - t)` may also be referred to as the _node delta_. 
 
-Allegedly, these loss derivatives tell us in which direction to move the weight in order to arrive at a better answer. 
+Allegedly, these loss derivatives tell us in which direction to move the weight in order to arrive at a better answer. The learning rate is used to reduce the step size, so that the change doesn't overshoot the target.
 
 ```
 let learningRate = 0.5;
@@ -261,7 +261,12 @@ b += learningRate * dLoss/db;
 c += learningRate * dLoss/dc;
 ```
 
-Example to follow...
+When implemented in practice, the network rapidly converges on a very similar solution to our hand-crafted one:
+
+![Gradient descent to logical AND](/images/gradientDescent.gif)
+
+ 
+
 
 **What is the hype with machine learning?**
 
