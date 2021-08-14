@@ -197,7 +197,7 @@ This [visualisation](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [
 
 In Convolution layer 2, the kernel has been extended to three dimensions, so it can compare results across a stack of filters for one region of the image. This could be used to, for example, multiply horizontal and vertical detectors into a corner detector. 
 
-**How does back-propagation work?**
+**How does neural network training work?**
 
 Let us return to the example of a logical AND statement, where `[x,y]` are bounded `[0..1]`:
 
@@ -218,10 +218,31 @@ Each weight can be independently modified to change the decision surface. We can
 - Dragging `a` rotates the line around `y=-c/b`, a point on the y-axis.
 - Dragging `b` rotates the line around `x=-c/a`, a point onf the x-axis. (The slope of the equivalent line, `x=(-b*y-c)/a`, is `b/a`).
 - In addition to rotating the line, you can scale `[a,b,c]` together in such a way that the line is not rotated or translated, but the function `f(x,y)=a*x+b*y+c` returns a more extreme value. This causes a sharper slope on the logistic function as a result. 
+- In summary, we need to achieve two goals: (1) get the correct line position and orientation, and (2) scale the parameters to change the decision slope.
 
-Back-propagation is the method of adjusting `[a,b,c]` until the decision surface returns the values we expect. 
+We want a method to adjust `[a,b,c]` until the decision surface returns the values we expect. 
 
+Suppose that we initiallise the network with small non-zero weights (as seems to be the convention). 
 
+```
+let AndXY = 1 / (1 + exp(-0.01 + 0.01*x - 0.01*y))); 
+```
+
+This returns the values:
+
+| x | y | z      | Expected Value | Error   | Squared Error | Loss Function (half squared error) |
+|---|---|---     |---             |---      |---            |---                                 |
+| 0 | 0 | 0.5025 | 0              | 0.5025  | 0.252506      | 0.126253                           |
+| 0 | 1 | 0.505  | 0              | 0.505   | 0.255025      | 0.127512                           |
+| 1 | 1 | 0.5    | 0              | 0.5     | 0.25          | 0.125                              |
+| 1 | 1 | 0.5025 | 1              | -0.4975 | 0.247506      | 0.123756                           |
+
+How much should we modify weight `a`? 
+- The derivative of `f(x,y)=a*x+b*y+c` with respect to `a` is `x`. Example: when you increase `a` by one unit, then `f(x,y)` increases by one unit of `x`. 
+- The derivative of the [logistic function](https://en.wikipedia.org/wiki/Logistic_function) with respect to the input `f(x,y)` is `z*(1-z)`. 
+- The derivative of the loss fuction (half squared error) with respect to the logistic function is just the error (z - expected value). 
+
+Using the chain rule, the product of these derivatives is the rate of change of error with respect to `a`. 
 
 
 **What is the hype with machine learning?**
