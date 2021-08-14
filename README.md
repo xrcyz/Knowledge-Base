@@ -230,12 +230,12 @@ let AndXY = 1 / (1 + exp(-0.01 + 0.01*x - 0.01*y)));
 
 This returns the values:
 
-| x | y | z      | Expected Value | Error   | Squared Error | Loss Function (half squared error) |
-|---|---|---     |---             |---      |---            |---                                 |
-| 0 | 0 | 0.5025 | 0              | 0.5025  | 0.252506      | 0.126253                           |
-| 0 | 1 | 0.505  | 0              | 0.505   | 0.255025      | 0.127512                           |
-| 1 | 1 | 0.5    | 0              | 0.5     | 0.25          | 0.125                              |
-| 1 | 1 | 0.5025 | 1              | -0.4975 | 0.247506      | 0.123756                           |
+| x | y | z      | Expected Value (t) | Error   | Loss Function (half squared error) | dLoss/da     | dLoss/db     | dLoss/dc     |
+|---|---|---     |---                 |---      |---                                 |---           |---           |---           |
+| 0 | 0 | 0.5025 | 0                  | 0.5025  | 0.126253                           | 0            | 0            | 0.125621854  |
+| 0 | 1 | 0.505  | 0                  | 0.505   | 0.127512                           | 0            | 0.126237334  | 0.126237334  |
+| 1 | 1 | 0.5    | 0                  | 0.5     | 0.125                              | 0.125        | 0            | 0.125        |
+| 1 | 1 | 0.5025 | 1                  | -0.4975 | 0.123756                           | -0.124371896 | -0.124371896 | -0.124371896 |
 
 How much should we modify weight `a`? 
 - The derivative of `f(x,y)=a*x+b*y+c` with respect to `a` is `x`. Example: when you increase `a` by one unit, then `f(x,y)` increases by one unit of `x`. 
@@ -244,6 +244,24 @@ How much should we modify weight `a`?
 
 Using the chain rule, the product of these derivatives is the rate of change of error with respect to `a`. 
 
+```
+dLoss/da = x * z * (1 - z) * (z - t)
+dLoss/db = y * z * (1 - z) * (z - t)
+dLoss/dc = 1 * z * (1 - z) * (z - t)
+```
+
+The term `z * (1 - z) * (z - t)` may also be referred to as the _node delta_. 
+
+Allegedly, these loss derivatives tell us in which direction to move the weight in order to arrive at a better answer. 
+
+```
+let learningRate = 0.5;
+a += learningRate * dLoss/da;
+b += learningRate * dLoss/db;
+c += learningRate * dLoss/dc;
+```
+
+Example to follow...
 
 **What is the hype with machine learning?**
 
