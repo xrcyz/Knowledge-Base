@@ -154,8 +154,18 @@ let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 )));
 You can test this implementation in the browser [here](https://openprocessing.org/sketch/1236584).
 
 At this point we have a working cellular automata. The rules for Conway's game of life are encoded in the weights and biases. We can modify these parameters to explore for alternative rulesets. 
+- [NGOL.2](https://openprocessing.org/sketch/1236892)
+- [NGOL.3](https://openprocessing.org/sketch/1237046)
+- [NGOL.4](https://openprocessing.org/sketch/1237384)
+- [NGOL.5](https://openprocessing.org/sketch/1237904)
+- [NGOL.6](https://openprocessing.org/sketch/1238150)
+- [NGOL.7](https://openprocessing.org/sketch/1238174)
+- [NGOL.8](https://openprocessing.org/sketch/1238237)
+- [NGOL.9](https://openprocessing.org/sketch/1238436)
+- [NGOL.10 (full screen)](https://openprocessing.org/sketch/1243586)
+- [NGOL.11](https://openprocessing.org/sketch/1244647)
 
-Here is one such variant:
+Here is [NGOL.3](https://openprocessing.org/sketch/1237046):
 
 ```
 let a = (self == 1) = 1 / (1 + exp(-7.24*(self - 0.5))); 
@@ -171,19 +181,20 @@ let output = 1 / (1 + exp(-9.591*( f + g - 0.455)));
 
 Can we reverse-engineer the program that is encoded in the math? As it turns out, yes, we can nest the above formulas and plot a single function `f(x,y)` where `x` is the neighbor sum and `y` is the self-value. This decision surface yields an almost identical rule set to Conway's rules, with an additional rule: an inactive cell with two neighbors can bootstrap itself up to one-third activation. 
 
-| self : neighbors | 0 | 1 | 2 | 3 | 4 |
-| --- | --- | --- | --- | --- | --- |
-| 0.00 | 0.08 | 0.08 | 0.27 | 0.96 | 0.15 |
-| 0.25 | 0.06 | 0.06 | 0.23 | 0.95 | 0.11 |
-| 0.50 | 0.02 | 0.03 | 0.32 | 0.93 | 0.04 |
-| 0.75 | 0.02 | 0.03 | 0.32 | 0.93 | 0.04 |
-| 1.00 | 0.03 | 0.04 | 0.93 | 0.99 | 0.05 |
+| self : neighbors | 0    | 1    | 2    | 3    | 4    |
+| ---              | ---  | ---  | ---  | ---  | ---  |
+| 0.00             | 0.08 | 0.08 | 0.27 | 0.96 | 0.15 |
+| 0.25             | 0.06 | 0.06 | 0.23 | 0.95 | 0.11 |
+| 0.50             | 0.02 | 0.03 | 0.32 | 0.93 | 0.04 |
+| 0.75             | 0.02 | 0.03 | 0.32 | 0.93 | 0.04 |
+| 1.00             | 0.03 | 0.04 | 0.93 | 0.99 | 0.05 |
 
 ![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
 
 This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the return value of the surface f(self,world) includes the next self value (see also: RNNs, Q-learning). 
 
 Project idea: CA grid, 3D plot of decision surface, sliders for weights and biases, and a fading heatmap of cell states on the surface.  
+Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke.
 
 ***Convnets***
 
@@ -199,10 +210,12 @@ In Convolution layer 2, the kernel has been extended to three dimensions, so it 
 
 **How does neural network training work?**
 
-Let us return to the example of a logical AND statement, where `[x,y]` are bounded `[0..1]`:
+***Conditional AND***
+
+Let us return to the example of a logical AND statement, where `[x,y]` represent true/false values in the range `[0..1]`:
 
 ```
-let AndXY = 1 / (1 + exp(10 * (1.5 - x - y))); 
+let AndXY = 1 / (1 + exp(10 * (-x - y + 1.5))); 
 ```
 
 In a traditional neural net formulation, each input has its own weight, and so would be written like this:
@@ -216,16 +229,16 @@ Each weight can be independently modified to change the decision surface. We can
 - The function `f(x,y)=a*x+b*y+c` returns positive or negative values for points above and below the line. 
 - The logistic function maps positive and negative numbers to the range `[0..1]`.
 - Dragging `a` rotates the line around `y=-c/b`, a point on the y-axis.
-- Dragging `b` rotates the line around `x=-c/a`, a point onf the x-axis. (The slope of the equivalent line, `x=(-b*y-c)/a`, is `b/a`).
+- Dragging `b` rotates the line around `x=-c/a`, a point on the x-axis. (Refer to the slope and x-intersect of the equivalent line, `x=(-b*y-c)/a`).
 - In addition to rotating the line, you can scale `[a,b,c]` together in such a way that the line is not rotated or translated, but the function `f(x,y)=a*x+b*y+c` returns a more extreme value. This causes a sharper slope on the logistic function as a result. 
 - In summary, we need to achieve two goals: (1) get the correct line position and orientation, and (2) scale the parameters to change the decision slope.
 
 We want a method to adjust `[a,b,c]` until the decision surface returns the values we expect. 
 
-Suppose that we initiallise the network with small non-zero weights (as seems to be the convention). 
+Suppose that we initialise the network with small non-zero weights (as seems to be the convention). 
 
 ```
-let AndXY = 1 / (1 + exp(-0.01 + 0.01*x - 0.01*y))); 
+let AndXY = 1 / (1 + exp(0.01*x - 0.01*y - 0.01))); 
 ```
 
 This returns the values:
@@ -239,8 +252,8 @@ This returns the values:
 
 How much should we modify weight `a`? 
 - The derivative of `f(x,y)=a*x+b*y+c` with respect to `a` is `x`. Example: when you increase `a` by one unit, then `f(x,y)` increases by one unit of `x`. 
-- The derivative of the [logistic function](https://en.wikipedia.org/wiki/Logistic_function) with respect to the input `f(x,y)` is `z*(1-z)`. 
-- The derivative of the loss function (half squared error) with respect to the logistic function is just the error (z - expected value). 
+- The derivative of the [logistic function](https://en.wikipedia.org/wiki/Logistic_function) with respect to the input `f(x,y)` is `z*(1-z)`. Example: when you increase its input by a tiny fraction, then the logistic function value increases by the current z-value minus the square of the current z-value. 
+- The derivative of the loss function (half squared error) with respect to the logistic function is just the error (z - expected value). (See also: log loss function).
 
 Using the chain rule, the product of these derivatives is the rate of change of error with respect to `a`. 
 
@@ -261,11 +274,44 @@ b += learningRate * dLoss/db;
 c += learningRate * dLoss/dc;
 ```
 
-When implemented in practice, the network rapidly converges on a very similar solution to our hand-crafted one:
+When [implemented](https://openprocessing.org/sketch/1244489) in practice, the network rapidly converges on a very similar solution to our hand-crafted one:
 
 ![Gradient descent to logical AND](/images/gradientDescent.gif)
 
+ Project idea: tally up the cumulative changes to the weights. If a weight gets pulled in two directions at once, should it cancel out? 
  
+***Conditional XOR***
+
+As we add more layers to the network, we need to tell non-output nodes what their error values are. 
+
+```
+//conditional XOR
+
+//inputs
+let x = random(0, 1); 
+let y = random(0, 1); 
+
+//middle layer
+let a = 1 / (1 + exp(-10 * (a1 * x + a2 * y + a3))); //test for (0,1)
+let b = 1 / (1 + exp(-10 * (b1 * x + b2 * y + b3))); //test for (1,1)
+let c = 1 / (1 + exp(-10 * (c1 * x + c2 * y + c3))); //test for (1,0)
+let d = 1 / (1 + exp(-10 * (d1 * x + d2 * y + d3))); //test for (0,0)
+
+//output layer
+let output = 1 / (1 + exp(w1 * FT + w2 * TF + w3 * TT + w4 * FF)); //test for (0,1) + (1,0) - (1,1) - (0,0)
+```
+
+Once again we use the chain rule to associate the rate of change of the error with respect to the rate of change of the weight. 
+
+```
+let f = (a1 * x + a2 * y + a3);
+let g = (w1 * FT + w2 * TF + w3 * TT + w4 * FF);
+
+dLoss/da1 = (dLoss/da)                      * da/df * df/da1
+          = (dLoss/dOut * dOut/dg * dha/da) * da/df * df/da1
+          
+//note: if there are multiple output nodes, then dLoss/da = dLoss1/da + dLoss2/da
+```
 
 
 **What is the hype with machine learning?**
