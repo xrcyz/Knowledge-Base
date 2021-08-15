@@ -258,9 +258,9 @@ How much should we modify weight `a`?
 Using the chain rule, the product of these derivatives is the rate of change of error with respect to `a`. 
 
 ```
-dLoss/da = x * z * (1 - z) * (z - t)
-dLoss/db = y * z * (1 - z) * (z - t)
-dLoss/dc = 1 * z * (1 - z) * (z - t)
+dLoss/da = x * z * (1 - z) * (z - t);
+dLoss/db = y * z * (1 - z) * (z - t);
+dLoss/dc = 1 * z * (1 - z) * (z - t);
 ```
 
 The term `z * (1 - z) * (z - t)` may also be referred to as the _node delta_. 
@@ -292,26 +292,32 @@ let x = random(0, 1);
 let y = random(0, 1); 
 
 //middle layer
-let a = 1 / (1 + exp(-10 * (a1 * x + a2 * y + a3))); //test for (0,1)
-let b = 1 / (1 + exp(-10 * (b1 * x + b2 * y + b3))); //test for (1,1)
-let c = 1 / (1 + exp(-10 * (c1 * x + c2 * y + c3))); //test for (1,0)
-let d = 1 / (1 + exp(-10 * (d1 * x + d2 * y + d3))); //test for (0,0)
+let a = 1 / (1 + exp(a1 * x + a2 * y + a3)); //test for (0,1)
+let b = 1 / (1 + exp(b1 * x + b2 * y + b3)); //test for (1,1)
+let c = 1 / (1 + exp(c1 * x + c2 * y + c3)); //test for (1,0)
+let d = 1 / (1 + exp(d1 * x + d2 * y + d3)); //test for (0,0)
 
 //output layer
-let output = 1 / (1 + exp(w1 * FT + w2 * TF + w3 * TT + w4 * FF)); //test for (0,1) + (1,0) - (1,1) - (0,0)
+let output = 1 / (1 + exp(w1 * a + w2 * b + w3 * c + w4 * d)); //test for (0,1) + (1,0) - (1,1) - (0,0)
+
+//solve for weights [a1, a2, a3], [b1, b2, b3], [c1, c2, c3], [d1, d2, d3], [w1, w2, w3, w4]
 ```
 
-Once again we use the chain rule to associate the rate of change of the error with respect to the rate of change of the weight. 
+For the middle layers, we use the chain rule to determine the rate of change of the error with respect to the rate of change of the weight. 
 
 ```
 let f = (a1 * x + a2 * y + a3);
-let g = (w1 * FT + w2 * TF + w3 * TT + w4 * FF);
+let g = (w1 * a + w2 * b + w3 * c + w4 * d);
 
-dLoss/da1 = (dLoss/da)                      * da/df * df/da1
-          = (dLoss/dOut * dOut/dg * dha/da) * da/df * df/da1
+dLoss/da1 = (dLoss/da)                      * da/df * df/da1;
+          = (dLoss/dOut * dOut/dg * dha/da) * da/df * df/da1;
           
-//note: if there are multiple output nodes, then dLoss/da = dLoss1/da + dLoss2/da
+//note: if there are multiple output nodes, then dLoss/da = (dLoss1/da + dLoss2/da), each of which gets its own expansion
 ```
+
+Note that this only gives us the _local_ slope of error/weight. It may not point to a global minima. It is worth thinking about how modularity could allow assigning errors for specific tasks to specific modules. 
+
+
 
 
 **What is the hype with machine learning?**
