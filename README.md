@@ -191,14 +191,14 @@ Can we reverse-engineer the program that is encoded in the math? As it turns out
 
 ![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
 
-This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the return value of the surface f(self,world) includes the next self value (see also: RNNs, Q-learning). 
+This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the return value of the surface `f(self,world)` includes the next `self` value (see also: RNNs, Q-learning). 
 
 Project idea: CA grid, 3D plot of decision surface, sliders for weights and biases, and a fading heatmap of cell states on the surface.  
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke.
 
 ***Convnets***
 
-Interestingly, since every cell in the cellular automata shares the same update rule, then this is technically a "convolutional neural network". The four layers (9 inputs, 4 hidden, 2 hidden, 1 out) of our neural network form the "kernel", and a grid of kernels are applied to the input image to calculate the output image (the next state of the cellular automata). Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
+Interestingly, since every cell in the cellular automata shares the same update rule, then this is technically a "convolutional neural network". The four layers (9:4:2:1) of our neural network form the "kernel", and a grid of kernels are applied to the input image to calculate the output image (the next state of the cellular automata). Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
 
 Using this perspective, we can take a guess at how other convolutional neural networks perform their computations. 
 
@@ -274,15 +274,15 @@ b += learningRate * dLoss/db;
 c += learningRate * dLoss/dc;
 ```
 
-When [implemented](https://openprocessing.org/sketch/1244489) in practice, the network rapidly converges on a very similar solution to our hand-crafted one:
+When [implemented](https://openprocessing.org/sketch/1244489) in practice, the network rapidly converges on a very similar solution to our hand-crafted one. 
 
 ![Gradient descent to logical AND](/images/gradientDescent.gif)
 
- Project idea: tally up the cumulative changes to the weights. If a weight gets pulled in two directions at once, should it cancel out? 
+Project idea: tally up the cumulative changes to the weights. If a weight gets pulled in two directions at once, should it cancel out? 
  
 ***Conditional XOR***
 
-As we add more layers to the network, we need to tell non-output nodes what their error values are. 
+The XOR network introduces a middle layer. We need a way to tell non-output nodes what their error values are. 
 
 ```
 //conditional XOR
@@ -309,15 +309,21 @@ For the middle layers, we use the chain rule to determine the rate of change of 
 let f = (a1 * x + a2 * y + a3);
 let g = (w1 * a + w2 * b + w3 * c + w4 * d);
 
-dLoss/da1 = (dLoss/da)                      * da/df * df/da1;
-          = (dLoss/dOut * dOut/dg * dha/da) * da/df * df/da1;
+dLoss/da1 = (dLoss/da)                     * da/df * df/da1;
+          = (dLoss/dOut * dOut/dg * dg/da) * da/df * df/da1;
           
 //note: if there are multiple output nodes, then dLoss/da = (dLoss1/da + dLoss2/da), each of which gets its own expansion
 ```
 
-Note that this only gives us the _local_ slope of error/weight. It may not point to a global minima. It is worth thinking about how modularity could allow assigning errors for specific tasks to specific modules. 
+Note that this only gives us the _local_ slope of error/weight. It may point away from the global minima. It may stall on a saddle point. Are there better methods for converging on a solution? 
 
-
+```
+dLoss/dOut = (out - expected); 
+dOut/dg    = out * (1 - out);
+dg/da      = w1;
+da/df      = a * (1 - a);
+df/da1     = x;
+```
 
 
 **What is the hype with machine learning?**
