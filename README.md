@@ -118,7 +118,7 @@ let (neighbors > 2) = 1 / (1 + exp(-10*( neighbors.sum() - 2.5 )));
 let (neighbors > 3) = 1 / (1 + exp(-10*( neighbors.sum() - 3.5 ))); 
 ```
 
-Layer two recombines the outputs into complex booleans:
+Layer two recombines the booleans into AND conditions:
 
 ```
 let (self == 0 && neighbors == 3) = (!(self == 1) && (neighbors > 2) && !(neighbors > 3)) //need to test for (0,1,0)
