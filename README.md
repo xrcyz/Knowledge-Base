@@ -224,7 +224,7 @@ In a traditional neural net formulation, each input has its own weight, and so w
 let AndXY = 1 / (1 + exp(a*x + b*y + c))); 
 ```
 
-Each weight can be independently modified to change the decision surface. We can set this up in [Geogebra](https://www.geogebra.org/3d) with `z=\frac{1}{1+e^{a*x+b*y+c)}}` and drag the sliders to see what happens.
+Each weight `[a,b,c]` can be independently modified to change the decision surface. We can set this up in [Geogebra](https://www.geogebra.org/3d) with `z=\frac{1}{1+e^{a*x+b*y+c)}}` and drag the sliders to see what happens.
 - Remember that the form `a*x+b*y+c` is equivalent to the line `y=(-a*x-c)/b`.
 - The function `f(x,y)=a*x+b*y+c` returns positive or negative values for points above and below the line. 
 - The logistic function maps positive and negative numbers to the range `[0..1]`.
@@ -315,7 +315,7 @@ dLoss/da1 = (dLoss/da)                     * da/df * df/da1;
 //note: if there are multiple output nodes, then dLoss/da = (dLoss1/da + dLoss2/da), each of which gets its own expansion
 ```
 
-Note that this only gives us the _local_ slope of error/weight. It may point away from the global minima. It may stall on a saddle point. Are there better methods for converging on a solution? 
+Note that this only gives us the _local_ slope of error:weight. It may point away from the global optimum. It may stall on a saddle point. Are there better methods for converging on a solution? 
 
 ```
 dLoss/dOut = (out - expected); 
