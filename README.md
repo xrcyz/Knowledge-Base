@@ -309,21 +309,15 @@ For the middle layers, we use the chain rule to determine the rate of change of 
 let f = (a1 * x + a2 * y + a3);
 let g = (w1 * a + w2 * b + w3 * c + w4 * d);
 
-dLoss/da1 = (dLoss/da)                     * da/df * df/da1;
-          = (dLoss/dOut * dOut/dg * dg/da) * da/df * df/da1;
+dLoss/da1 = (dLoss/da)                                   * da/df       * df/da1;
+          = (dLoss/dOut       * dOut/dg         * dg/da) * da/df       * df/da1;
+          = ((out - expected) * out * (1 - out) * w1   ) * a * (1 - a) * x;
           
 //note: if there are multiple output nodes, then dLoss/da = (dLoss1/da + dLoss2/da), each of which gets its own expansion
 ```
 
 Note that this only gives us the _local_ slope of error:weight. It may point away from the global optimum. It may stall on a saddle point. Are there better methods for converging on a solution? 
 
-```
-dLoss/dOut = (out - expected); 
-dOut/dg    = out * (1 - out);
-dg/da      = w1;
-da/df      = a * (1 - a);
-df/da1     = x;
-```
 
 
 **What is the hype with machine learning?**
