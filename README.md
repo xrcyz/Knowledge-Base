@@ -309,9 +309,9 @@ For the middle layers, we use the chain rule to determine the rate of change of 
 let f = (a1 * x + a2 * y + a3);
 let g = (w1 * a + w2 * b + w3 * c + w4 * d);
 
-dLoss/da1 = (dLoss/da)                                   * da/df       * df/da1;
-          = (dLoss/dOut       * dOut/dg         * dg/da) * da/df       * df/da1;
-          = ((out - expected) * out * (1 - out) * w1   ) * a * (1 - a) * x;
+dLoss/da1 = (dLoss/da                                    ) * da/df         * df/da1;
+          = (dLoss/dOut       * dOut/dg           * dg/da) * da/df         * df/da1;
+          = ((out - expected) * (out * (1 - out)) * w1   ) * (a * (1 - a)) * x;
           
 //note: if there are multiple output nodes, then dLoss/da = (dLoss1/da + dLoss2/da), each of which gets its own expansion
 ```
