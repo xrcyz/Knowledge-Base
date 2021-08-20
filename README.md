@@ -318,6 +318,15 @@ dLoss/da1 = (dLoss/da                                    ) * da/df         * df/
 
 Note that this only gives us the _local_ slope of error:weight. It may point away from the global optimum. It may stall on a saddle point. Are there better methods for converging on a solution? 
 
+Note the trained network can converge on multiple different valid results, such as this one: 
+```
+a = !(0,1);
+b = =(1,1);
+c = !(0,0);
+d = !(1,0);
+output = -10 * a - 10 * b + 20 * c - 10 * d
+```
+
 
 
 **What is the hype with machine learning?**
