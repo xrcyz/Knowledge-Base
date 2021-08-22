@@ -104,9 +104,9 @@ You can see the above XOR neural network configuration being derived [here](http
 The rules for [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) are:
 
 ```
-if(self == 1 && neighbors == (2|3)) return 1
-if(self == 0 && neighbors == 3) return 1
-else return 0
+if(self == 1 && neighbors == (2|3)) return 1;
+if(self == 0 && neighbors == 3) return 1;
+else return 0;
 ```
 
 Layer one of the neural network is going to calculate the basic booleans:
