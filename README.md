@@ -72,7 +72,7 @@ let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y)));
 
 ```
 
-In the above, the line `(y = 1.5 - x)` is used to test if a point `[x,y]` is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, while the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
+In the above, the line `(y = 1.5 - x)` is used to test if a point `[x,y]` is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, and the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
 
 ***Conditional XOR***
 
