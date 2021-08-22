@@ -42,6 +42,7 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 - [animated evolutionary strategies](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
 
 **How do neural networks arrive at an answer?**
+------
 
 Neural networks are just chains of [boolean operators](https://en.wikipedia.org/wiki/Logistic_function) in a trench coat. 
 
@@ -209,6 +210,7 @@ This [visualisation](https://www.cs.ryerson.ca/~aharley/vis/conv/flat.html) by [
 In Convolution layer 2, the kernel has been extended to three dimensions, so it can compare results across a stack of filters for one region of the image. This could be used to, for example, multiply horizontal and vertical detectors into a corner detector. 
 
 **How does neural network training work?**
+------
 
 ***Conditional AND***
 
@@ -221,7 +223,7 @@ let AndXY = 1 / (1 + exp(10 * (-x - y + 1.5)));
 In a traditional neural net formulation, each input has its own weight, and so would be written like this:
 
 ```
-let AndXY = 1 / (1 + exp(a*x + b*y + c))); 
+let AndXY = 1 / (1 + exp(a*x + b*y + c))); //where `c` is the bias
 ```
 
 Each weight `[a,b,c]` can be independently modified to change the decision surface. We can set this up in [Geogebra](https://www.geogebra.org/3d) with `z=\frac{1}{1+e^{a*x+b*y+c)}}` and drag the sliders to see what happens.
@@ -298,9 +300,9 @@ let c = 1 / (1 + exp(c1 * x + c2 * y + c3)); //test for (1,0)
 let d = 1 / (1 + exp(d1 * x + d2 * y + d3)); //test for (0,0)
 
 //output layer
-let output = 1 / (1 + exp(w1 * a + w2 * b + w3 * c + w4 * d)); //test for (0,1) + (1,0) - (1,1) - (0,0)
+let output = 1 / (1 + exp(w1 * a + w2 * b + w3 * c + w4 * d + w5)); //test for (0,1) + (1,0) - (1,1) - (0,0)
 
-//solve for weights [a1, a2, a3], [b1, b2, b3], [c1, c2, c3], [d1, d2, d3], [w1, w2, w3, w4]
+//solve for weights [a1, a2, a3], [b1, b2, b3], [c1, c2, c3], [d1, d2, d3], [w1, w2, w3, w4, w5]
 ```
 
 For the middle layers, we use the chain rule to determine the rate of change of the error with respect to the rate of change of the weight. 
@@ -318,18 +320,17 @@ dLoss/da1 = (dLoss/da                                    ) * da/df         * df/
 
 Note that this only gives us the _local_ slope of error:weight. It may point away from the global optimum. It may stall on a saddle point. Are there better methods for converging on a solution? 
 
-Note the trained network can converge on multiple different valid results, such as this one: 
-```
-a = !(0,1);
-b = =(1,1);
-c = !(0,0);
-d = !(1,0);
-output = -10 * a - 10 * b + 20 * c - 10 * d
-```
+Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380):
+- It doesn't always converge. 
+- It's hard to recover from a dead node that is invariant to input. 
+- Moving one parameter at a time is painful. Can we switch from cartesian to polar coordinates? 
+
+![training XOR](/images/training%20XOR.gif)
 
 
 
 **What is the hype with machine learning?**
+------
 
 - A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
 - With a little sauce you can run the neural net in reverse, starting with a classification working backwards to a sample point. This can be used for generating novel samples (faces, art, ...). 
