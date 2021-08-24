@@ -323,6 +323,7 @@ Note that this only gives us the _local_ slope of error:weight. It may point awa
 Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380):
 - It doesn't always converge. 
 - It's hard to recover from a dead node that is invariant to input. 
+- Should penalise two nodes doing the same calculation, it traps the gradient in a bad local minima.
 - Moving one parameter at a time is painful. Can we switch from cartesian to polar coordinates? 
 
 ![training XOR](/images/training%20XOR.gif)
