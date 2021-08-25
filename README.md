@@ -332,9 +332,9 @@ Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380)
 
 Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being trained as a neural network: 
 
-![training NGOL](/images/training%20NGOL.gif)
+![training NGOL](/images/training%20cellular%20automata.gif)
 
-It has the same convergence issues as the XOR network. I also don't understand why the sign of the weight deltas has to change with each layer. 
+I still don't understand why the sign of the weight deltas has to change with each layer, but it works... 
 
 
 **What is the hype with machine learning?**
