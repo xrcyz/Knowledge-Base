@@ -353,7 +353,31 @@ How do we implement the `modulo` and `round` operators in a neural network?
 - Recursively divide by divisor until exit condition. For reference `2^30 = 1,073,741,824`, so that's thirty layers in the RNN to test `1E9`. 
 - Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
 
-For the sake of playing with RNNs and not CPPNs, let's choose recursion. 
+It might be interesting to see if back-prop can derive a round operator using sin. 
+
+Let's break down the logic: 
+
+```
+//input layer
+let input = round(random(1E9)); 
+
+//layer 1
+let a = sin(PI * input / 2); //returns zero for evens
+
+//layer 2
+let b = 1 / (1 + exp(-50( x+0.1))); //return a >= 0
+let c = 1 / (1 + exp(-50(-x+0.1))); //return a <= 0
+
+//layer 3
+let d = 1 / (1 + exp(10 * (-b - c + 1.5))); //return b && c; true for even, false for odd
+
+//output layer
+let answer = d * (input / 2) + (1 - d) * (3 * input + 1);
+```
+
+Some interesting things to note:
+- The input value get passed straight to the output layer.
+- The output layer applies an element-wise multiplication "gate" akin to LSTM gates.
 
 
 **What is the hype with machine learning?**
