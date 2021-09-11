@@ -321,10 +321,10 @@ dLoss/da1 = (dLoss/da                                    ) * da/df         * df/
 Note that this only gives us the _local_ slope of error:weight. It may point away from the global optimum. It may stall on a saddle point. Are there better methods for converging on a solution? 
 
 Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380):
-- It doesn't always converge. 
 - It's hard to recover from a dead node that is invariant to input. 
 - Should penalise two nodes doing the same calculation, it traps the gradient in a bad local minima.
-- Moving one parameter at a time is painful. Can we switch from cartesian to polar coordinates? 
+- Is there a better way to formulate the line, say as polar coordinates so we can scale/rotate/translate with single parameters?
+- I don't understand why I have to swap the sign of the weight adjustments in each layer. Might be an error on my part, but it works...
 
 ![training XOR](/images/training%20XOR.gif)
 
@@ -334,7 +334,25 @@ Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being
 
 ![training NGOL](/images/training%20cellular%20automata.gif)
 
-I still don't understand why the sign of the weight deltas has to change with each layer, but it works... 
+**Enumerate Collatz Conjecture sequences with a Recurrent Neural Network** 
+
+A [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) sequence is obtained from any integer by recusrively dividing by 2 until odd, then applying `3*n+1` to make even. It is conjectured that this sequence terminates at the number 1 in all cases. 
+
+```
+function getNextCollatzElement(n)
+{
+  let isEven = (n % 2 == 0);
+  if(isEven) return n/2; 
+  else return 3*n+1;  
+}
+```
+
+How do we implement the `modulo` and `round` operators in a neural network? 
+- Use a sin/cos activation function. Pros: fast. Cons: requires domain knowledge for node placement.
+- Recursively divide by divisor until exit condition. For reference `2^30 = 1,073,741,824`, so that's thirty layers in the RNN to test `1E9`. 
+- Cheat a little and represent all inputs in binary. 
+
+For the sake of playing with RNNs and not CPPNs, let's choose recursion. 
 
 
 **What is the hype with machine learning?**
