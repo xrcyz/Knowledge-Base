@@ -369,7 +369,7 @@ let b = 1 / (1 + exp(-50( x+0.1))); //return a >= 0
 let c = 1 / (1 + exp(-50(-x+0.1))); //return a <= 0
 
 //layer 3
-let d = 1 / (1 + exp(10 * (-b - c + 1.5))); //return b && c; true for even, false for odd
+let d = 1 / (1 + exp(50 * (-b - c + 1.5))); //return b && c; true for even, false for odd
 
 //output layer
 let answer = d * (input / 2) + (1 - d) * (3 * input + 1);
@@ -379,6 +379,7 @@ Some interesting things to note:
 - The input value get passed straight to the output layer.
 - The output layer applies an element-wise multiplication "gate" akin to LSTM gates.
 
+Here is the [implementation](https://openprocessing.org/sketch/1259589), which still returns integers (no rounding errors) even after long runs. 
 
 **What is the hype with machine learning?**
 ------
