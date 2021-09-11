@@ -334,10 +334,10 @@ Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being
 
 ![training NGOL](/images/training%20cellular%20automata.gif)
 
-**Enumerate Collatz Conjecture sequences with a Recurrent Neural Network** 
+**Collatz Conjecture sequences with a Recurrent Neural Network** 
 ------
 
-A [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) sequence is obtained from any integer by recusrively dividing by 2 until odd, then applying `3*n+1` to make even. It is conjectured that this sequence terminates at the number 1 in all cases. 
+A sequence is obtained from any integer by recursively dividing by 2 until odd, then applying `3*n+1` to make even. It is conjectured that this sequence terminates at the number 1 in all cases. 
 
 ```
 function getNextCollatzElement(n)
@@ -362,7 +362,7 @@ Let's break down the logic:
 let input = round(random(1E9)); 
 
 //layer 1
-let a = sin(PI * input / 2); //returns zero for evens
+let a = sin(PI / 2 * input); //returns zero for evens
 
 //layer 2
 let b = 1 / (1 + exp(-50( x+0.1))); //return a >= 0
