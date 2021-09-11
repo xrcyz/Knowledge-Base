@@ -335,6 +335,7 @@ Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being
 ![training NGOL](/images/training%20cellular%20automata.gif)
 
 **Enumerate Collatz Conjecture sequences with a Recurrent Neural Network** 
+------
 
 A [Collatz Conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture) sequence is obtained from any integer by recusrively dividing by 2 until odd, then applying `3*n+1` to make even. It is conjectured that this sequence terminates at the number 1 in all cases. 
 
@@ -350,7 +351,7 @@ function getNextCollatzElement(n)
 How do we implement the `modulo` and `round` operators in a neural network? 
 - Use a sin/cos activation function. Pros: fast. Cons: requires domain knowledge for node placement.
 - Recursively divide by divisor until exit condition. For reference `2^30 = 1,073,741,824`, so that's thirty layers in the RNN to test `1E9`. 
-- Cheat a little and represent all inputs in binary. 
+- Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
 
 For the sake of playing with RNNs and not CPPNs, let's choose recursion. 
 
