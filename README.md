@@ -353,7 +353,7 @@ How do we implement the `modulo` and `round` operators in a neural network?
 - Recursively divide by divisor until exit condition. For reference `2^30 = 1,073,741,824`, so that's thirty layers in the RNN to test `1E9`. 
 - Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
 
-It might be interesting to see if back-prop can derive a round operator using sin. 
+It might be interesting to see if back-prop can derive a `round` operator using `sin`. 
 
 Let's break down the logic: 
 
