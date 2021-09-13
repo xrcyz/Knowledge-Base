@@ -387,10 +387,12 @@ let stopToken = 1 / (1 + exp(-50*(-input + 1.5))); //break loop if input is less
 if(stopToken > 0.5) return; //exit loop
 ```
 
+Here is the [implementation](https://openprocessing.org/sketch/1259589). 
+
 This formulation appears to trade-off the neat and simple layer concept for a more compact and modularised program flow. Questions for the future:
 - Can (some of) the popularity of ReLU be explained by its ability to pass values unchanged across multiple layers?
 - If the program structure is not known at training time, does it make sense to introduce modularity? 
-- Is there a way to make the composition of neural operators part of the training process? 
+- Is there a way to make the composition of neural operators part of the training/solving process? 
 
 ```
                            +--------+                                    
@@ -409,7 +411,7 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
                                                        +-------------+
 ```
 
-Here is the [implementation](https://openprocessing.org/sketch/1259589), which still returns integers (no rounding errors) even after long runs. 
+
 
 
 Projects up next:
