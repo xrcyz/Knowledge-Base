@@ -365,8 +365,8 @@ let input = round(random(1E9));
 let a = sin(PI / 2 * input); //returns zero for evens
 
 //layer 2
-let b = 1 / (1 + exp(-50( x+0.1))); //return a >= 0
-let c = 1 / (1 + exp(-50(-x+0.1))); //return a <= 0
+let b = 1 / (1 + exp(-50( a+0.1))); //return a >= 0
+let c = 1 / (1 + exp(-50(-a+0.1))); //return a <= 0
 
 //layer 3
 let d = 1 / (1 + exp(50 * (-b - c + 1.5))); //return b && c; true for even, false for odd
@@ -376,10 +376,45 @@ let answer = d * (input / 2) + (1 - d) * (3 * input + 1);
 ```
 
 Some interesting things to note:
-- The input value get passed straight to the output layer.
+- The input value gets passed straight to the output layer.
 - The output layer applies an element-wise multiplication "gate" akin to LSTM gates.
 
+Can we pass control of the for-loop to the neural network? Yes: if the second output node is less than 0.5, we exit the loop. 
+
+```
+//loop control
+let stopToken = 1 / (1 + exp(-50*(-input + 1.5))); //break loop if input is less than 1.5
+if(stopToken > 0.5) return; //exit loop
+```
+
+This formulation appears to trade-off the neat and simple layer concept for a more compact and modularised program flow. Questions for the future:
+- Can (some of) the popularity of ReLU be explained by its ability to pass values unchanged across multiple layers?
+- If the program structure is not known at training time, does it make sense to introduce modularity? 
+- Is there a way to make the composition of neural operators part of the training process? 
+
+```
+                           +--------+                                    
+                        +->| node B |-+                                  
++-------+   +--------+  |  +--------+ |   +--------+                     
+| input |-->| node A |--+             +-->| node D |----------+          
++-------+   +--------+  |  +--------+ |   +--------+          |          
+    |                   +->| node C |-+                       |          
+    |                      +--------+                         V          
+    |                                                  +-------------+   
+    |------------------------------------------------->|   output    |
+    |                                                  +-------------+
+    |                                                                
+    |                                                  +-------------+
+    +------------------------------------------------->| loopControl |
+                                                       +-------------+
+```
+
 Here is the [implementation](https://openprocessing.org/sketch/1259589), which still returns integers (no rounding errors) even after long runs. 
+
+
+Projects up next:
+- Calculate a standard deviation
+- Train another neural network
 
 **What is the hype with machine learning?**
 ------
