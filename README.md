@@ -323,7 +323,7 @@ Note that this only gives us the _local_ slope of error:weight. It may point awa
 Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380):
 - It's hard to recover from a dead node that is invariant to input. 
 - Should penalise two nodes doing the same calculation, it traps the gradient in a bad local minima.
-- Is there a better way to formulate the line, say as polar coordinates so we can scale/rotate/translate with single parameters?
+- Is there a better way to formulate the line, say as polar coordinates so we can scale/rotate/translate with single parameters? Example: frequently we just want to crank up the logistic slope by multiplying all parameters by a common factor. 
 - I don't understand why I have to swap the sign of the weight adjustments in each layer. Might be an error on my part, but it works...
 
 ![training XOR](/images/training%20XOR.gif)
