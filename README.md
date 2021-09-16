@@ -280,7 +280,7 @@ When [implemented](https://openprocessing.org/sketch/1244489) in practice, the n
 
 ![Gradient descent to logical AND](/images/gradientDescent.gif)
 
-Project idea: tally up the cumulative changes to the weights. If a weight gets pulled in two directions at once, should it cancel out? 
+Project idea: tally up the cumulative changes to the weights. If a weight gets pulled in two directions at once, should it cancel out? (Edit: this is called "batching"). 
  
 ***Conditional XOR***
 
@@ -333,6 +333,12 @@ Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380)
 Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being trained as a neural network: 
 
 ![training NGOL](/images/training%20cellular%20automata.gif)
+
+**Reaction Diffusion** 
+------
+
+
+
 
 **Collatz Conjecture sequences with a Recurrent Neural Network** 
 ------
@@ -393,6 +399,7 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
 - Can (some of) the popularity of ReLU be explained by its ability to pass values unchanged across multiple layers?
 - If the program structure is not known at training time, does it make sense to introduce modularity? 
 - Is there a way to make the composition of neural operators part of the training/solving process? 
+- The solution appears to be a "sharp minima"; any tiny errors rapidly snowball when generating a sequence with recursion. 
 
 ```
                            +--------+                                    
@@ -415,6 +422,7 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
 
 
 Projects up next:
+- Neural Reaction-Diffusion
 - Calculate a standard deviation
 - Train another neural network
 
