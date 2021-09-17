@@ -334,11 +334,12 @@ Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being
 
 ![training NGOL](/images/training%20cellular%20automata.gif)
 
+
+
 **Reaction Diffusion** 
 ------
 
-
-
+TBA.
 
 **Collatz Conjecture sequences with a Recurrent Neural Network** 
 ------
@@ -356,7 +357,7 @@ function getNextCollatzElement(n)
 
 How do we implement the `modulo` and `round` operators in a neural network? 
 - Use a sin/cos activation function. Pros: fast. Cons: requires domain knowledge for node placement.
-- Recursively divide by divisor until exit condition. For reference `2^30 = 1,073,741,824`, so that's thirty layers in the RNN to test `1E9`. 
+- Recursively divide by divisor until exit condition. Cons: still requires a `round` function for the exit condition.
 - Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
 
 It might be interesting to see if back-prop can derive a `round` operator using `sin`. 
@@ -418,12 +419,9 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
                                                        +-------------+
 ```
 
-
-
-
 Projects up next:
 - Neural Reaction-Diffusion
-- Calculate a standard deviation
+- Neural multiplication / exponentiation. Is this just gated RNNs?
 - Train another neural network
 
 **What is the hype with machine learning?**
