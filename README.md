@@ -424,6 +424,45 @@ Projects up next:
 - Neural multiplication / exponentiation. Is this just gated RNNs?
 - Train another neural network
 
+***Multiple Neighborhood Cellular Automata***
+
+For the sake of curiosity, can we replicate [multiple neighborhood cellular automata?](https://slackermanz.com/understanding-multiple-neighborhood-cellular-automata/)
+
+```
+for(let neighborhood of neighborhoods)
+{
+  for(let rule of neighborhood.rules)
+  {
+    if(neighboorhood.sum().between(rule.min, rule.max)) 
+    {
+      cell_state = rule.outcome; 
+    }
+  }
+}
+```
+
+Suppose we start with two neighboorhoods (outside `self`) and three rules per neighborhood. 
+
+```
+let nh0 = cell value;
+let nh1 = sum of first ring around cell;
+let nh2 = sum of second ring around cell;
+
+//test if weighted sum of neighborhoods is greater/lesser than some value
+//two tests per rule, three rules per range, two ranges --> 12 tests, maybe 13 if you want to test for (self==(0|1));
+let layer1[n] = 1 / (1 + exp(w1*nh0 + w2*nh1 + w3*nh2 + w4)); 
+
+//optional: second layer for recombining booleans, "condition1 && condition2."
+let layer2[n] = 1 / (1 + exp(w1*self + w2*test[0] + ... + w14)); 
+
+//optional: third layer for adding booleans, "condition3 || condition4"
+let output = 1 / (1 + exp(layer2 x weights + bias)); 
+
+```
+
+The reference document applies rule changes iteratively, equivalent to an RNN that cycles through each node in layer1 as the output, while feeding the output back into the `nh0` input. So the above pseudocode does not strictly match the MNCA spec. 
+
+
 **What is the hype with machine learning?**
 ------
 
