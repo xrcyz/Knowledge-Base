@@ -199,7 +199,7 @@ A final demo of various cellular automata on cube faces:
 [![gol cube](/images/gol%20cube.gif)](https://openprocessing.org/sketch/1255387)
 
 [Project idea](https://openprocessing.org/sketch/1254639): CA grid, 3D plot of decision surface, sliders for weights and biases, and a fading heatmap of cell states on the surface.  
-Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke.
+Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
 ***Convnets***
 
@@ -398,7 +398,7 @@ let stopToken = 1 / (1 + exp(-50*(-input + 1.5))); //break loop if input is less
 if(stopToken > 0.5) return; //exit loop
 ```
 
-Here is the [implementation](https://openprocessing.org/sketch/1259589). 
+Here is the [half-finished implementation](https://openprocessing.org/sketch/1259589). 
 
 This formulation appears to trade-off the neat and simple layer concept for a more compact and modularised program flow. Questions for the future:
 - Can (some of) the popularity of ReLU be explained by its ability to pass values unchanged across multiple layers?
@@ -424,6 +424,7 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
 ```
 
 Projects up next:
+- Neural Langton's Ant; Neural Physarum; 
 - Neural Reaction-Diffusion
 - Neural multiplication / exponentiation. Is this just gated RNNs?
 - Train another neural network
@@ -452,7 +453,7 @@ let nh0 = cell value;
 let nh1 = sum of first ring around cell;
 let nh2 = sum of second ring around cell;
 
-//test if weighted sum of neighborhoods is greater/lesser than some value
+//test if weighted sum of neighborhoods is greater/lesser than min/max value
 //two tests per rule, three rules per range, two ranges --> 12 tests, maybe 13 if you want to test for (self==(0|1));
 let layer1[n] = 1 / (1 + exp(w1*nh0 + w2*nh1 + w3*nh2 + w4)); 
 
