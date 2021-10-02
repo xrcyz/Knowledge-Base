@@ -195,11 +195,14 @@ Can we reverse-engineer the program that is encoded in the math? As it turns out
 
 This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the function `f(self,world)` returns the next `self` value (see also: RNNs, Q-learning). 
 
-A final demo of various cellular automata on cube faces:
+A demo of various cellular automata on cube faces:
 
 [![gol cube](/images/gol%20cube.gif)](https://openprocessing.org/sketch/1255387)
 
-[Project idea](https://openprocessing.org/sketch/1254639): CA grid, 3D plot of decision surface, sliders for weights and biases, and a fading heatmap of cell states on the surface.  
+And a heatmap of cell state changes across the neural decision surface:
+
+[![gol decision surface heatmap](/images/NGOL%20decision%20surface%20heatmap.png)](https://openprocessing.org/sketch/1254639)
+
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
 ***Convnets***
