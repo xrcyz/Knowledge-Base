@@ -5,11 +5,11 @@
 - minecraft
 - dungeon generator
 - asteroid field generator
-- neural networks
-- reaction-diffusion models
+- [neural networks](https://openprocessing.org/sketch/1248243)
+- [reaction-diffusion models](https://openprocessing.org/sketch/1264005)
 - diffusion-limited aggregation
-- flocking simulation
-- cellular automata
+- [flocking simulation](https://openprocessing.org/sketch/1281224)
+- [cellular automata](https://openprocessing.org/sketch/1254639)
 - genetic algorithms 
 - simulated annealing 
 - physarum transport networks 
