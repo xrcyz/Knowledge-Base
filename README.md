@@ -32,7 +32,7 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 - [alien coral morphogenesis](https://www.joelsimon.net/corals.html)
 - [neural cellular automata](https://distill.pub/2020/growing-ca/) and [self organising textures](https://znah.net/hexells)
 - [neural networks failing to learn Game of Life](https://arxiv.org/abs/2009.01398)
-- [neural network quine](https://arxiv.org/abs/1803.05859)
+- [neural network quine](https://arxiv.org/abs/1803.05859) and [neural replicators](https://direct.mit.edu/isal/proceedings/isal/58/102906)
 - [graph grammar aggregation](https://www.youtube.com/channel/UCAEB6v6pULTAbKl9aM_EDZw)
 - [automated scientist](https://advances.sciencemag.org/content/6/5/eaay4237)
 - [MAP-Elites algorithm](https://arxiv.org/abs/1504.04909)
@@ -400,12 +400,6 @@ if(stopToken > 0.5) return; //exit loop
 
 Here is the [half-finished implementation](https://openprocessing.org/sketch/1259589). 
 
-This formulation appears to trade-off the neat and simple layer concept for a more compact and modularised program flow. Questions for the future:
-- Can (some of) the popularity of ReLU be explained by its ability to pass values unchanged across multiple layers?
-- If the program structure is not known at training time, does it make sense to introduce modularity? 
-- Is there a way to make the composition of neural operators part of the training/solving process? 
-- The solution appears to be a "sharp minima"; any tiny errors rapidly snowball when generating a sequence with recursion. 
-
 ```
                            +--------+                                    
                         +->| node B |-+                                  
@@ -422,6 +416,16 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
     +------------------------------------------------->| loopControl |
                                                        +-------------+
 ```
+
+This formulation appears to trade-off the neat and simple layer concept for a more compact and modularised program flow. Questions for the future:
+- Can (some of) the popularity of ReLU be explained by its ability to pass values unchanged across multiple layers?
+- If the program structure is not known at training time, does it make sense to introduce modularity? 
+- Is there a way to make the composition of neural operators part of the training/solving process? 
+- The solution appears to be a "sharp minima"; any tiny errors rapidly snowball when generating a sequence with recursion. 
+
+Similar problems noted (and remedied) in the paper [Recursively Fertile Self-replicating Neural Agents](https://direct.mit.edu/isal/proceedings/isal/58/102906):
+> Unfortunately, these neural quines appear to become completely infertile after just one self-replication step. Specifically, we mean that the parameters of the descendants diverge significantly from the ancestors over two generations and become quickly chaotic or a trivial fixpoint, and with this their performance on any given auxiliary task degrades uncontrollably. 
+
 
 Projects up next:
 - Neural Langton's Ant; Neural Physarum; 
