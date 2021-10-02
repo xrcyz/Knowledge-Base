@@ -31,6 +31,7 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 - [ant nest morphogenesis](https://www.researchgate.net/publication/260546781_A_computational_model_of_ant_nest_morphogenesis)
 - [alien coral morphogenesis](https://www.joelsimon.net/corals.html)
 - [neural cellular automata](https://distill.pub/2020/growing-ca/) and [self organising textures](https://znah.net/hexells)
+- [neural CA cartpole](https://avariengien.github.io/self-organized-control/)
 - [neural networks failing to learn Game of Life](https://arxiv.org/abs/2009.01398)
 - [neural network quine](https://arxiv.org/abs/1803.05859) and [neural replicators](https://direct.mit.edu/isal/proceedings/isal/58/102906)
 - [graph grammar aggregation](https://www.youtube.com/channel/UCAEB6v6pULTAbKl9aM_EDZw)
