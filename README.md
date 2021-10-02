@@ -688,7 +688,7 @@ A neural network that maps a camera-object pair to a viewport pixel array. Given
 
 **What is a graph neural network?**
 
-TBA.
+[https://ericmjl.github.io/essays-on-data-science/machine-learning/graph-nets/](https://ericmjl.github.io/essays-on-data-science/machine-learning/graph-nets/)
 
 **What is transfer learning?**
 
