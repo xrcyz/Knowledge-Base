@@ -367,6 +367,7 @@ How do we implement the `modulo` and `round` operators in a neural network?
 - Use a sin/cos activation function. Pros: fast. Cons: requires domain knowledge for node placement.
 - Recursively divide by divisor until exit condition. Cons: still requires a `round` function for the exit condition.
 - Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
+- Creating a 'rounding signal' node `y=1/(1+exp(-10*(x - floor(x) - 0.5))`. Cons: requires specific node placement.
 
 It might be interesting to see if back-prop can derive a `round` operator using `sin`. 
 
