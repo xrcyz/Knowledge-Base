@@ -199,9 +199,14 @@ A demo of various cellular automata on cube faces:
 
 [![gol cube](/images/gol%20cube.gif)](https://openprocessing.org/sketch/1255387)
 
-And a heatmap of cell state changes across the neural decision surface:
+A heatmap of cell state changes across the neural decision surface:
 
 [![gol decision surface heatmap](/images/NGOL%20decision%20surface%20heatmap.png)](https://openprocessing.org/sketch/1254639)
+
+A few multiple-neighboorhood neural cellular automatas:
+- [Reaction diffusion 1](https://openprocessing.org/sketch/1270299)
+- [Reaction diffusion 2](https://openprocessing.org/sketch/1292482)
+- [Voronoi web](https://openprocessing.org/sketch/1275178)
 
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
@@ -367,9 +372,9 @@ How do we implement the `modulo` and `round` operators in a neural network?
 - Use a sin/cos activation function. Pros: fast. Cons: requires domain knowledge for node placement.
 - Recursively divide by divisor until exit condition. Cons: still requires a `round` function for the exit condition.
 - Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
-- Creating a 'rounding signal' node `y=1/(1+exp(-10*(x - floor(x) - 0.5))`. Cons: requires specific node placement.
+- Creating a 'rounding signal' node `y=1/(1+exp(-10*(x - floor(x) - 0.5))`. Cons: not differentiable, breaks everything.
 
-It might be interesting to see if back-prop can derive a `round` operator using `sin`. 
+***Attempt with sin()***
 
 Let's break down the logic: 
 
@@ -431,50 +436,33 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
 Similar problems noted (and remedied) in the paper [Recursively Fertile Self-replicating Neural Agents](https://direct.mit.edu/isal/proceedings/isal/58/102906):
 > Unfortunately, these neural quines appear to become completely infertile after just one self-replication step. Specifically, we mean that the parameters of the descendants diverge significantly from the ancestors over two generations and become quickly chaotic or a trivial fixpoint, and with this their performance on any given auxiliary task degrades uncontrollably. 
 
+**Neural Floor Nodes** 
+------
+
+Is there a way to utilise `floor()` in the activation function? 
+
+```
+//wraps inputs [x,x] on the unit square
+z = 1 / (1 + exp(-10 * (x - floor(x) + y - floor(y) - 0.5))
+```
+
+```
+//wraps input x in range [0..2], could use for mod functions like round()
+y = 1 / (1 + exp(-10 * (x/2 - floor(x/2) - 0.5))
+  = 1 / (1 + exp(-5*x + 10*floor(x/2) - 0.5))
+```
+
+There is something to the idea of wrapping the dot products in some hypervolume, but I don't know that there's a differentiable and generic way to do it. 
+- Scaling a weight on `floor` doesn't really make a whole lot of sense.
+- We want both a weight on `floor` and a weight on the input to `floor`, which confuses things. 
+
+
 
 Projects up next:
 - Neural Langton's Ant; Neural Physarum; 
 - Neural Reaction-Diffusion
 - Neural multiplication / exponentiation. Is this just gated RNNs?
 - Train another neural network
-
-***Multiple Neighborhood Cellular Automata***
-
-For the sake of curiosity, can we replicate [multiple neighborhood cellular automata?](https://slackermanz.com/understanding-multiple-neighborhood-cellular-automata/)
-
-```
-for(let neighborhood of neighborhoods)
-{
-  for(let rule of neighborhood.rules)
-  {
-    if(neighboorhood.sum().between(rule.min, rule.max)) 
-    {
-      cell_state = rule.outcome; 
-    }
-  }
-}
-```
-
-Suppose we start with two neighboorhoods (outside `self`) and three rules per neighborhood. 
-
-```
-let nh0 = cell value;
-let nh1 = sum of first ring around cell;
-let nh2 = sum of second ring around cell;
-
-//test if weighted sum of neighborhoods is greater/lesser than min/max value
-//two tests per rule, three rules per range, two ranges --> 12 tests, maybe 13 if you want to test for (self==(0|1));
-let layer1[n] = 1 / (1 + exp(w1*nh0 + w2*nh1 + w3*nh2 + w4)); 
-
-//optional: second layer for recombining booleans, "condition1 && condition2."
-let layer2[n] = 1 / (1 + exp(w1*self + w2*test[0] + ... + w14)); 
-
-//optional: third layer for adding booleans, "condition3 || condition4"
-let output = 1 / (1 + exp(layer2 x weights + bias)); 
-
-```
-
-The reference document applies rule changes iteratively, equivalent to an RNN that cycles through each node in layer1 as the output, while feeding the output back into the `nh0` input. So the above pseudocode does not strictly match the MNCA spec. 
 
 
 **What is the hype with machine learning?**
