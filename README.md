@@ -374,7 +374,7 @@ How do we implement the `modulo` and `round` operators in a neural network?
 - Use a sin/cos activation function. Pros: fast. Cons: requires domain knowledge for node placement.
 - Recursively divide by divisor until exit condition. Cons: still requires a `round` function for the exit condition.
 - Cheat a little and represent all inputs in binary. Cons: doesn't generatlise.
-- Creating a 'rounding signal' node `y=1/(1+exp(-10*(x - floor(x) - 0.5))`. Cons: not differentiable, breaks everything.
+- Feed in `floor(x/2)` as a second input, which allows us to do `y = 1 / (1 + exp(-10 * (x/2 - floor(x/2) - 0.5))` for detecting even/odd. This feels like cheating though.
 
 ***Attempt with sin()***
 
@@ -437,6 +437,25 @@ This formulation appears to trade-off the neat and simple layer concept for a mo
 
 Similar problems noted (and remedied) in the paper [Recursively Fertile Self-replicating Neural Agents](https://direct.mit.edu/isal/proceedings/isal/58/102906):
 > Unfortunately, these neural quines appear to become completely infertile after just one self-replication step. Specifically, we mean that the parameters of the descendants diverge significantly from the ancestors over two generations and become quickly chaotic or a trivial fixpoint, and with this their performance on any given auxiliary task degrades uncontrollably. 
+
+***Attempt with floor()***
+
+```
+let input1 = x;
+let input2 = floor(x/2);
+
+let evenSignal = 1 / (1 + exp(-10 * (x/2 - floor(x/2) - 1));
+
+//if this is a gate, then we need two separate gate values
+let isEven = (evenSignal == 0.5) = 1 / (1 + exp(-20 * ( evenSignal - 0.25)));
+let isOdd =  (evenSignal != 0.5) = 1 / (1 + exp(-20 * (-evenSignal + 0.25)));
+
+let answer = (isEven ? input1 / 2 : 3 * input1 + 1)
+           = isEven * (input / 2) + isOdd * (3 * input + 1);
+```
+
+
+
 
 **Neural Floor Nodes** 
 ------
