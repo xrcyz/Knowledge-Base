@@ -444,7 +444,7 @@ Similar problems noted (and remedied) in the paper [Recursively Fertile Self-rep
 let input1 = x;
 let input2 = floor(x/2);
 
-let evenSignal = 1 / (1 + exp(-10 * (x/2 - floor(x/2) - 1));
+let evenSignal = 1 / (1 + exp(-10 * (x/2 - floor(x/2) - 1)));
 
 //if this is a gate, then we need two separate gate values
 let isEven = (evenSignal == 0.5) = 1 / (1 + exp(-20 * ( evenSignal - 0.25)));
