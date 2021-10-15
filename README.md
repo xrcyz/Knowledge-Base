@@ -3,7 +3,7 @@
 **What are some fun project ideas?**
 
 - minecraft
-- dungeon generator
+- dungeon generator [wip](https://openprocessing.org/sketch/1294029)
 - asteroid field generator
 - [neural networks](https://openprocessing.org/sketch/1248243)
 - [reaction-diffusion models](https://openprocessing.org/sketch/1264005)
