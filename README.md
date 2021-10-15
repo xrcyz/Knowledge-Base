@@ -210,6 +210,8 @@ A few multiple-neighboorhood neural cellular automatas:
 
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
+Project idea: given a network that maps `[x,y]` to `[z]`, allow the user to add/remove layers, add/remove nodes, and manually tune the weights; show the 3D surfacef(x,y) for selected node(s), so that the user can intuit how the layers stack.
+
 ***Convnets***
 
 Interestingly, since every cell in the cellular automata shares the same update rule, then this is technically a "convolutional neural network". The four layers (9:4:2:1) of our neural network form the "kernel", and a grid of kernels are applied to the input image to calculate the output image (the next state of the cellular automata). Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
