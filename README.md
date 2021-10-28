@@ -212,7 +212,7 @@ A few multiple-neighboorhood neural cellular automatas:
 
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
-Project idea: given a network that maps `[x,y]` to `[z]`, allow the user to add/remove layers, add/remove nodes, and manually tune the weights; show the 3D surfacef(x,y) for selected node(s), so that the user can intuit how the layers stack.
+Project idea: create a network z = f(x.y) with randomised layers. Draw the 3D surface of the network. When you select a node, highlight the area of the surface that is sensitive to that node. Create some kind of UI to explore weights. Draw a second surface that trains to the first surface in realtime. 
 
 ***Convnets***
 
