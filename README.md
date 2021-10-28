@@ -166,6 +166,7 @@ At this point we have a working cellular automata. The rules for Conway's game o
 - [NGOL.9](https://openprocessing.org/sketch/1238436)
 - [NGOL.10 (full screen)](https://openprocessing.org/sketch/1243586)
 - [NGOL.11](https://openprocessing.org/sketch/1244647)
+- [✨Sparkling Polyominoes✨](https://openprocessing.org/sketch/1248369)
 
 Here is [NGOL.3](https://openprocessing.org/sketch/1237046):
 
@@ -193,7 +194,7 @@ Can we reverse-engineer the program that is encoded in the math? As it turns out
 
 ![cellular automata decision surface](/images/cellular%20automata%20decision%20surface.png)
 
-This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular auomata, where the function `f(self,world)` returns the next `self` value (see also: RNNs, Q-learning). 
+This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular automata, where the function `f(self,world)` returns the next `self` value (see also: RNNs, Q-learning). 
 
 A demo of various cellular automata on cube faces:
 
@@ -204,6 +205,7 @@ A heatmap of cell state changes across the neural decision surface:
 [![gol decision surface heatmap](/images/NGOL%20decision%20surface%20heatmap.png)](https://openprocessing.org/sketch/1254639)
 
 A few multiple-neighboorhood neural cellular automatas:
+- [Grids vs. Gliders population dynamics](https://openprocessing.org/sketch/1271651)
 - [Reaction diffusion 1](https://openprocessing.org/sketch/1270299)
 - [Reaction diffusion 2](https://openprocessing.org/sketch/1292482)
 - [Voronoi web](https://openprocessing.org/sketch/1275178)
