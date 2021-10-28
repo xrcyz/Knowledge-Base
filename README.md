@@ -21,7 +21,7 @@
 - quality diversity search / curiosity search / novelty search / open-ended exploration
 - reinforcement learning
 
-See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources)
+See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-resources) and [Creative Coding Notes](https://github.com/cacheflowe/creative-coding-notes)
 
 **Inspirational work**
 - [Cogmind procedural map generation](https://www.gridsagegames.com/blog/2014/06/procedural-map-generation/)
