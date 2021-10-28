@@ -170,13 +170,13 @@ At this point we have a working cellular automata. The rules for Conway's game o
 Here is [NGOL.3](https://openprocessing.org/sketch/1237046):
 
 ```
-let a = (self == 1) = 1 / (1 + exp(-7.24*(self - 0.5))); 
-let b = (neighbors > 1) = 1 / (1 + exp(-4.584*( neighbors.sum() - 1.5 ))); 
-let c = (neighbors > 2) = 1 / (1 + exp(-2.869*( neighbors.sum() - 2.5 ))); 
-let d = (neighbors > 3) = 1 / (1 + exp(-7.912( neighbors.sum() - 3.8 ))); 
-let f = (self == 0 && neighbors == 3) = 1 / (1 + exp(-2.799*(-a + c - d - 0.48)));
-let g = (self == 1 && neighbors == (2|3)) = 1 / (1 + exp(-3.848*(a + b - d - 1.66)));
-let output = 1 / (1 + exp(-9.591*( f + g - 0.455))); 
+let a = 1 / (1 + exp(-7.24*(self - 0.5))); 
+let b = 1 / (1 + exp(-4.584*( neighbors.sum() - 1.5 ))); 
+let c = 1 / (1 + exp(-2.869*( neighbors.sum() - 2.5 ))); 
+let d = 1 / (1 + exp(-7.912*( neighbors.sum() - 3.8 ))); 
+let f = 1 / (1 + exp(-2.799*(-a + c - d - 0.48)));
+let g = 1 / (1 + exp(-3.848*( a + b - d - 1.66)));
+let output = 1 / (1 + exp(-9.591*(f + g - 0.455))); 
 ```
 
 [![neural game of life](/images/neural%20game%20of%20life.png)](https://openprocessing.org/sketch/1237046)
