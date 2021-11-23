@@ -196,19 +196,20 @@ Can we reverse-engineer the program that is encoded in the math? As it turns out
 
 This seems like a nice visual demonstration that neural networks are universal function approximators. It implies that neural network "programs" consist of finding an arbitrary surface that maps training input coordinates to a desired output, and relies on interpolation to fill in the gaps (this explains why neural networks may be poor at extrapolating outside the training data). This definition includes recursive programs such as cellular automata, where the function `f(self,world)` returns the next `self` value (see also: RNNs, Q-learning). 
 
-A demo of various cellular automata on cube faces:
+A [demo](https://openprocessing.org/sketch/1255387) of various cellular automata on cube faces:
 
 [![gol cube](/images/gol%20cube.gif)](https://openprocessing.org/sketch/1255387)
 
-A heatmap of cell state changes across the neural decision surface:
+A [heatmap](https://openprocessing.org/sketch/1254639) of cell state changes across the neural decision surface:
 
 [![gol decision surface heatmap](/images/NGOL%20decision%20surface%20heatmap.png)](https://openprocessing.org/sketch/1254639)
 
-A few multiple-neighboorhood neural cellular automatas:
+A few multiple-neighboorhood neural cellular automatas, inspired by [Slackermanz MNCA](https://slackermanz.com/understanding-multiple-neighborhood-cellular-automata/):
 - [Grids vs. Gliders population dynamics](https://openprocessing.org/sketch/1271651)
 - [Reaction diffusion 1](https://openprocessing.org/sketch/1270299)
 - [Reaction diffusion 2](https://openprocessing.org/sketch/1292482)
 - [Voronoi web](https://openprocessing.org/sketch/1275178)
+- [✨Cells✨](https://openprocessing.org/sketch/1360946)
 
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
