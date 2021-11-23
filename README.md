@@ -56,7 +56,7 @@ let ageThreshold = 5; //this is the "bias"
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
 ```
 
-***Conditional AND***
+***Logical AND***
 
 Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Paste `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogebra](https://www.geogebra.org/3d) to try it out. 
 
@@ -76,7 +76,7 @@ let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y)));
 
 In the above, the line `(y = 1.5 - x)` is used to test if a point `[x,y]` is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, and the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
 
-***Conditional XOR***
+***Logical XOR***
 
 Suppose now we want to solve the XOR problem. Given `[x,y]` in the first layer, we can define four neurons `[A,B,C,D]` in the hidden layer
 ```
@@ -361,13 +361,27 @@ What is a good problem to model with a 6 layer network?
 
 > It might be useful to formalise the operations for union, intersection, difference. How many and/or/nots can we pack in one layer? 
 
+```
+let intersect  = 1 / (1 + exp(-10 * (-1.5 + x + y))); //returns true for x && y
+let union      = 1 / (1 + exp(-10 * (-0.5 + x + y))); //returns true for x || y
+let subtract   = 1 / (1 + exp(-10 * (-0.5 + x - y))); //returns true for x && !y
+```
+
+### Layer 0
 Layer 0 is inputs. 
 
-Layer 1: Assuming inputs are normalised, each node can bisect the unit hypercube and tell us if the point is above or below the hyperplane. Example in 1D: input < upper. Cannot do polygonal fences or disjoint sets. 
+### Layer 1
+Assuming inputs are normalised, each node can bisect the unit hypercube and tell us if the point is above or below the plane. Example in 1D: input < upper. Cannot do polygonal fences or disjoint sets. 
 
-Layer 2: L2 can do union/intersection/difference operations on L1. We know that each node in L1 is associated with a hypersolid. To get that hypersolid, we project the hyperplane along its normal, and intersect it with the hypercube container. The input into layer 2 is an array of truth values, indicating if the L0 input is inside or outside each solid respectively. We map this array of truth values to a point in the unit hypercube. Then the nodes in layer 2 define planes inside this hypercube to wall off the relevant vertices that we want to test: `[0,1,1]` meaning not inside solid A and inside solid B and inside solid C. Note that this layer 2 can define multiple nodes, each one testing one or more vertices via a projection plane, but we can't test and/or over multiple vertices until we get to layer 3. 
+### Layer 2
+Layer 2 nodes can do union/intersection/subtraction operations on L1. We know that each node in L1 is associated with a hypersolid created by bisecting the unit hypercube with a hyperplane. Each node in layer 2 can bisect its own unit cube to isolate some vertices, where each vertex corresponds to an array of booleans indicating if the point is in or out of each solid, "inside A and inside B and not inside C". Theoretically we should be able to create any convex hull within the confines of the hypercube in each node of this layer. 
 
-Layer 3: 
+### Layer 3
+Layer three can do union/intersection/subtraction operations on L2. Given each node in L2 corresponds to a convex hull, we can now create concave hulls via union/subtraction. 
+
+### Layer 4 and beyond
+We can keep iterating union/intersection/subtraction to make basically any shape(s). 
+
 
 
 
