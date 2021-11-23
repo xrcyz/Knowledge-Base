@@ -230,6 +230,8 @@ In Convolution layer 2, the kernel has been extended to three dimensions, so it 
 **How does neural network training work?**
 ------
 
+Suppose we have a neural network with two input nodes and one output node. This defines a heightmap function f(x,y). We can sample this surface and compare it to our training data points to get the error at each point. A surface may be "trained" by translating and scaling the humps of the logistic components to match the expected output. The "gradient descent" method works out (by way of derivatives) in what direction to move and scale each hump to reduce the training error. 
+
 ***Conditional AND***
 
 Let us return to the example of a logical AND statement, where `[x,y]` represent true/false values in the range `[0..1]`:
@@ -351,6 +353,21 @@ Some thoughts on the [implementation](https://openprocessing.org/sketch/1245380)
 Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being trained as a neural network: 
 
 ![training NGOL](/images/training%20cellular%20automata.gif)
+
+**Training multiple layers**
+------
+
+What is a good problem to model with a 6 layer network? 
+
+> It might be useful to formalise the operations for union, intersection, difference. How many and/or/nots can we pack in one layer? 
+
+Layer 0 is inputs. 
+
+Layer 1: Assuming inputs are normalised, each node can bisect the unit hypercube and tell us if the point is above or below the hyperplane. Example in 1D: input < upper. Cannot do polygonal fences or disjoint sets. 
+
+Layer 2: L2 can do union/intersection/difference operations on L1. We know that each node in L1 is associated with a hypersolid. To get that hypersolid, we project the hyperplane along its normal, and intersect it with the hypercube container. The input into layer 2 is an array of truth values, indicating if the L0 input is inside or outside each solid respectively. We map this array of truth values to a point in the unit hypercube. Then the nodes in layer 2 define planes inside this hypercube to wall off the relevant vertices that we want to test: `[0,1,1]` meaning not inside solid A and inside solid B and inside solid C. Note that this layer 2 can define multiple nodes, each one testing one or more vertices via a projection plane, but we can't test and/or over multiple vertices until we get to layer 3. 
+
+Layer 3: 
 
 
 
