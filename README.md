@@ -603,6 +603,10 @@ In the 2D case, the "weighted moving average" is now a moving matrix dot product
 
 The output of a convolutional layer. 
 
+**What is an embedding?**
+
+A mapping of an object to an arbitrary vector. 
+
 **What is a pooling layer?**
 
 A pooling layer takes the max/average/sum of a block of values. The idea is that reduces the array size while preserving important features. Pooling seems to be applied to the output of the convolutional layers (the "feature maps"). 
