@@ -605,7 +605,7 @@ The output of a convolutional layer.
 
 **What is an embedding?**
 
-A mapping of an object to an arbitrary vector. 
+A mapping of an object to an arbitrary vector. Ideally this creates some kind of clustering in N-space, which we can start splicing up with nodes into classified regions. 
 
 **What is a pooling layer?**
 
