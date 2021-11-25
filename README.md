@@ -371,13 +371,13 @@ let subtract   = 1 / (1 + exp(-10 * (-0.5 + x - y))); //returns true for x && !y
 Layer 0 is inputs. 
 
 ### Layer 1
-Assuming inputs are normalised, each node can bisect the unit hypercube and tell us if the point is above or below the plane. Example in 1D: input < upper. Cannot do polygonal fences or disjoint sets. 
+Assuming inputs are normalised, each node in layer 1 can bisect the unit hypercube and tell us if the point is above or below the plane. Example in 1D: input < upper. Cannot do polygonal fences or disjoint sets. 
 
 ### Layer 2
 Layer 2 nodes can do union/intersection/subtraction operations on L1. We know that each node in L1 is associated with a hypersolid created by bisecting the unit hypercube with a hyperplane. Each node in layer 2 can bisect its own unit cube to isolate some vertices, where each vertex corresponds to an array of booleans indicating if the point is in or out of each solid, "inside A and inside B and not inside C". Theoretically we should be able to create any convex hull within the confines of the hypercube in each node of this layer. 
 
 ### Layer 3
-Layer three can do union/intersection/subtraction operations on L2. Given each node in L2 corresponds to a convex hull, we can now create concave hulls via union/subtraction. 
+Layer three can do union/intersection/subtraction operations on L2. Given each node in L2 corresponds to a convex hull, we can now create concave hulls and internal voids via union/difference/subtraction. 
 
 ### Layer 4 and beyond
 We can keep iterating union/intersection/subtraction to make basically any shape(s). 
