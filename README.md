@@ -382,6 +382,8 @@ Layer three can do union/intersection/subtraction operations on L2. Given each n
 ### Layer 4 and beyond
 We can keep iterating union/intersection/subtraction to make basically any shape(s). 
 
+> Is there any benefit to depth over breadth? Theoretically we should be able to delineate any hypersolid by layer 4. 
+
 
 
 
@@ -605,7 +607,9 @@ The output of a convolutional layer.
 
 **What is an embedding?**
 
-A mapping of an object to an arbitrary vector. Ideally this creates some kind of clustering in N-space, which we can start splicing up with nodes into classified regions. 
+A mapping of an object to an arbitrary vector. Ideally this creates some kind of clustering in N-space by class. 
+
+Example: maybe we have a dataset of elephants described by 10,000 parameters. To massage the data into useful clusters, maybe we can map that 10,000 N-space down to a 2D space with only two paramters. 
 
 **What is a pooling layer?**
 
