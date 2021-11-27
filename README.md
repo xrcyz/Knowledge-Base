@@ -384,9 +384,11 @@ We can keep iterating union/intersection/subtraction to make basically any shape
 
 > Is there any benefit to depth over breadth? Theoretically we should be able to delineate any hypersolid by layer 4. 
 
-Some observations on training a (2-9-3-4-1) network using stochastic gradient descent:
-- Even though this network is capable of exactly solving the symmetric difference of three triangles, it really struggles to get there by gradient descent. 
-- Training appears to be subject to samplig bias - the area of (A∩B∩C) gets less weight updates attributed to it because it is so mall. If we changed the training data from random sampling to N points per class, it might even out. 
+Work in progress: [Symmetric Difference of Three Triangles](https://openprocessing.org/sketch/1365093)
+
+Some observations on training a (2-9-3-4-1) network:
+- Even though this network is capable of exactly solving the symmetric difference of three triangles, it really struggles to get there by stochastic gradient descent. 
+- Training appears to be subject to sampling bias - the area of (A∩B∩C) gets less weight updates attributed to it because it is so small. If we changed the training data from random sampling to N points per class, it might even out. 
 - Training passes through a saddle point - with two hulls you can form a donut that captures 90% of the target area. The perfect solution requires aligning nine lines to form three hulls to perform four set operations and take the union... It seems likely to me that the gradient around this point is a moat of bad solutions. 
 - The perfect solution is not attainable with weight scales below 20. It really begs the quesiton if we can swap out "weight updates" with "translate/rotate/scale". 
 
