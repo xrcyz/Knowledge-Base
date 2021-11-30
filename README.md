@@ -357,44 +357,42 @@ Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being
 **Training multiple layers**
 ------
 
-What is a good problem to model with a 6 layer network? 
-
-> It might be useful to formalise the operations for union, intersection, difference. How many and/or/nots can we pack in one layer? 
+What is a good problem to model with a 5 layer network? 
 
 ```
+//a quick recap of the operations for union, intersection, difference of implicit hypersolids
+//a node is essentially limited to bisecting a hypercube of booleans, 
+//each vertex corresponds to AND(TRUE,FALSE,...,TRUE)
+//if the hyperplane fences off more than one vertex, then you get OR(AND(...),AND(...))
 let intersect  = 1 / (1 + exp(-10 * (-1.5 + x + y))); //returns true for x && y
 let union      = 1 / (1 + exp(-10 * (-0.5 + x + y))); //returns true for x || y
 let subtract   = 1 / (1 + exp(-10 * (-0.5 + x - y))); //returns true for x && !y
 ```
 
-### Layer 0
-Layer 0 is inputs. 
+Assuming the training data is normalized, then we can say that each training point is a coordinate inside a unit hypercube. 
+- Layer 1 composes a set of hyperplanes (and normals) with which to cut the unit hypercube.
+- Layer 2 composes convex hulls from the planes in layer 1 (lines => polygon, planes => solid, hyperplanes => hypersolid). 
+- Layer 3 composes concave hulls and internal voids from layer 2.
+- Layer 4 may union outputs from layer 3 to test any arbitrary region in the input space. 
 
-### Layer 1
-Assuming inputs are normalised, each node in layer 1 can bisect the unit hypercube and tell us if the point is above or below the plane. Example in 1D: input < upper. Cannot do polygonal fences or disjoint sets. 
+Side note, it is kind of neat that you can test if a point is inside a convex solid by testing the normals of each individual face. 
 
-### Layer 2
-Layer 2 nodes can do union/intersection/subtraction operations on L1. We know that each node in L1 is associated with a hypersolid created by bisecting the unit hypercube with a hyperplane. Each node in layer 2 can bisect its own unit cube to isolate some vertices, where each vertex corresponds to an array of booleans indicating if the point is in or out of each solid, "inside A and inside B and not inside C". Theoretically we should be able to create any convex hull within the confines of the hypercube in each node of this layer. 
+Looking at the above, we can identify a toy problem to execute in four layers: the symmetric intersection of three triangles. 
+- Input layer takes [x,y] coordinates
+- Layer 1 composes 9 lines
+- Layer 2 composes 3 hulls
+- Layer 3 composes 4 intersection/exclusion operations
+- Layer 4 composes 1 union operation
 
-### Layer 3
-Layer three can do union/intersection/subtraction operations on L2. Given each node in L2 corresponds to a convex hull, we can now create concave hulls and internal voids via union/difference/subtraction. 
+Demo: [Symmetric Difference of Three Triangles](https://openprocessing.org/sketch/1365093)
 
-### Layer 4 and beyond
-We can keep iterating union/intersection/subtraction to make basically any shape(s). 
+I tried training this network first on an infinite number of random samples, and then again on a fixed number of samples. I found that biases in the training data strongly affect the output: in the case of random sampling, larger areas receive more weight updates than small areas; in the case of fixed sampling, the network can exploit gaps in the data to overfit the known points and return garbage on unknown points. 
 
-> Is there any benefit to depth over breadth? Theoretically we should be able to delineate any hypersolid by layer 4. 
-
-Work in progress: [Symmetric Difference of Three Triangles](https://openprocessing.org/sketch/1365093)
-
-Some observations on training a (2-9-3-4-1) network:
-- Even though this network is capable of exactly solving the symmetric difference of three triangles, it really struggles to get there by stochastic gradient descent. 
-- Training appears to be subject to sampling bias - the area of (A∩B∩C) gets less weight updates attributed to it because it is so small. If we changed the training data from random sampling to N points per class, it might even out. 
-- Training passes through a saddle point - with two hulls you can form a donut that captures 90% of the target area. The perfect solution requires aligning nine lines to form three hulls to perform four set operations and take the union... It seems likely to me that the gradient around this point is a moat of bad solutions. 
-- The perfect solution is not attainable with weight scales below 20. It really begs the quesiton if we can swap out "weight updates" with "translate/rotate/scale". 
+The network converges on the exact solution if seeded with nearby weights, but gets stuck in local optima when training from scratch. I suspect this is because there is a gradient hump between "donut shape" and "bullseye shape". Though it is also worth noting that the perfect solution is not attainable with weight scales below 20.
 
 It might be worthwhile to hand-train this network and observe how a human converges on the solution. It seems like edge detection combined with translate/rotate/scale operations would solve this way faster. Specifically, observing that several set boundaries are composed from a single line seems crucial to inferring the solution. Note that we don't want to perfectly shrink-wrap the data set (this would be over-training), we want to infer the true hull shape from a limited set of data points. 
 
-**Reaction Diffusion** 
+**LSTM Network** 
 ------
 
 TBA.
