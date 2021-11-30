@@ -543,9 +543,13 @@ Projects up next:
 
 TBA.
 
-**What is a support vector machine?**
+**What is online and offline learning?**
 
 TBA.
+
+**What is a support vector machine?**
+
+[Guide to AI algorithms](https://www.youtube.com/watch?v=9PBqqx38WeI&list=PLRKtJ4IpxJpDxl0NTvNYQWKCYzHNuy2xG).
 
 **What is a one-hot vector?**
 
@@ -558,6 +562,24 @@ A neural networks transforms points from one coordinate system into another coor
 [Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
 
 [Essay](http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/)
+
+**What is a tensor?**
+
+In code, its a multi-dimensional array. But there are some math rules about how to use it (they are typed, and have vector-like properties). 
+
+From [Introduction to Tensors](https://www.grc.nasa.gov/www/k-12/Numbers/Math/documents/Tensors_TM2002211716.pdf):
+- All scalars are not tensors, although all tensors of rank 0 are scalars.
+- All vectors are not tensors, although all tensors of rank 1 are vectors.
+- All matrices are not tensors, although all tensors of rank 2 are matrices.
+- Tensors can be multiplied by other tensors to form new tensors.
+- The product of a tensor and a scalar (tensor of rank 0) is commutative.
+- The pre-multiplication of a given tensor by another tensor produces a different result from post-multiplication; i.e., tensor multiplication in general is not commutative.
+- The rank of a new tensor formed by the product of two other tensors is the sum of their individual ranks.
+- The inner product of a tensor and a vector or of two tensors is not commutative.
+- The rank of a new tensor formed by the inner product of two other tensors is the sum of their individual ranks minus 2.
+-  A tensor of rank n in three-dimensional space has 3n components. 
+
+Tensors are multi-dimensional arrays. Tensors follow transformation rules, and have types. 
 
 **What is back-propagation?"**
 
