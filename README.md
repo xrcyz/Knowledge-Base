@@ -392,6 +392,11 @@ The network converges on the exact solution if seeded with nearby weights, but g
 
 It might be worthwhile to hand-train this network and observe how a human converges on the solution. It seems like edge detection combined with translate/rotate/scale operations would solve this way faster. Specifically, observing that several set boundaries are composed from a single line seems crucial to inferring the solution. Note that we don't want to perfectly shrink-wrap the data set (this would be over-training), we want to infer the true hull shape from a limited set of data points. 
 
+**Recurrent Neural Networks** 
+------
+
+Some notes.
+
 **LSTM Network** 
 ------
 
@@ -560,6 +565,8 @@ A neural networks transforms points from one coordinate system into another coor
 [Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
 
 [Essay](http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/)
+
+[Understanding LSTM](https://arxiv.org/abs/1909.09586): this paper starts at perceptrons and works its way up to LSTMs with crystal clear communication.
 
 **What is a tensor?**
 
