@@ -51,7 +51,7 @@ Neural networks are just chains of [boolean operators](https://en.wikipedia.org/
 
 Here is a "neural network" to classify a dog as above or below age 5. Paste `y=\frac{1}{1+e^{-10*(x-5)}}` into [Desmos](https://www.desmos.com/calculator) to try it out.
 
-```
+```js
 let ageThreshold = 5; //this is the "bias"
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //returns 0 for false; 1 for true; 0.5 for inconclusive
 ```
@@ -60,7 +60,7 @@ let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); //return
 
 Here is a "neural network" to classify a dog as (over five years) && (over one meter tall). Paste `z=\frac{1}{1+e^{10 * (1.5 - x - y)}}` into [Geogebra](https://www.geogebra.org/3d) to try it out. 
 
-```
+```js
 //second layer
 let ageThreshold = 5;
 let ageIsGreaterThanFive = 1 / (1 + exp(-10*(dog.age - ageThreshold))); 
@@ -71,7 +71,6 @@ let heightIsGreaterThanOne = 1 / (1 + exp(-10*(dog.height - heightThreshold)));
 //output layer
 let [x, y] = [ageIsGreaterThanFive, heightIsGreaterThanOne]; //a vector in the unit square
 let logicalAnd = 1 / (1 + exp(10 * (1.5 - x - y))); 
-
 ```
 
 In the above, the line `(y = 1.5 - x)` is used to test if a point `[x,y]` is in the top right of the unit square. The logistic function converts the output to a `[0..1]` range, and the multiplier `10` is used to sharpen the transition slope. If this were diagrammed as a neural net, the second layer would have two neurons `[x, y]`, a bias `[1]`, and weights `[-10, -10, 15]` connecting to the output neuron. 
@@ -79,7 +78,7 @@ In the above, the line `(y = 1.5 - x)` is used to test if a point `[x,y]` is in 
 ***Logical XOR***
 
 Suppose now we want to solve the XOR problem. Given `[x,y]` in the first layer, we can define four neurons `[A,B,C,D]` in the hidden layer
-```
+```js
 let A = (!x && y); //false true
 let B = (x && y); //true true
 let C = (x && !y); //true false
@@ -93,7 +92,7 @@ D = 1 / (1 + exp(-10 * ( 0.5 - x - y))); //test for (0,0)
 
 In the output layer, we can naively assume that the conditions `[A,B,C,D]` are exclusive, so we can apply the logistic operator to the sum. (For extra credit, consider how the weighted sum might be used to derive a truth value for the input coordinate `[0.49, 0.75]`). 
 
-```
+```js
 let output = 1 / (1 + exp(-10*(A + C - B - D))); 
 ```
 
@@ -105,7 +104,7 @@ You can see the above XOR neural network configuration being derived [here](http
 
 The rules for [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) are:
 
-```
+```js
 if(self == 1 && neighbors == (2|3)) return 1;
 if(self == 0 && neighbors == 3) return 1;
 else return 0;
@@ -113,7 +112,7 @@ else return 0;
 
 Layer one of the neural network is going to calculate the basic booleans:
 
-```
+```js
 let (self == 1) = 1 / (1 + exp(-10*(self - 0.5))); 
 let (neighbors > 1) = 1 / (1 + exp(-10*( neighbors.sum() - 1.5 ))); 
 let (neighbors > 2) = 1 / (1 + exp(-10*( neighbors.sum() - 2.5 ))); 
@@ -122,12 +121,12 @@ let (neighbors > 3) = 1 / (1 + exp(-10*( neighbors.sum() - 3.5 )));
 
 Layer two recombines the booleans into AND conditions:
 
-```
+```js
 let (self == 0 && neighbors == 3) = (!(self == 1) && (neighbors > 2) && !(neighbors > 3)) //need to test for (0,1,0)
 ```
 
 In order to test for point (0,1,0), we need to define a plane that separates the vertex of a unit cube from the rest of the cube. Some messing around in [Geogebra](https://www.geogebra.org/3d) gives us `plane = -x + y - z - 0.5`.
-```
+```js
 let x = (self == 1);
 let y = (neighbors > 2);
 let z = (neighbors > 3);
@@ -136,7 +135,7 @@ let (self == 0 && neighbors == 3) = 1 / (1 + exp(-10*(-x + y - z - 0.5)));
 
 And for the second neuron in the second layer: 
 
-```
+```js
 let (self == 1 && neighbors == (2|3)) = ((self == 1) && (neighbors > 1) && !(neighbors > 3)) //need to test for (1,1,0)
 
 let x = (self == 1);
@@ -148,7 +147,7 @@ let (self == 1 && neighbors == (2|3)) = 1 / (1 + exp(-10*(x + y - z - 1.5)));
 
 In the output layer, we want to return `(self == 0 && neighbors == 3) || (self == 1 && neighbors == (2|3))`, which we can get by testing if the sum of the values is greater than zero. 
 
-```
+```js
 let condition1 = (self == 0 && neighbors == 3);
 let condition2 = (self == 1 && neighbors == (2|3));
 let output = 1 / (1 + exp(-10*( condition1 + condition2 - 0.5 ))); 
@@ -170,7 +169,7 @@ At this point we have a working cellular automata. The rules for Conway's game o
 
 Here is [NGOL.3](https://openprocessing.org/sketch/1237046):
 
-```
+```js
 let a = 1 / (1 + exp(-7.240 * (self - 0.5))); 
 let b = 1 / (1 + exp(-4.584 * (neighbors.sum() - 1.5 ))); 
 let c = 1 / (1 + exp(-2.869 * (neighbors.sum() - 2.5 ))); 
@@ -211,6 +210,8 @@ A few multiple-neighboorhood neural cellular automatas, inspired by [Slackermanz
 - [Voronoi web](https://openprocessing.org/sketch/1275178)
 - [✨Cells✨](https://openprocessing.org/sketch/1360946)
 
+[![mnca cells](/images/MNCA%20cells.gif)](https://twitter.com/planet403/status/1461723559974391809)
+
 Project idea: extend the concept to image generation; where `x` is the current canvas state, `y` is the internal state, and `z` is the new paint stroke. (See also: Langton's Ant).
 
 Project idea: create a network z = f(x.y) with randomised layers. Draw the 3D surface of the network. When you select a node, highlight the area of the surface that is sensitive to that node. Create some kind of UI to explore weights. Draw a second surface that trains to the first surface in realtime. 
@@ -236,13 +237,13 @@ Suppose we have a neural network with two input nodes and one output node. This 
 
 Let us return to the example of a logical AND statement, where `[x,y]` represent true/false values in the range `[0..1]`:
 
-```
+```js
 let AndXY = 1 / (1 + exp(10 * (-x - y + 1.5))); 
 ```
 
 In a traditional neural net formulation, each input has its own weight, and so would be written like this:
 
-```
+```js
 let AndXY = 1 / (1 + exp(a*x + b*y + c))); //where `c` is the bias
 ```
 
@@ -259,7 +260,7 @@ We want a method to adjust `[a,b,c]` until the decision surface returns the valu
 
 Suppose that we initialise the network with small non-zero weights (as seems to be the convention). 
 
-```
+```js
 let AndXY = 1 / (1 + exp(0.01*x - 0.01*y - 0.01))); 
 ```
 
@@ -279,7 +280,7 @@ How much should we modify weight `a`?
 
 Using the chain rule, the product of these derivatives is the rate of change of error with respect to `a`. 
 
-```
+```js
 dLoss/da = x * z * (1 - z) * (z - t);
 dLoss/db = y * z * (1 - z) * (z - t);
 dLoss/dc = 1 * z * (1 - z) * (z - t);
@@ -289,7 +290,7 @@ The term `z * (1 - z) * (z - t)` may also be referred to as the _node delta_.
 
 Allegedly, these loss derivatives tell us in which direction to move the weight in order to arrive at a better answer. The learning rate is used to reduce the step size, so that the change doesn't overshoot the target.
 
-```
+```js
 let learningRate = 0.5;
 a += learningRate * dLoss/da;
 b += learningRate * dLoss/db;
@@ -306,7 +307,7 @@ Project idea: tally up the cumulative changes to the weights. If a weight gets p
 
 The XOR network introduces a middle layer. We need a way to tell non-output nodes what their error values are. 
 
-```
+```js
 //conditional XOR
 
 //inputs
@@ -327,7 +328,7 @@ let output = 1 / (1 + exp(w1 * a + w2 * b + w3 * c + w4 * d + w5)); //test for (
 
 For the middle layers, we use the chain rule to determine the rate of change of the error with respect to the rate of change of the weight. 
 
-```
+```js
 let f = (a1 * x + a2 * y + a3);
 let g = (w1 * a + w2 * b + w3 * c + w4 * d);
 
@@ -359,7 +360,7 @@ Here is [Conway's Game of Life](https://openprocessing.org/sketch/1248243) being
 
 What is a good problem to model with a 5 layer network? 
 
-```
+```js
 //a quick recap of the operations for union, intersection, difference of implicit hypersolids
 //a node is essentially limited to bisecting a hypercube of booleans, 
 //each vertex corresponds to AND(TRUE,FALSE,...,TRUE)
@@ -386,11 +387,16 @@ Looking at the above, we can identify a toy problem to execute in four layers: t
 
 Demo: [Symmetric Difference of Three Triangles](https://openprocessing.org/sketch/1365093)
 
+[![symmetric difference](/images/symmetric%20difference%20training.gif)](https://openprocessing.org/sketch/1365093)
+
 I tried training this network first on an infinite number of random samples, and then again on a fixed number of samples. I found that biases in the training data strongly affect the output: in the case of random sampling, larger areas receive more weight updates than small areas; in the case of fixed sampling, the network can exploit gaps in the data to overfit the known points and return garbage on unknown points. 
 
 The network converges on the exact solution if seeded with nearby weights, but gets stuck in local optima when training from scratch. I suspect this is because there is a gradient hump between "donut shape" and "bullseye shape". Though it is also worth noting that the perfect solution is not attainable with weight scales below 20.
 
-It might be worthwhile to hand-train this network and observe how a human converges on the solution. It seems like edge detection combined with translate/rotate/scale operations would solve this way faster. Specifically, observing that several set boundaries are composed from a single line seems crucial to inferring the solution. Note that we don't want to perfectly shrink-wrap the data set (this would be over-training), we want to infer the true hull shape from a limited set of data points. 
+There are some philosophical questions here. We (the omnipotent observer) can observe that a solution is wrong, even though it returns near-correct values for all known sample points. We know this because we can observe the contours of the function, make inferences about the probability of an unknown sample value based on nearby points (using k-means, or SVM, or another), and test our hypotheses by comparing the prediction/outcome of a point in the space. We have some preconceived notion of what the "true hull" of the data points might look like. The implication here is that we aren't training from a blank slate: we start out with some baseline heuristic to initialise the hull weights and then iteratively test/train/update to fine-tine the boundaries. 
+
+Project idea: as the network converges, adversarially generate test points by reading backwards from the output layer. Or design an LSTM to generate its own test data, where the objective function is minimising training time. 
+Project idea: swap out single weight updates with translate/scale/rotate operations. You can almost model each node as a force-directed particle based on the error value. 
 
 **Recurrent Neural Networks** 
 ------
@@ -400,7 +406,37 @@ Some notes.
 **LSTM Network** 
 ------
 
-TBA.
+A decent diagram [here](https://blog.mlreview.com/understanding-lstm-and-its-diagrams-37e2f46f1714).
+
+An LSTM is a for-loop that reads and writes to a memory array while appending results to a list. As far as I can tell this basically lets us declare implicit variables and access them in the loop if a condition is triggered. 
+
+```js
+loop()
+{
+  //array of inputs
+  let inputs = concat(new_input_array, prev_out_array);
+  	
+  //arrays of ones and zeroes
+  let erase_filter = logistic(crossproduct(inputs, weights[erase_f]));
+  let write_filter = logistic(crossproduct(inputs, weights[write_f]));	
+  let read_filter =  logistic(crossproduct(inputs, weights[read_f]));
+  
+  //array of values in range [-1..1]
+  let write_values = tanh(crossproduct(inputs, weights[write_v])); 			
+  
+  //array of values to read/write in the loop
+  memory_array *= erase_filter; 
+  memory_array += (write_values * write_filter); 
+  
+  //array of values in range [-1..1]
+  let read_values = tanh(crossproduct(memory_array, weights[read_v])); 	
+  
+  //array of values to append to results[].
+  let out_array = (read_values * read_filter);
+}
+```
+
+See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
 
 **Collatz Conjecture sequences with a Recurrent Neural Network** 
 ------
