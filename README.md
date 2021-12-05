@@ -417,7 +417,7 @@ loop()
   let inputs = concat(new_input_array, prev_out_array);
   	
   //arrays of ones and zeroes
-  let erase_filter = logistic(crossproduct(inputs, weights[erase_f]));
+  let erase_filter = logistic(crossproduct(inputs, weights[erase_f])); 
   let write_filter = logistic(crossproduct(inputs, weights[write_f]));	
   let read_filter =  logistic(crossproduct(inputs, weights[read_f]));
   
@@ -425,8 +425,8 @@ loop()
   let write_values = tanh(crossproduct(inputs, weights[write_v])); 			
   
   //array of values to read/write in the loop
-  memory_array *= erase_filter; 
-  memory_array += (write_values * write_filter); 
+  memory_array *= erase_filter;                   //reset variables
+  memory_array += (write_values * write_filter);  //increment/decrement variables
   
   //array of values in range [-1..1]
   let read_values = tanh(crossproduct(memory_array, weights[read_v])); 	
@@ -435,6 +435,12 @@ loop()
   let out_array = (read_values * read_filter);
 }
 ```
+
+Suppose we have a "memory cell" which is an array `[x, y, z]`. Each step of the loop, we pass forward the memory `[x,y,z]` and the incremental output `[a,b,c]`. The memory is an accumulator, we can increment or decrement `x` based on conditions in the step, or reset `x` to zero. The output is a temp variable, a reference to the previous step of the loop. The logistic filters encode the boolean algebra for deciding to erase, increment, or read a value `[x,y,z]` in memory, depending on the context of the current step inputs and previous step outputs.
+
+For example, we could probably do modulo operations in an LSTM block. Erase `x` if it is greater than 2, increment `x` if the previous out value was less than 3. 
+
+To do - think about tanh.
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
 
