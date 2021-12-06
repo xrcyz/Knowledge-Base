@@ -438,7 +438,31 @@ loop()
 
 Suppose we have a "memory cell" which is an array `[x, y, z]`. Each step of the loop, we pass forward the memory `[x,y,z]` and the incremental output `[a,b,c]`. The memory is an accumulator, we can increment or decrement `x` based on conditions in the step, or reset `x` to zero. The output is a temp variable, a reference to the previous step of the loop. The logistic filters encode the boolean algebra for deciding to erase, increment, or read a value `[x,y,z]` in memory, depending on the context of the current step inputs and previous step outputs.
 
-For example, we could probably do modulo operations in an LSTM block. Erase `x` if it is greater than 2, increment `x` if the previous out value was less than 3. 
+For example, below is a toy LSTM for calculating the modulo function. 
+
+```js
+let memory = 0;           //array of parameters in memory
+let divisor = 2;          //input at each loop step
+let current = 0;          //output at each loop step
+let results = [];         //function output
+
+for(let i = 0; i < 10; i++)
+{
+ let eraser = 1 / (1 + exp(-10 * ( 0.5 + divisor - memory)));   //we want to multiply by zero if memory > divisor
+ let writer = 1 / (1 + exp(-10 * (-0.5 - divisor + memory)));   //we erase, or we increment, but not both
+ let reader = 1 / (1 + exp(-10 * (1.0)));                       //always read memory
+ 
+ let writeValue = tanh(100.0);                                 //if we increment at all, we increment by 1
+ 
+ memory *= eraser;
+ memory += (writer * writeValue); 
+ 
+ let readValue = ReLU(memory); //a sneaky ReLU because I don't want to squash the values
+ 
+ current = reader * readValue; 
+ results.push(current); 
+}
+```
 
 To do - think about tanh.
 
