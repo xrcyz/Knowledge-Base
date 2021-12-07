@@ -464,7 +464,9 @@ for(let i = 0; i < 10; i++)
 }
 ```
 
-It is worth thinking about the memory cells from the context of [Neural Cellular Automata](https://openprocessing.org/sketch/1254639). Each cell in memory has an "update rule" and outputs values that affect the next update. Thus the function could potentially encode extremely complex logic by abusing convergent series; so that the "readout decoder" merely has to classify the region of walk-space that the cell is traversing. 
+It is worth thinking about the memory cells from the context of [Neural Cellular Automata](https://openprocessing.org/sketch/1254639). Each cell in memory has an "update rule" and outputs values that affect the next update. Thus the function could potentially encode extremely complex logic by abusing convergent series; so that the "readout decoder" merely has to classify the region of walk-space that the cell is traversing. 'Convergent series' is probably not the correct technical term here, this [paper](https://direct.mit.edu/isal/proceedings/isal/58/102906) defines a 'sink' as a convergent point in parameter space that is resistant to noisy updates. I hypothesize that the LSTM memory cell may discover update rules that converge on different sinks depending on the class of the time series. 
+
+Another perspective on the LSTM (and recurrent networks in general) is that it maps an arbitrary-dimension vector (a time series) to a fixed low-dimensional vector (the classification). 
 
 To do - think about tanh.
 
