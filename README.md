@@ -464,7 +464,49 @@ for(let i = 0; i < 10; i++)
 }
 ```
 
+It is worth thinking about the memory cells from the context of [Neural Cellular Automata](https://openprocessing.org/sketch/1254639). Each cell in memory has an "update rule" and outputs values that affect the next update. Thus the function could potentially encode extremely complex logic by abusing convergent series; so that the "readout decoder" merely has to classify the region of walk-space that the cell is traversing. 
+
 To do - think about tanh.
+
+***Reber Grammar***
+
+[Reber Grammer](http://christianherta.de/lehre/dataScience/machineLearning/neuralNetworks/reberGrammar.php) appears to be the canonical 'Hello World' for LSTMS. 
+
+```js
+
+//transdition rules from node[index] to next node
+let moves = 
+[
+ [[1, 'T'], [5, 'P']],
+ [[1, 'S'], [2, 'X']],
+ [[3, 'S'], [5, 'X']],
+ [[6, 'E']          ],
+ [[3, 'V'], [2, 'P']],
+ [[4, 'V'], [5, 'T']]
+];
+
+function getSequence(len)
+{
+ let str = 'B',
+ let node = 0; 
+ 
+ while(str.length < len)
+ {
+  let move = random(moves[node]);\
+  str += move[1]; 
+  node = move[0];
+  
+  if(node == 6) break;
+ }
+ 
+ return str;
+}
+
+```
+
+How might one formulate this as an LSTM? Assume a one-hot vector encoding on the output `[B,T,S,X,P,V,E]`. 
+
+
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
 
