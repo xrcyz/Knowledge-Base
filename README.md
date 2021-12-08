@@ -419,7 +419,7 @@ loop()
   //arrays of ones and zeroes
   let erase_filter = logistic(crossproduct(inputs, weights[erase_f])); 
   let write_filter = logistic(crossproduct(inputs, weights[write_f]));	
-  let read_filter =  logistic(crossproduct(inputs, weights[read_f]));
+  let read_filter =  logistic(crossproduct(inputs, weights[read_f])); 
   
   //array of values in range [-1..1]
   let write_values = tanh(crossproduct(inputs, weights[write_v])); 			
@@ -464,11 +464,11 @@ for(let i = 0; i < 10; i++)
 }
 ```
 
-It is worth thinking about the memory cells from the context of [Neural Cellular Automata](https://openprocessing.org/sketch/1254639). Each cell in memory has an "update rule" and outputs values that affect the next update. Thus the function could potentially encode extremely complex logic by abusing convergent series; so that the "readout decoder" merely has to classify the region of walk-space that the cell is traversing. 'Convergent series' is probably not the correct technical term here, this [paper](https://direct.mit.edu/isal/proceedings/isal/58/102906) defines a 'sink' as a convergent point in parameter space that is resistant to noisy updates. I hypothesize that the LSTM memory cell may discover update rules that converge on different sinks depending on the class of the time series. 
+What kind of crazy solutions might gradient descent come up with? Note that we can do multiple tasks, such a classify a time series, or predict the next token. 
 
-Another perspective on the LSTM (and recurrent networks in general) is that it maps an arbitrary-dimension vector (a time series) to a fixed low-dimensional vector (the classification). 
+Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). 
 
-To do - think about tanh.
+Project idea: try to write an LSTM finite state machine that works by bouncing the memory state vector around in N-space. 
 
 ***Reber Grammar***
 
