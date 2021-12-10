@@ -466,9 +466,11 @@ for(let i = 0; i < 10; i++)
 
 What kind of crazy solutions might gradient descent come up with? Note that we can do multiple tasks, such a classify a time series, or predict the next token. 
 
-Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). 
+Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). In this case we can stop thinking in terms of incrementing single variables, and start paying attention to the direction of the update vectors in memory space. 
 
-Project idea: try to write an LSTM finite state machine that works by bouncing the memory state vector around in N-space. 
+Hypothesis: consider some signed distance functions from <class hulls> in memory state space. At each step in the loop we receive evidence for <class X>, so we look up that SDF and step the memory state vector in that direction by some magnitude. The reader classifies the memory state vector and outputs <class X>. Therefore the SDFs must be encoded somehow in the eraser/writer functions. Light bulb 💡: the logistic hyperplanes are signed distance functions. All the hyperplane/hypersolid stuff we've been doing can be converted to signed distance fields if you scale down the weights. 
+
+Project challenge: try to write an LSTM finite state machine that works by bouncing the memory state vector around in N-space. 
 
 ***Reber Grammar***
 
