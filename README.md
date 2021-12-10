@@ -478,7 +478,7 @@ Project challenge: try to write an LSTM finite state machine that works by bounc
 
 ```js
 
-//transdition rules from node[index] to next node
+//transition rules from node[index] to next node
 let moves = 
 [
  [[1, 'T'], [5, 'P']],
@@ -496,7 +496,7 @@ function getSequence(len)
  
  while(str.length < len)
  {
-  let move = random(moves[node]);\
+  let move = random(moves[node]);
   str += move[1]; 
   node = move[0];
   
