@@ -468,9 +468,13 @@ What kind of crazy solutions might gradient descent come up with? Note that we c
 
 Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). In this case we can stop thinking in terms of incrementing single variables, and start paying attention to the direction of the update vectors in memory space. 
 
-Hypothesis: consider some signed distance functions from <class hulls> in memory state space. At each step in the loop we receive evidence for <class X>, so we look up that SDF and step the memory state vector in that direction by some magnitude. The reader classifies the memory state vector and outputs <class X>. Therefore the SDFs must be encoded somehow in the eraser/writer functions. Light bulb 💡: the logistic hyperplanes are signed distance functions. All the hyperplane/hypersolid stuff we've been doing can be converted to signed distance fields if you scale down the weights. 
+Hypothesis: consider some signed distance functions from \<class hulls\> in memory state space. At each step in the loop we receive evidence for \<class X\>, so we look up that SDF and step the memory state vector in that direction by some magnitude. The reader classifies the memory state vector and outputs \<class X\>. Therefore the SDFs must be encoded somehow in the eraser/writer functions. Light bulb 💡: the logistic hyperplanes are signed distance functions. All the hyperplane/hypersolid stuff we've been doing can be converted to signed distance fields if you scale down the weights. 
 
 Project challenge: try to write an LSTM finite state machine that works by bouncing the memory state vector around in N-space. 
+ 
+Speculation: Recall that the Symmetric Difference network struggled to find the optimum due to gradient humps. A human can build half a bridge, or write half a program, without being penalised for an incomplete solution, because they still have the previous working solution, and they have reasonable expectation that continuing along the 'learning trajectory' will yield better solutions. Suppose we are trying to train a neural network, and the network state (its weight array) is a point in memory space. Could we train an LSTM to derive its weight update rules for an arbitrary network?
+
+Project challenge: try to write an LSTM that performs gradient descent in memory space. 
 
 ***Reber Grammar***
 
@@ -508,9 +512,26 @@ function getSequence(len)
 
 ```
 
-How might one formulate this as an LSTM? Assume a one-hot vector encoding on the output `[B,T,S,X,P,V,E]`. 
+How might one formulate this as an LSTM? 
+
+```js
+
+let memory  = [1,0,0,0,0,0,0]; //one-hot vector of current node in graph
+let write   = [0,0,0,0,0,0,0]; //what to write to memory
+let current = [1,0,0,0,0,0,0]; //one-hot vector of letters in the grammar 
+let str = 'B';
 
 
+
+while(str.length < len)
+{
+ 
+ 
+}
+
+return str;
+                        
+```
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
 
