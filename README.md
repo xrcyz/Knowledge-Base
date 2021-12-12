@@ -548,6 +548,8 @@ while(str.length < len)
  if(output.reduce((a, b) => a + b, 0) < 0.1) break; 
  
  str += tokens[indexOfMax(output)]; 
+ 
+ input = getNextToken(input);
 }
 
 return str;
