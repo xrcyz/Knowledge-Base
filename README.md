@@ -468,17 +468,15 @@ What kind of crazy solutions might gradient descent come up with? Note that we c
 
 Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). In this case we can stop thinking in terms of incrementing single variables, and start paying attention to the direction of the update vectors in memory space. 
 
-Hypothesis: consider some signed distance functions (vector fields?) from \<class hulls\> in memory state space. At each step in the loop we receive evidence for \<class X\>, so we look up that SDF and step the memory state vector in that direction by some magnitude. The reader classifies the memory state vector and outputs \<class X\>. Therefore the SDFs must be encoded somehow in the eraser/writer functions. Light bulb 💡: the logistic hyperplanes are signed distance functions. All the hyperplane/hypersolid stuff we've been doing can be converted to signed distance fields if you scale down the weights. 
+Hypothesis: LSTMs encode the graph of a finite state machine where nodes are positions in memory space and edges are offsets in memory space. We can imagine the writer layer as a vector field in memory space (returning an edge vector to add to the current memory vector); but it also has dimensions in input space: different inputs return different vector fields, in order to cross different edges. Adding the edge vector to the memory vector moves the finite state machine to a new node. The readout layer is kinda doing the same thing, except the output could be a label vector for the current memory-input pair (aka node->edge crossing). 
 
 Project challenge: try to write an LSTM finite state machine that works by bouncing the memory state vector around in N-space. 
  
-Speculation: Recall that the Symmetric Difference network struggled to find the optimum due to gradient humps. A human can build half a bridge, or write half a program, without being penalised for an incomplete solution, because they still have the previous working solution, and they have reasonable expectation that continuing along the 'learning trajectory' will yield better solutions. Suppose we are trying to train a neural network, and the network state (its weight array) is a point in memory space. Could we train an LSTM to derive its weight update rules for an arbitrary network?
-
-Project challenge: try to write an LSTM that performs gradient descent in memory space. 
+Project idea: translate a neural network training loop into a finite state machine, then formulate that as an LSTM. 
 
 ***Reber Grammar***
 
-[Reber Grammer](http://christianherta.de/lehre/dataScience/machineLearning/neuralNetworks/reberGrammar.php) appears to be the canonical 'Hello World' for LSTMS. 
+[Reber Grammer](http://christianherta.de/lehre/dataScience/machineLearning/neuralNetworks/reberGrammar.php) appears to be the canonical 'Hello World' for LSTMs. 
 
 ```js
 
@@ -516,17 +514,40 @@ How might one formulate this as an LSTM?
 
 ```js
 
+let tokens  = "BTSXPVE"; 
+let input   = [1,0,0,0,0,0,0]; //current token [B,T,S,X,P,V,E]
 let memory  = [1,0,0,0,0,0,0]; //one-hot vector of current node in graph
-let write   = [0,0,0,0,0,0,0]; //what to write to memory
-let current = [1,0,0,0,0,0,0]; //one-hot vector of letters in the grammar 
+let eraser  = [0,0,0,0,0,0,0]; //what to erase in memory
+let writer  = [0,0,0,0,0,0,0]; //what to write to memory
+let output  = [0,0,0,0,0,0,0]; //predicted tokens [B,T,S,X,P,V,E]
+
 let str = 'B';
-
-
 
 while(str.length < len)
 {
+ writer[0] = 0; //we never mode to node zero
  
+ //this logic exploits the fact that you can never exit node[1] on edge[P], in a brittle way. 
+ writer[1] = 1 / (1 + exp(-10 * (memory[0] + input[1] + memory[1] + input[2] - 1.5))); //move to node 1 if([0,"T"] or [1, "S"])
+ writer[2] = 1 / (1 + exp(-10 * (memory[1] + input[3] + memory[4] + input[4] - 1.5))); //move to node 2 if([1,"X"] or [4,"P"])
+ writer[3] = 1 / (1 + exp(-10 * (memory[2] + input[2] + memory[4] + input[5] - 1.5))); //move to node 3 if([2,"S"] or [4,"V"])
+ writer[4] = 1 / (1 + exp(-10 * (memory[5] + input[5]                        - 1.5))); //move to node 4 if([5,"V"])
+ writer[5] = 1 / (1 + exp(-10 * (memory[0] + input[4] + memory[2] + input[3] - 1.5))); //move to node 5 if([0,"P"] or [2,"X"])
+ writer[6] = 1 / (1 + exp(-10 * (memory[3]                                   - 0.5))); //move to node 6 if you land on node 3
  
+ memory *= eraser; 
+ memory += writer; 
+ 
+ output[0] = 0; //we never yield B
+ output[1] = 1 / (1 + exp(-10 * (memory[0] + memory[5] - 0.5))); //T may yield from 0 or 5
+ output[2] = 1 / (1 + exp(-10 * (memory[1] + memory[2] - 0.5))); //S may yield from 1 or 2
+ output[3] = 1 / (1 + exp(-10 * (memory[1] + memory[2] - 0.5))); //X may yield from 1 or 2
+ output[4] = 1 / (1 + exp(-10 * (memory[0] + memory[4] - 0.5))); //P may yield from 0 or 4
+ output[5] = 1 / (1 + exp(-10 * (memory[3]             - 0.5))); //E may yield from 3
+ 
+ if(output.reduce((a, b) => a + b, 0) < 0.1) break; 
+ 
+ str += tokens[indexOfMax(output)]; 
 }
 
 return str;
