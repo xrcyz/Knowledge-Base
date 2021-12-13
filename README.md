@@ -512,7 +512,11 @@ function getSequence(len)
 
 ```
 
-How might one formulate this as an LSTM? 
+How might one formulate this as an LSTM? The constraint here is that the writer is a single layer, it can only bisect memory space, not test hulls. So for example we can't get element T from a list without first arranging the list as a convex polygon and performing a slice operation to isolate the vertex. Additionally, the write layer has to be the same size as the memory array (for pointwise addition to be valid), so we can't perform more tests than there are cells in memory. This implies that the memory is a one-hot vector encoding of the current node position (N nodes == N tests == N memory). If we allow more layers in the writer function, or if we have multiple writer functions, then we could map 7 tests down to 3 memory dimensions, but otherwise I think our hands are tied. 
+
+I am struggling to come up with a use-case for the point-wise multiplication in the gates. If everything is a one-hot vector, then what's the point? Perhaps this will become clear after seeing a trained network. 
+
+Here is a LSTM where the memory is a one-hot vector encoding of the graph position.
 
 ```js
 
@@ -557,6 +561,8 @@ while(str.length < len)
 return str;
                         
 ```
+
+
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
 
