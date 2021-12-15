@@ -436,7 +436,7 @@ loop()
 }
 ```
 
-Suppose we have a "memory cell" which is an array `[x, y, z]`. Each step of the loop, we pass forward the memory `[x,y,z]` and the incremental output `[a,b,c]`. The memory is an accumulator, we can increment or decrement `x` based on conditions in the step, or reset `x` to zero. The output is a temp variable, a reference to the previous step of the loop. The logistic filters encode the boolean algebra for deciding to erase, increment, or read a value `[x,y,z]` in memory, depending on the context of the current step inputs and previous step outputs.
+Suppose we have a "memory cell" which is an array `[x, y, z]`. Each step of the loop, we pass forward the memory `[x,y,z]` and the incremental output `[a,b,c]`. The memory is an accumulator, we can increment or decrement `x` based on conditions in the step, or reset `x` to zero. The output is a temp variable, a reference to the previous step of the loop. The logistic filters encode the logic for deciding to erase, increment, or read a value `[x,y,z]` in memory, depending on the context of the current step inputs and previous step outputs.
 
 For example, below is a toy LSTM for calculating the modulo function. 
 
@@ -464,17 +464,59 @@ for(let i = 0; i < 10; i++)
 }
 ```
 
-What kind of crazy solutions might gradient descent come up with? Note that we can do multiple tasks, such as classify a time series, or predict the next token. 
+What kind of crazy solutions might gradient descent come up with? Note that we can do multiple tasks, such as classify a time series, or predict the next token in a sequence. 
 
 Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). In this case we can stop thinking in terms of incrementing single variables, and start paying attention to the direction of the update vectors in memory space. 
 
-Hypothesis: LSTMs encode the graph of a finite state machine where nodes are positions in memory space and edges are offsets in memory space. We can imagine the writer layer as a vector field in memory space (returning an edge vector to move memory to the new node); but it also has dimensions in input space: different inputs return different vector fields, in order to cross different edges. Adding the edge vector to the memory vector moves the finite state machine to a new node. The readout layer is kinda doing the same thing, except the output could be a label vector for the current memory-input pair (aka node->edge crossing). 
-
-Could we extend this to do forward propagation of a neural network? Let the neural nodes be vectors in memory space. Let the neural edges be vectors between the nodes. Suppose the output vector includes (implicitly or explicitly) the index `i` of the current weight being calculated. Then the writer layer can return a vector field `v(node[m], weight[i])` that moves the current memory vector to the next node in the loop. This lets us enumerate node-weight pairs, but doesn't help us with cross-products and activation functions. What if each node is an LSTM? It enumerates the previous layer, tallying the cross-product in memory and squashing it in the readout layer. Then you have another loop to enumerate nodes in a layer, amd another for layers in the network? 
+Hypothesis: LSTMs encode the graph of a finite state machine where nodes are positions in memory space and edges are offsets in memory space. We can imagine the writer layer as a vector field in memory space (returning an edge vector to move memory to the new node); but it also has dimensions in input space: different inputs return different vector fields, in order to cross different edges. Adding the edge vector to the memory vector moves the finite state machine to a new node. The readout layer is kinda doing the same thing, except the output could be a label of the edge being crossed, rather than a UID. 
 
 Project challenge: try to write an LSTM finite state machine that works by bouncing the memory state vector around in N-space. 
  
 Project idea: translate a neural network training loop into a finite state machine, then formulate that as an LSTM. 
+
+***Clockwise around a unit square***
+
+Use the `tanh` addition and `logistic` multiplication to yield a clockwise enumeration of vertices on a unit square, in memory. The trick here is that `tanh` can return three values (-1,0,1), and then we get a second pass in which to multiply some components by zero. Conceivably we can use the `erase` gate to pack in even more complexity. 
+
+```js
+
+//move clockwise around the unit square
+//   (0,1)-->(1,1)
+//     ^       |
+//     |       v
+//   (0,0)<--(1,0)
+
+//(0, 0) + (-1, 1) * (0, 1) =  (0, 1) 
+//(0, 1) + ( 1, 0) * (1, 1) =  (1, 1) 
+//(1, 1) + ( 0,-1) * (1, 1) =  (1, 0) 
+//(1, 0) + (-1,-1) * (1, 0) =  (0, 0) 
+
+let writer_values = 
+[
+ tanh( y - 0.5 * x - 0.5),
+ tanh(-y - 2.0 * x + 1.0),
+];
+
+let write_filter = 
+[
+ 1 / (1 + exp(-10 * ( y + x - 0.5))),
+ 1 / (1 + exp(-10 * ( y - x + 0.5))),
+];
+
+memory += (writer_values * write_filter);
+
+``` 
+
+***Enumerate vertices on a unit cube***
+
+TBA.
+
+```js
+
+//memory * eraser + values * writer => memory
+//(0, 0) * (1, 1) + (-1, 1) * (0, 1) =  (0, 1) 
+
+```
 
 ***Reber Grammar***
 
@@ -512,11 +554,9 @@ function getSequence(len)
 
 ```
 
-How might one formulate this as an LSTM? The constraint here is that the writer is a single layer, it can only bisect memory space, not test hulls. So for example we can't get element T from a list without first arranging the list as a convex polygon and performing a slice operation to isolate the vertex. Additionally, the write layer has to be the same size as the memory array (for pointwise addition to be valid), so we can't perform more tests than there are cells in memory. This implies that the memory is a one-hot vector encoding of the current node position (N nodes == N tests == N memory). If we allow more layers in the writer function, or if we have multiple writer functions, then we could map 7 tests down to 3 memory dimensions, but otherwise I think our hands are tied. 
+How might one formulate this as an LSTM? 
 
-I am struggling to come up with a use-case for the point-wise multiplication in the gates. If everything is a one-hot vector, then what's the point? Perhaps this will become clear after seeing a trained network. 
-
-Here is a LSTM where the memory is a one-hot vector encoding of the graph position.
+In the implementation below I am using memory as a one-hot vector of the current state. I suppose it might be possible to map the states to vertices on a 3-cube, but my brain isn't quite there yet.
 
 ```js
 
