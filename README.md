@@ -558,22 +558,23 @@ Suppose we try to model XOR with an LSTM. The memory is a 1D boolean. The input 
 If the memory is a hypercube, and if the `tanh` output is a diagonal vector from current vertex, then the `logistic` tests could let us reach any vertex on the cube. So, we should be able to represent any finite state machine by mapping states to vertices on a hypercube. 
 
 ```js
-//(0, 0) + 0 => 0
-//(0, 1) + 1 => 1
-//(1. 0) + 0 => 1
-//(1, 1) - 1 => 0
+//(memory, input) => memory
+//(0, 0) => 0
+//(0, 1) => 1
+//(1. 0) => 1
+//(1, 1) => 0
 
 let memory = m;
 let input = p; 
 
 write_values = 
 [
-  Math.tanh(-10 * (m - 0.5)), 
+  Math.tanh(-10 * (m - 0.5)), //by default, flip the memory 
 ];
 
 write_filter = 
 [
- 1 / (1 + exp(-10 * (p - 0.5))),
+ 1 / (1 + exp(-10 * (p - 0.5))), //if the input is zero, don't flip the memory
 ];
 
 memory += (write_values[0] * write_filter[0]);
