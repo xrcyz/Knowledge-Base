@@ -491,30 +491,92 @@ Use the `tanh` addition and `logistic` multiplication to yield a clockwise enume
 //(1, 1) + ( 0,-1) * (1, 1) =  (1, 0) 
 //(1, 0) + (-1,-1) * (1, 0) =  (0, 0) 
 
-let writer_values = 
+let memory = [x, y]; 
+
+write_values = 
 [
- tanh( y - 0.5 * x - 0.5),
- tanh(-y - 2.0 * x + 1.0),
+  Math.tanh(-10 * (-y + 0.5 * x + 0.5)),
+  Math.tanh(-10 * ( y + 2.0 * x - 1.0)),
 ];
 
 let write_filter = 
 [
- 1 / (1 + exp(-10 * ( y + x - 0.5))),
- 1 / (1 + exp(-10 * ( y - x + 0.5))),
+  1 / (1 + exp(-10 * (y + x - 0.5))),
+  1 / (1 + exp(-10 * (y - x + 0.5))),
 ];
 
-memory += (writer_values * write_filter);
+x += (write_values[0] * write_filter[0]);
+y += (write_values[1] * write_filter[0]);
+
+memory = [round(x), round(y)]; //note the naughty round operation to snap to a vertex. not part of a conventional LSTM. 
 
 ``` 
 
 ***Enumerate vertices on a unit cube***
 
-TBA.
+We can do this by enumerating a square, with a bit flip on the z axis if the xy coordinate is on a given edge. This probably extends to any hypercube. 
 
 ```js
 
-//memory * eraser + values * writer => memory
-//(0, 0) * (1, 1) + (-1, 1) * (0, 1) =  (0, 1) 
+//(0, 0, 0) + (-1, 1, 1) * (0, 1, 0) =  (0, 1, 0) 
+//(0, 1, 0) + ( 1, 0, 1) * (1, 1, 0) =  (1, 1, 0) 
+//(1, 1, 0) + ( 0,-1, 1) * (1, 1, 0) =  (1, 0, 0) 
+//(1, 0, 0) + (-1,-1, 1) * (1, 0, 1) =  (0, 0, 1) //transition to top plate
+//(0, 0, 1) + (-1, 1,-1) * (0, 1, 0) =  (0, 1, 1) 
+//(0, 1, 1) + ( 1, 0,-1) * (1, 1, 0) =  (1, 1, 1) 
+//(1, 1, 1) + ( 0,-1,-1) * (1, 1, 0) =  (1, 0, 1) 
+//(1, 0, 1) + (-1,-1,-1) * (1, 0, 1) =  (0, 0, 0) //transition to bottom plate
+
+let memory = [x, y, z]; 
+
+write_values = 
+[
+  Math.tanh(-10 * (-y + 0.5 * x + 0.5)),
+  Math.tanh(-10 * ( y + 2.0 * x - 1.0)),
+  Math.tanh(-10 * ( z - 0.5)),
+];
+
+let write_filter = 
+[
+  1 / (1 + exp(-10 * ( y + x - 0.5))),
+  1 / (1 + exp(-10 * ( y - x + 0.5))),
+  1 / (1 + exp(-10 * (-y + x - 0.5))), 
+];
+
+x += (write_values[0] * write_filter[0]);
+y += (write_values[1] * write_filter[1]);
+z += (write_values[2] * write_filter[2]);
+
+memory = [round(x), round(y), round(z)]; //note the naughty round operation to snap to a vertex. not part of a conventional LSTM. 
+
+```
+
+***Dealing with input: XOR***
+
+Suppose we try to model XOR with an LSTM. The memory is a 1D boolean. The input is a 1D boolean. The memory-input space is not linearly separable. We can use the `tanh` function return a default move vector based on the vertex, and then use `logistic` to zero some components based on the input. 
+
+If the memory is a hypercube, and if the `tanh` output is a diagonal vector from current vertex, then the `logistic` tests could let us reach any vertex on the cube. So, we should be able to represent any finite state machine by mapping states to vertices on a hypercube. 
+
+```js
+//(0, 0) + 0 => 0
+//(0, 1) + 1 => 1
+//(1. 0) + 0 => 1
+//(1, 1) - 1 => 0
+
+let memory = m;
+let input = p; 
+
+write_values = 
+[
+  Math.tanh(-10 * (m - 0.5)), 
+];
+
+write_filter = 
+[
+ 1 / (1 + exp(-10 * (p - 0.5))),
+];
+
+memory += (write_values[0] * write_filter[0]);
 
 ```
 
@@ -556,7 +618,7 @@ function getSequence(len)
 
 How might one formulate this as an LSTM? 
 
-In the implementation below I am using memory as a one-hot vector of the current state. I suppose it might be possible to map the states to vertices on a 3-cube, but my brain isn't quite there yet.
+With memory as a one-hot vector representing the current state:
 
 ```js
 
@@ -602,6 +664,13 @@ return str;
                         
 ```
 
+With the state embdedded in a 3D memory vector:
+
+```js
+
+//TBA
+
+```
 
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
