@@ -466,7 +466,7 @@ for(let i = 0; i < 10; i++)
 
 What kind of crazy solutions might gradient descent come up with? Note that we can do multiple tasks, such as classify a time series, or predict the next token in a sequence. 
 
-Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine simply by bouncing the memory state vector aorund in vector space (which the output layer then classifies). In this case we can stop thinking in terms of incrementing single variables, and start paying attention to the direction of the update vectors in memory space. 
+Suppose that the output is a one-hot vector classification. I think I can reasonably argue that this is classifying the (filtered) memory state vector. If we are predicting tokens, then the erase/write/read rules can encode a finite state machine by bouncing the memory state vector aorund in vector space (which the output layer then classifies). In this case we can stop thinking in terms of incrementing single variables, and start paying attention to the direction of the update vectors in memory space. 
 
 Hypothesis: LSTMs encode the graph of a finite state machine where nodes are positions in memory space and edges are offsets in memory space. We can imagine the writer layer as a vector field in memory space (returning an edge vector to move memory to the new node); but it also has dimensions in input space: different inputs return different vector fields, in order to cross different edges. Adding the edge vector to the memory vector moves the finite state machine to a new node. The readout layer is kinda doing the same thing, except the output could be a label of the edge being crossed, rather than a UID. 
 
@@ -619,7 +619,14 @@ function getSequence(len)
 
 How might one formulate this as an LSTM? 
 
-With memory as a one-hot vector representing the current state:
+[First attempt:](https://openprocessing.org/sketch/1412417)
+- `input` is a one-hot vector representing the token.
+- `memory` is a one-hot vector representing the FSM state. 
+- `writer` tests for node-edge pairs. It returns false positives! But that's okay, we can erase them with the write filter.
+- `filter` tests for false positives in `writer` and then zeroes them. This allows us to nest our logic (yay black box code golf). There is no read filter in this example, but I imagine it can filter false positives from the output layer in much the same manner.
+- `eraser` resets the memory state. 
+
+Unfortunately this formulation neglects to use the `tanh` activation function, so I can't really comment if my use of the `filter` layer is correct or not. A logistic multiplied by a logistic gets us a nice little logistic distribution, which we can use to isolate any two vertices in a polygon. 
 
 ```js
 
@@ -628,44 +635,66 @@ let input   = [1,0,0,0,0,0,0]; //current token [B,T,S,X,P,V,E]
 let memory  = [1,0,0,0,0,0,0]; //one-hot vector of current node in graph
 let eraser  = [0,0,0,0,0,0,0]; //what to erase in memory
 let writer  = [0,0,0,0,0,0,0]; //what to write to memory
-let output  = [0,0,0,0,0,0,0]; //predicted tokens [B,T,S,X,P,V,E]
+let filter  = [1,1,1,1,1,1,1]; //filter the writer when it returns multiple write values
+let output  = [0,0,0,0,0,0,0,0]; //predicted tokens [B,T,S,X,P,V,E,-]
 
 let str = 'B';
 
 while(str.length < len)
 {
- writer[0] = 0; //we never mode to node zero
- 
- //this logic exploits the fact that you can never exit node[1] on edge[P], in a brittle way. 
- writer[1] = 1 / (1 + exp(-10 * (memory[0] + input[1] + memory[1] + input[2] - 1.5))); //move to node 1 if([0,"T"] or [1, "S"])
- writer[2] = 1 / (1 + exp(-10 * (memory[1] + input[3] + memory[4] + input[4] - 1.5))); //move to node 2 if([1,"X"] or [4,"P"])
- writer[3] = 1 / (1 + exp(-10 * (memory[2] + input[2] + memory[4] + input[5] - 1.5))); //move to node 3 if([2,"S"] or [4,"V"])
- writer[4] = 1 / (1 + exp(-10 * (memory[5] + input[5]                        - 1.5))); //move to node 4 if([5,"V"])
- writer[5] = 1 / (1 + exp(-10 * (memory[0] + input[4] + memory[2] + input[3] - 1.5))); //move to node 5 if([0,"P"] or [2,"X"])
- writer[6] = 1 / (1 + exp(-10 * (memory[3]                                   - 0.5))); //move to node 6 if you land on node 3
- 
- memory *= eraser; 
- memory += writer; 
- 
- output[0] = 0; //we never yield B
- output[1] = 1 / (1 + exp(-10 * (memory[0] + memory[5] - 0.5))); //T may yield from 0 or 5
- output[2] = 1 / (1 + exp(-10 * (memory[1] + memory[2] - 0.5))); //S may yield from 1 or 2
- output[3] = 1 / (1 + exp(-10 * (memory[1] + memory[2] - 0.5))); //X may yield from 1 or 2
- output[4] = 1 / (1 + exp(-10 * (memory[0] + memory[4] - 0.5))); //P may yield from 0 or 4
- output[5] = 1 / (1 + exp(-10 * (memory[3]             - 0.5))); //E may yield from 3
- 
- if(output.reduce((a, b) => a + b, 0) < 0.1) break; 
- 
- str += tokens[indexOfMax(output)]; 
- 
- input = getNextToken(input);
+  //figure out which node to move to
+  //technically these should be tanh functions, whoops
+  writer[0] = 1 / (1 + exp(-10 * (input[0] - 0.5)));                                     //move to node 0 from input B
+  writer[1] = 1 / (1 + exp(-10 * (memory[0] + input[1] + memory[1] + input[2] - 1.5)));  //move to node 1 if([0,"T"] or [1,"S"])
+  writer[2] = 1 / (1 + exp(-10 * (memory[1] + input[3] + memory[4] + input[4] - 1.5)));  //move to node 2 if([1,"X"] or [4,"P"])
+  writer[3] = 1 / (1 + exp(-10 * (memory[2] + input[2] + memory[4] + input[5] - 1.5)));  //move to node 3 if([2,"S"] or [4,"V"])
+  writer[4] = 1 / (1 + exp(-10 * (memory[5] + input[5]                        - 1.5)));  //move to node 4 if([5,"V"] or [7, "V"])
+  writer[5] = 1 / (1 + exp(-10 * (memory[0] + input[4] +                                 //move to node 5 if([0,"P"] or [2,"X"] or [5,"V"]) 
+                                  memory[2] + input[3] +                                 //note this returns false postives on [0,"T"] **************
+                                  memory[5] + input[1] - 1.5)));                         //write filter to the rescue! 
+  writer[6] = 1 / (1 + exp(-10 * (memory[3]                                   - 0.5)));  //move to node 6 from node 3
+  
+  filter  = [1,1,1,1,1,1,1,1];
+  filter[5] = 1 / (1 + exp(-10 * (-memory[0] - input[1] + 1.5))); //filter out false positives in the writer
+  
+  for(let i = 0; i < memory.length; i++) { memory[i] *= eraser[i]; }
+  for(let i = 0; i < writer.length; i++) { writer[i] *= filter[i]; }
+  for(let i = 0; i < memory.length; i++) { memory[i] += writer[i]; }
+
+  output[0] = 0; //we never yield B
+  output[1] = 1 / (1 + exp(-10 * (memory[0] + memory[5] - 0.5))); //T may yield from 0 or 5
+  output[2] = 1 / (1 + exp(-10 * (memory[1] + memory[2] - 0.5))); //S may yield from 1 or 2
+  output[3] = 1 / (1 + exp(-10 * (memory[1] + memory[2] - 0.5))); //X may yield from 1 or 2
+  output[4] = 1 / (1 + exp(-10 * (memory[0] + memory[4] - 0.5))); //P may yield from 0 or 4 
+  output[5] = 1 / (1 + exp(-10 * (memory[4] + memory[5] - 0.5))); //V may yield from 4 or 5
+  output[6] = 1 / (1 + exp(-10 * (memory[3]             - 0.5))); //E may yield from 3
+  output[7] = 1 / (1 + exp(-10 * (memory[6]             - 0.5))); //- yields from 6
+
+  let c = output
+    .map((e, i) => [e, i]) 	
+    .filter(e => e[0] > 0.5) 	
+    .map(e => e[1]); 					
+  ;
+  let newToken = random(c);
+  
+  //append token to string
+  str += tokens[newToken]; 
+  
+  //graph exit condition
+  if(newToken == 6) break; 
+  
+  //set next input
+  input = [0,0,0,0,0,0,0];
+  input[newToken] = 1;
 }
 
 return str;
                         
 ```
 
-With the state embdedded in a 3D memory vector:
+Second attempt:
+- using `tanh` activations
+- smaller memory vector
 
 ```js
 
