@@ -698,7 +698,75 @@ Second attempt:
 
 ```js
 
-//TBA
+//draft not tested
+
+//memory[0] is 1 if the graph node is 0 or 1
+//memory[1] is 1 if the graph node is 4 or 2
+//memory[2] is 1 if the graph node is 5 or 3
+//read the input edge to figure out which node we are on
+
+//(0 => 1) : [1,0,0] + T => [1,0,0] 
+//(0 => 5) : [1,0,0] + P => [0,0,1] 
+//(1 => 2) : [0,0,1] + X => [0,1,0] 
+//(1 => 1) : [0,0,1] + S => [0,0,1] 
+//(2 => 3) : [0,1,0] + S => [0,0,1] 
+//(2 => 5) : [0,1,0] + X => [0,0,1] 
+//(4 => 3) : [0,1,0] + V => [0,0,1] 
+//(4 => 2) : [0,1,0] + P => [0,1,0] 
+//(5 => 4) : [0,0,1] + V => [0,1,0] 
+//(5 => 5) : [0,0,1] + T => [0,0,1] 
+//(3 => 6) : [0,0,1] + E => [0,0,0] 
+
+let eraser = 
+[
+  0, //erase all
+  , //erase if(memory[1] + input[S] > 1.5)
+  , //erase if(input[E] + input[S] > 0.5)
+];
+
+let writer = 
+[
+  //decrement if memory[0] > 0.5
+  //increment if memory[1] < 0.5, else decrement
+  //increment if (memory[1] + input[P] + input[S] > 0.5)
+];
+
+let filter = 
+[
+  //multiply by 0 if memory[0] + input[P] < 1.5
+  //multiply by 0 if(input[V] + input[X] < 0.5)
+  //multiply by 0 if(input[T] + (memory[1] + input[P])/3  > 0.5)
+];
+
+let node[0] = (memory[0] + input[B] > 1.5);
+let node[1] = (memory[0] + input[T] + input[S] > 1.5);
+let node[2] = (memory[1] + input[X] + input[P] > 1.5);
+let node[3] = (memory[2] + input[S] + input[V] > 1.5);
+let node[4] = (memory[1] + input[V]            > 1.5);
+let node[5] = (memory[2] + input[T] + input[P] + input[X] > 1.5);
+let node[6] = (memory[0] + memory[1] + memory[2] == 0);
+
+let reader = //[B,T,S,X,P,V,E]
+[
+  0,                          //B
+  input[B] + memory[0] > 0.5, //T - false positive on T into 1
+  node[1] + node[2],          //X 
+  node[0] + node[4],          //P
+  input[P] + memory[1] > 0.5  //V - false positive on P into 2
+  node[3],                    //E
+  node[6],                    //-
+];
+
+let read_filter = 
+[
+  1, //B
+  1, //T - block if memory[0] + input[T] > 1.5
+  1, //X
+  1, //P
+  1, //V - block if (memory[1] + input[V] > 1.5)
+  1, //E
+  1, //-
+];
 
 ```
 
