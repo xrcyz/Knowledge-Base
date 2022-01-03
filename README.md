@@ -694,79 +694,54 @@ return str;
 
 Second attempt:
 - using `tanh` activations
-- smaller memory vector
+- smaller memory vector (tried... and failed)
+
+The crux of the problem has to be that detecting edge T into node 5 is an XOR problem. 
+
+```js
+
+let node[5] = (node[0] && edge[P]) || (node[2] && edge[X]) || (node[5] && edge[T]); 
+
+```
+
+We need a truth table along the lines of:
+
+|                   | node[0] | node[2] + node[5] |
+|---                |---      |---                |
+| edge[X] + edge[T] | false   | true              |
+| edge[P]           | true    | false             |
+
+We know that a single layer perceptron cannot do XOR, it can only linearly separate. This means that the `write_filter` _must_ be doing something in the second pass. 
+
+Unfortunately, this also means the memory is going to be a mix of negatives, positives and zeroes, thanks to multiplying `tanh` with `logistic`. (Unless we make brittle assumptions about the memory never going negative, which would seem to defy the point of using `tanh` in the first place). 
+
+This means we get something like this: 
+
+|                   | node[0] | node[2] + node[5] | else |
+|---                |---      |---                | ---  |
+| edge[X] + edge[T] | 0       | 1                 | -1   |
+| edge[P]           | 1       | -1                | -1   |
+
+This gives us potential moves:
+
+| move                   | memory                    |  `node[0] + node[2] + node[5]- node[1]` | 
+|---                     |---                        |---                            |
+| `edge[B]` to `node[0]` | `[ 1,-1,-1,-1,-1,-1,-1]`  | 0                             |
+| `node[1]` to `node[2]` | `[-1,-1, 1,-1,-1,-1,-1]`  | 0                             |
+| `node[5]` to `node[5]` | `[-1,-1,-1,-1,-1, 1,-1]`  | 0                             |
+| `node[0]` to `node[1]` | `[-1, 1,-1,-1,-1, 0,-1]`  | -3                            |
+
+We can weed out false positives by subtracting the negative case. For example, if there was a filter on `memory[2]` that returned `[-1, 1, 0,-1,-1, 0,-1]`, then we can test `node[0] + node[2] + node[5] - node[1] = -1`, which correctly returns a negative. 
+
+Of course, we could then ask what if there was a filter on `memory[1]`. Maybe we get `[-1, 0,-1,-1,-1, 1,-1]`, which returns incorrectly returns `-1`.
+
+I am getting the impression that the network may converge on hopeless spaghetti code. You change the variables for `node[1]`, and it affects the outcome for `node[5]` in unexpected ways. Similar perhaps to [polysemantic neurons](https://distill.pub/2020/circuits/zoom-in/) in image recogition. It would be interesting to find a learning method that embeds a readable program in the weights. See also: 'weight dropout'. 
+
 
 ```js
 
 //draft not tested
 
-//memory[0] is 1 if the graph node is 0 or 1
-//memory[1] is 1 if the graph node is 4 or 2
-//memory[2] is 1 if the graph node is 5 or 3
-//read the input edge to figure out which node we are on
-
-//(0 => 1) : [1,0,0] + T => [1,0,0] 
-//(0 => 5) : [1,0,0] + P => [0,0,1] 
-//(1 => 2) : [0,0,1] + X => [0,1,0] 
-//(1 => 1) : [0,0,1] + S => [0,0,1] 
-//(2 => 3) : [0,1,0] + S => [0,0,1] 
-//(2 => 5) : [0,1,0] + X => [0,0,1] 
-//(4 => 3) : [0,1,0] + V => [0,0,1] 
-//(4 => 2) : [0,1,0] + P => [0,1,0] 
-//(5 => 4) : [0,0,1] + V => [0,1,0] 
-//(5 => 5) : [0,0,1] + T => [0,0,1] 
-//(3 => 6) : [0,0,1] + E => [0,0,0] 
-
-let eraser = 
-[
-  0, //erase all
-  , //erase if(memory[1] + input[S] > 1.5)
-  , //erase if(input[E] + input[S] > 0.5)
-];
-
-let writer = 
-[
-  //decrement if memory[0] > 0.5
-  //increment if memory[1] < 0.5, else decrement
-  //increment if (memory[1] + input[P] + input[S] > 0.5)
-];
-
-let filter = 
-[
-  //multiply by 0 if memory[0] + input[P] < 1.5
-  //multiply by 0 if(input[V] + input[X] < 0.5)
-  //multiply by 0 if(input[T] + (memory[1] + input[P])/3  > 0.5)
-];
-
-let node[0] = (memory[0] + input[B] > 1.5);
-let node[1] = (memory[0] + input[T] + input[S] > 1.5);
-let node[2] = (memory[1] + input[X] + input[P] > 1.5);
-let node[3] = (memory[2] + input[S] + input[V] > 1.5);
-let node[4] = (memory[1] + input[V]            > 1.5);
-let node[5] = (memory[2] + input[T] + input[P] + input[X] > 1.5);
-let node[6] = (memory[0] + memory[1] + memory[2] == 0);
-
-let reader = //[B,T,S,X,P,V,E]
-[
-  0,                          //B
-  input[B] + memory[0] > 0.5, //T - false positive on T into 1
-  node[1] + node[2],          //X 
-  node[0] + node[4],          //P
-  input[P] + memory[1] > 0.5  //V - false positive on P into 2
-  node[3],                    //E
-  node[6],                    //-
-];
-
-let read_filter = 
-[
-  1, //B
-  1, //T - block if memory[0] + input[T] > 1.5
-  1, //X
-  1, //P
-  1, //V - block if (memory[1] + input[V] > 1.5)
-  1, //E
-  1, //-
-];
 
 ```
 
