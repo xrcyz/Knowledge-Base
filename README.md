@@ -696,46 +696,30 @@ Second attempt:
 - using `tanh` activations
 - smaller memory vector (tried... and failed)
 
-The crux of the problem has to be that detecting edge T into node 5 is an XOR problem. 
+The crux of the problem is detecting edge T into node 5.
 
 ```js
 
 let node[5] = (node[0] && edge[P]) || (node[2] && edge[X]) || (node[5] && edge[T]); 
+            = (node[0] + edge[P]) + (node[2] + edge[X]) + (node[5] + edge[T]); //returns false positives on T from node 0.
 
 ```
 
-We need a truth table along the lines of:
+Thanks to multiplying `tanh` by `logistic`, each node can return a value where 1 is true, 0 is false, and -1 is false. This is bad. It means we can no longer predict the outcome of the sum of an array of booleans. 
 
-|                   | node[0] | node[2] + node[5] |
-|---                |---      |---                |
-| edge[X] + edge[T] | false   | true              |
-| edge[P]           | true    | false             |
+If the whole point of using `tanh` functions is to be able to increment and decrement variables, then maybe we are approaching this from the wrong angle. If we view a memory component as 'collecting evidence for condition X', then we could do something like 'the sum of valid edges to reach a node'. So `B+T=>2` is too low threshold for node 5, but `B+P+T=>3` rings the bell. And if you deviate from the prescribed path, erase the vector and start from zero. 
 
-We know that a single layer perceptron cannot do XOR, it can only linearly separate. This means that the `write_filter` _must_ be doing something in the second pass. 
+```js
 
-Unfortunately, this also means the memory is going to be a mix of negatives, positives and zeroes, thanks to multiplying `tanh` with `logistic`. (Unless we make brittle assumptions about the memory never going negative, which would seem to defy the point of using `tanh` in the first place). 
+memory[5] += ...; //
 
-This means we get something like this: 
+```
 
-|                   | node[0] | node[2] + node[5] | else |
-|---                |---      |---                | ---  |
-| edge[X] + edge[T] | 0       | 1                 | -1   |
-| edge[P]           | 1       | -1                | -1   |
 
-This gives us potential moves:
 
-| move                   | memory                    |  `node[0] + node[2] + node[5]- node[1]` | 
-|---                     |---                        |---                            |
-| `edge[B]` to `node[0]` | `[ 1,-1,-1,-1,-1,-1,-1]`  | 0                             |
-| `node[1]` to `node[2]` | `[-1,-1, 1,-1,-1,-1,-1]`  | 0                             |
-| `node[5]` to `node[5]` | `[-1,-1,-1,-1,-1, 1,-1]`  | 0                             |
-| `node[0]` to `node[1]` | `[-1, 1,-1,-1,-1, 0,-1]`  | -3                            |
+[polysemantic neurons](https://distill.pub/2020/circuits/zoom-in/)
 
-We can weed out false positives by subtracting the negative case. For example, if there was a filter on `memory[2]` that returned `[-1, 1, 0,-1,-1, 0,-1]`, then we can test `node[0] + node[2] + node[5] - node[1] = -1`, which correctly returns a negative. 
 
-Of course, we could then ask what if there was a filter on `memory[1]`. Maybe we get `[-1, 0,-1,-1,-1, 1,-1]`, which returns incorrectly returns `-1`.
-
-I am getting the impression that the network may converge on hopeless spaghetti code. You change the variables for `node[1]`, and it affects the outcome for `node[5]` in unexpected ways. Similar perhaps to [polysemantic neurons](https://distill.pub/2020/circuits/zoom-in/) in image recogition. It would be interesting to find a learning method that embeds a readable program in the weights. See also: 'weight dropout'. 
 
 
 ```js
