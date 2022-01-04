@@ -703,7 +703,7 @@ let node[5] = (node[0] && edge[P]) || (node[2] && edge[X]) || (node[5] && edge[T
 
 ```
 
-Thanks to multiplying `tanh` by `logistic`, each node can return a value where 1 is true, 0 is false, and -1 is false. This is bad. It means we can no longer predict the outcome of the sum of an array of booleans. 
+Thanks to multiplying `tanh` by `logistic`, each node can return a value where 1 is true, 0 is false, and -1 is false. This means we have to ditch boolean algebra. It means we can no longer predict the outcome of the sum of an array of truth values. 
 
 If the whole point of using `tanh` functions is to be able to increment and decrement variables, then maybe we are approaching this from the wrong angle. If we view a memory component as 'collecting evidence for condition X', then we could do something like 'the sum of valid edges to reach a node'. So `B+T` is too low threshold for node 5, but `B+P+T` rings the bell. And if you deviate from the prescribed path, erase or decrement the vector appropriately. 
 
@@ -720,6 +720,7 @@ If the whole point of using `tanh` functions is to be able to increment and decr
 memory[5] = 0;
 
 //if we increment different amounts for different edges, then we can game the edge order 
+
 let increment_B = 0.4; 
 let increment_P = 0.6; 
 let increment_T = 0.2; 
@@ -732,18 +733,74 @@ let increment_X = 0.5;
 //P + X = 1.1
 
 //reset accumulator if S or V
-eraser[5] = tanh(10 * (S + V));
+eraser[5] = 1 / (1 + exp(-10 * (0.5 - S - V)));
 
 //write the increment corresponding to the input 
+//tanh(0.197) = 0.2 
+//tanh(0.348) = 0.334
+//tanh(0.424) = 0.4 
+//tanh(0.55 ) = 0.5 
+//tanh(0.7  ) = 0.6 
+//tanh(1.098) = 0.8 
+
 writer[5] = tanh(0.55 * X + 0.70 * P + 0.424 * B + 0.197 * T); 
+
+memory[5] = memory[5] * eraser[5] + writer[5];
 
 //node 5 is active is memory > 0.6 
 node[5] = tanh(10 * (memory[5] - 0.6);
 
-//no read/write gates required
+//predicting T requires activating on node[0] or node[5]
+//so we have some hypthetical weight [w] here to scale memory[0] activation threshold to 0.6
+reader[T] = tanh(10 * (memory[5] + w * memory[0] - 0.7);
 
 ```
 
+This is surprisingly effective, although I don't care for the coding style. The FSM is basically baked into the program, it's useless for any other task. 
+- It would be nice if the model printed out the finite state machine so we could see what it's doing.
+- We shouldn't have to retrain the whole model on new datasets - it should encode the FSM extraction algorithm. 
+- Ideally, a small change in training data should be equivalent to a small change in the FSM - can we reuse existing elements? 
+
+Project challenge: write a program that returns a valid finite state machine given a dataset of sequences. How is it different from the above?
+
+On with the show:
+
+```js
+
+eraser[0] = 0;                                                  //always erase
+writer[0] = tanh(5 * B);                                        //increment on B, else do nothing 
+
+//BT
+eraser[1] = 1 / (1 + exp(-10 * (0.5 - X - V - P)));             //reset on X,V,P
+writer[1] = tanh(0.348 * (B + T + S));                          //breadcrumbs to node 1
+filter[1] = 1 / (1 + exp(-10 * (0.9 - memory[5])));             //ignore T from node 5
+
+//P_P, TX, X_P
+eraser[2] = 1 / (1 + exp(-10 * (0.9 - memory[2])));             //reset on exit
+writer[2] = tanh(0.55 * (T + X + P));                           //breadcrumbs to node 2
+filter[2] = 1 / (1 + exp(-10 * (0.9 - memory[5])));             //do not increment on exit node 5
+
+//BP, XX, PX
+eraser[5] = 1 / (1 + exp(-10 * (0.5 - S - V)));                 //reset on S,V
+writer[5] = tanh(0.55 * X + 0.70 * P + 0.424 * B + 0.197 * T);  //breadcrumbs to node 5
+
+//PV, XV but not XX and not PX
+let inc_X = 0.2; 
+let inc_P = 0.5; 
+let inc_V = 0.8;
+eraser[4] = 1 / (1 + exp(-10 * (0.9 - memory[4])));             //reset on exit
+writer[4] = tanh(0.197 * X + 0.55 * P + 1.098 * V);             //breadcrumbs to node 4
+
+//S (filter node 1) or VV
+eraser[3] = 0;                                                  //always erase
+writer[3] = tanh(3.0 * S + 0.55 * V);                           //breadcrumbs to node 3
+filter[2] = 1 / (1 + exp(-10 * (0.9 - memory[1])));             //do not increment on exit node 1
+
+//E
+eraser[6] = 0;                                                  //always erase
+writer[6] = tanh(E * B);                                        //increment on B, else do nothing 
+
+```
 
 
 [polysemantic neurons](https://distill.pub/2020/circuits/zoom-in/)
@@ -751,12 +808,7 @@ node[5] = tanh(10 * (memory[5] - 0.6);
 
 
 
-```js
 
-//draft not tested
-
-
-```
 
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
