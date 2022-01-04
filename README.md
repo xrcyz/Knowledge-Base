@@ -708,14 +708,6 @@ Thanks to multiplying `tanh` by `logistic`, each node can return a value where 1
 If the whole point of using `tanh` functions is to be able to increment and decrement variables, then maybe we are approaching this from the wrong angle. If we view a memory component as 'collecting evidence for condition X', then we could do something like 'the sum of valid edges to reach a node'. So `B+T` is too low threshold for node 5, but `B+P+T` rings the bell. And if you deviate from the prescribed path, erase or decrement the vector appropriately. 
 
 ```js
-//[B,T,S,X,P,V,E]
-
-//evidence for node 0 is B          
-//evidence for node 1 is BTS^       
-//evidence for node 2 is [TX,SX]    
-//evidence for node 3 is [XS,PS,VV] 
-//evidence for node 4 is [PV,TV,XV] 
-//evidence for node 5 is [BPT^,XXT^] or [BP, PT, XX, PX, XT, TT]
 
 memory[5] = 0;
 
@@ -747,7 +739,7 @@ writer[5] = tanh(0.55 * X + 0.70 * P + 0.424 * B + 0.197 * T);
 
 memory[5] = memory[5] * eraser[5] + writer[5];
 
-//node 5 is active is memory > 0.6 
+//node 5 is active if memory > 0.6 
 node[5] = tanh(10 * (memory[5] - 0.6);
 
 //predicting T requires activating on node[0] or node[5]
