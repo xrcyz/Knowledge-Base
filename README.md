@@ -692,9 +692,7 @@ return str;
                         
 ```
 
-Second attempt:
-- using `tanh` activations
-- smaller memory vector (tried... and failed)
+Second attempt using `tanh` activations:
 
 The crux of the problem is detecting edge T into node 5.
 
@@ -707,11 +705,42 @@ let node[5] = (node[0] && edge[P]) || (node[2] && edge[X]) || (node[5] && edge[T
 
 Thanks to multiplying `tanh` by `logistic`, each node can return a value where 1 is true, 0 is false, and -1 is false. This is bad. It means we can no longer predict the outcome of the sum of an array of booleans. 
 
-If the whole point of using `tanh` functions is to be able to increment and decrement variables, then maybe we are approaching this from the wrong angle. If we view a memory component as 'collecting evidence for condition X', then we could do something like 'the sum of valid edges to reach a node'. So `B+T=>2` is too low threshold for node 5, but `B+P+T=>3` rings the bell. And if you deviate from the prescribed path, erase the vector and start from zero. 
+If the whole point of using `tanh` functions is to be able to increment and decrement variables, then maybe we are approaching this from the wrong angle. If we view a memory component as 'collecting evidence for condition X', then we could do something like 'the sum of valid edges to reach a node'. So `B+T` is too low threshold for node 5, but `B+P+T` rings the bell. And if you deviate from the prescribed path, erase or decrement the vector appropriately. 
 
 ```js
+//[B,T,S,X,P,V,E]
 
-memory[5] += ...; //
+//evidence for node 0 is B          
+//evidence for node 1 is BTS^       
+//evidence for node 2 is [TX,SX]    
+//evidence for node 3 is [XS,PS,VV] 
+//evidence for node 4 is [PV,TV,XV] 
+//evidence for node 5 is [BPT^,XXT^] or [BP, PT, XX, PX, XT, TT]
+
+memory[5] = 0;
+
+//if we increment different amounts for different edges, then we can game the edge order 
+let increment_B = 0.4; 
+let increment_P = 0.6; 
+let increment_T = 0.2; 
+let increment_X = 0.5; 
+
+//we hit node 5 if edges sum to > 0.6
+//B + T = 0.6 
+//B + P = 1.0
+//X + X = 1.0
+//P + X = 1.1
+
+//reset accumulator if S or V
+eraser[5] = tanh(10 * (S + V));
+
+//write the increment corresponding to the input 
+writer[5] = tanh(0.55 * X + 0.70 * P + 0.424 * B + 0.197 * T); 
+
+//node 5 is active is memory > 0.6 
+node[5] = tanh(10 * (memory[5] - 0.6);
+
+//no read/write gates required
 
 ```
 
