@@ -42,6 +42,8 @@ See also [Morphogenic resources](https://github.com/jasonwebb/morphogenesis-reso
 - [information-limited pathfinding](https://www.youtube.com/watch?v=qXZt-B7iUyw)
 - [animated evolutionary strategies](https://blog.otoro.net/2017/10/29/visual-evolution-strategies/)
 
+Other references: [polysemantic neurons](https://distill.pub/2020/circuits/zoom-in/)
+
 **How do neural networks arrive at an answer?**
 ------
 
@@ -709,98 +711,133 @@ If the whole point of using `tanh` functions is to be able to increment and decr
 
 ```js
 
-memory[5] = 0;
+//this fails on BTSSXXTTTTTTTTTTTTTTTTTTTTTTTTTTTTSXVVE because filter[1] is not quiiiiiite zero
 
-//if we increment different amounts for different edges, then we can game the edge order 
+const tokens  = "BTSXPVE"; 
+let input   = [1,0,0,0,0,0,0]; //current token [B,T,S,X,P,V,E]
+let memory  = [1,0,0,0,0,0,0]; //one-hot TANH vector of current node in graph
+let eraser  = [0,0,0,0,0,0,0]; //what to erase in memory
+let writer  = [0,0,0,0,0,0,0]; //what to write to memory
+let filter  = [1,1,1,1,1,1,1]; //filter the writer when it returns multiple write values
+let reader  = [0,0,0,0,0,0,0,0]; //predicted tokens [B,T,S,X,P,V,E,-]
 
-let increment_B = 0.4; 
-let increment_P = 0.6; 
-let increment_T = 0.2; 
-let increment_X = 0.5; 
+let str = 'B';
 
-//we hit node 5 if edges sum to > 0.6
-//B + T = 0.6 
-//B + P = 1.0
-//X + X = 1.0
-//P + X = 1.1
+while(str.length < len)
+{
+  //memory accumulates evidence of a node being reached (sum of precedent edges)
+  //writer adds evidence to memory when precedent edges are crossed
+  //filter weeds out false positives in the writer
+  //eraser resets memory when required
+  //there are many many solutions in weight-space, this is just one of them
+  
+  let B = input[0];
+  let T = input[1];
+  let S = input[2];
+  let X = input[3];
+  let P = input[4];
+  let V = input[5];
+  let E = input[6];
+  
+  //B
+  eraser[0] = 0;                                                  //always erase
+  writer[0] = Math.tanh(5 * B);                                   //increment on B, else do nothing 
+  filter[0] = 1;
+  
+  //BT
+  eraser[1] = 1 / (1 + exp(-10 * (0.5 - X - V - P)));             //reset on X,V,P
+  writer[1] = Math.tanh(0.197 * B + 1.098 * T + 0.55 * S);        //breadcrumbs to node 1
+  filter[1] = 1 / (1 + exp(-30 * (0.75 - memory[5])));            //do not increment from node 5
 
-//reset accumulator if S or V
-eraser[5] = 1 / (1 + exp(-10 * (0.5 - S - V)));
+  //P_P, TX, X_P
+  eraser[2] = 1 / (1 + exp(-30 * (0.65 - memory[2])));            //reset on exit
+  writer[2] = Math.tanh(0.55 * (T + X + P));                      //breadcrumbs to node 2
+  filter[2] = 1 / (1 + exp(-30 * (0.65 - memory[5])));            //do not increment from node 5
 
-//write the increment corresponding to the input 
-//tanh(0.197) = 0.2 
-//tanh(0.348) = 0.334
-//tanh(0.424) = 0.4 
-//tanh(0.55 ) = 0.5 
-//tanh(0.7  ) = 0.6 
-//tanh(1.098) = 0.8 
+  //BP, XX, PX but not BX
+  eraser[5] = 1 / (1 + exp(-10 * (0.5 - S - V)));                 //reset on S,V
+  writer[5] = Math.tanh(0.55 * B + 0.7 * P + 5 * X);              //breadcrumbs to node 5
+  filter[5] = 1 / (1 + exp(-30 * (0.65 - memory[1])));            //do not increment from node 1
 
-writer[5] = tanh(0.55 * X + 0.70 * P + 0.424 * B + 0.197 * T); 
+  //PV, XV but not XX and not PX
+  eraser[4] = 1 / (1 + exp(-10 * (0.6 - memory[4])));             //reset on exit
+  writer[4] = Math.tanh(5 * V);                                   //breadcrumbs to node 4
+  filter[4] = 1 / (1 + exp(-10 * (0.6 - memory[4])));             //filter V on exit
 
-memory[5] = memory[5] * eraser[5] + writer[5];
+  //S (filter node 1) or VV
+  eraser[3] = 1 / (1 + exp(-10 * (0.5 - P)));                     //reset on P
+  writer[3] = Math.tanh(3.0 * S + 0.55 * V);                      //breadcrumbs to node 3
+  filter[3] = 1 / (1 + exp(-10 * (0.9 - memory[1])));             //do not increment from node 1
 
-//node 5 is active if memory > 0.6 
-node[5] = tanh(10 * (memory[5] - 0.6);
+  //E
+  eraser[6] = 0;                                                  //always erase
+  writer[6] = Math.tanh(5 * E);                                   //increment on E, else do nothing 
+  filter[6] = 1;
+  
+  for(let i = 0; i < memory.length; i++) 
+  { 
+    memory[i] = memory[i] * eraser[i] + writer[i] * filter[i]; 
+  }
 
-//predicting T requires activating on node[0] or node[5]
-//so we have some hypthetical weight [w] here to scale memory[0] activation threshold to 0.6
-reader[T] = tanh(10 * (memory[5] + w * memory[0] - 0.7);
+  //|thresholds |false        |true |
+  //|---        |---          |---  |
+  //| memory[0] | 0.0         | 1.0 |
+  //| memory[1] | 0.2         | 1.0 |
+  //| memory[2] | 0.5         | 1.0 |
+  //| memory[3] | 0.5         | 1.0 |
+  //| memory[4] | 0.2         | 1.0 |
+  //| memory[5] | 0.4,0.5,0.6 | 1.0 |
+  //| memory[6] | 0.0         | 1.0 |
+  
+  reader[0] = 0; //we never yield B
+  reader[1] = Math.tanh(5  * (memory[0] + memory[5] - 0.7)); //T may yield from 0 or 5
+  reader[2] = Math.tanh(5  * (memory[1] + memory[2] - 0.7)); //S may yield from 1 or 2
+  reader[3] = Math.tanh(5  * (memory[1] + memory[2] - 0.7)); //X may yield from 1 or 2
+  reader[4] = Math.tanh(5  * (memory[0] + memory[4] - 0.7)); //P may yield from 0 or 4 
+  reader[5] = Math.tanh(10 * (memory[4] + memory[5] - 0.9)); //V may yield from 4 or 5
+  reader[6] = Math.tanh(5  * (memory[3]             - 0.7)); //E may yield from 3
+  reader[7] = Math.tanh(5  * (memory[6]             - 0.7)); //- yields from 6
+
+  //no read filter layer, not required.
+  
+  let c = reader
+    .map((e, i) => [e, i]) 		
+    .filter(e => e[0] > 0.5) 	
+    .map(e => e[1]); 					
+  ;
+  if(c.length == 0) console.log("error error error");
+  let newToken = random(c);
+  
+  //append token to string
+  str += tokens[newToken]; 
+  
+  //graph exit condition
+  if(newToken == 6) break; 
+  
+  //set next input
+  input = [0,0,0,0,0,0,0];
+  input[newToken] = 1;
+  
+}
+
+if(!reberGrammar.validateString(str, len))
+{
+  str += " (grammar violation)";
+}
+else str += "  ✓";
+
+return str;
 
 ```
 
 This is surprisingly effective, although I don't care for the coding style. The FSM is basically baked into the program, it's useless for any other task. 
 - It would be nice if the model printed out the finite state machine so we could see what it's doing.
 - We shouldn't have to retrain the whole model on new datasets - it should encode the FSM extraction algorithm. 
-- Ideally, a small change in training data should be equivalent to a small change in the FSM - can we reuse existing elements? 
+- Naively, a small change in training data should be equivalent to a small change in the FSM - can we reuse existing elements? 
+
+The recursion is also susceptible to drift on long loops, as the reset/filter operations are never completely zero. 
 
 Project challenge: write a program that returns a valid finite state machine given a dataset of sequences. How is it different from the above?
-
-On with the show:
-
-```js
-
-eraser[0] = 0;                                                  //always erase
-writer[0] = tanh(5 * B);                                        //increment on B, else do nothing 
-
-//BT
-eraser[1] = 1 / (1 + exp(-10 * (0.5 - X - V - P)));             //reset on X,V,P
-writer[1] = tanh(0.348 * (B + T + S));                          //breadcrumbs to node 1
-filter[1] = 1 / (1 + exp(-10 * (0.9 - memory[5])));             //ignore T from node 5
-
-//P_P, TX, X_P
-eraser[2] = 1 / (1 + exp(-10 * (0.9 - memory[2])));             //reset on exit
-writer[2] = tanh(0.55 * (T + X + P));                           //breadcrumbs to node 2
-filter[2] = 1 / (1 + exp(-10 * (0.9 - memory[5])));             //do not increment on exit node 5
-
-//BP, XX, PX
-eraser[5] = 1 / (1 + exp(-10 * (0.5 - S - V)));                 //reset on S,V
-writer[5] = tanh(0.55 * X + 0.70 * P + 0.424 * B + 0.197 * T);  //breadcrumbs to node 5
-
-//PV, XV but not XX and not PX
-let inc_X = 0.2; 
-let inc_P = 0.5; 
-let inc_V = 0.8;
-eraser[4] = 1 / (1 + exp(-10 * (0.9 - memory[4])));             //reset on exit
-writer[4] = tanh(0.197 * X + 0.55 * P + 1.098 * V);             //breadcrumbs to node 4
-
-//S (filter node 1) or VV
-eraser[3] = 0;                                                  //always erase
-writer[3] = tanh(3.0 * S + 0.55 * V);                           //breadcrumbs to node 3
-filter[2] = 1 / (1 + exp(-10 * (0.9 - memory[1])));             //do not increment on exit node 1
-
-//E
-eraser[6] = 0;                                                  //always erase
-writer[6] = tanh(E * B);                                        //increment on B, else do nothing 
-
-```
-
-
-[polysemantic neurons](https://distill.pub/2020/circuits/zoom-in/)
-
-
-
-
-
 
 
 See also 'Reber grammar' https://www.bioinf.jku.at/publications/older/2604.pdf
