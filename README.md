@@ -1194,7 +1194,25 @@ The gates are all sigmoid, the memory in/out are tanh. I'm unclear if a gate has
 
 **What is a Transformer in machine learning?**
 
-TBA.
+Resources:
+- [transformers for software engineers](https://blog.nelhage.com/post/transformers-for-software-engineers/)
+- [transformer circuits](https://transformer-circuits.pub/)
+
+> At the highest level, an autoregressive language model (including the decoder-only Transformer) will take in a sequence of text (which we’ll refer to as a “context”), and output a sequence of “logits” the same length as the context. These logits represent, at each position, the model’s prediction for the next token. At each position, there is one logit value per entry in our vocabulary; by taking a softmax over the logit vector, we can get a probability distribution over tokens.
+
+> The core internal architecture of the Transformer is a stack of identically-structured layers. Each layer takes in the previous “hidden state” of the model — one state per each token position — does some computation, and then updates that state to produce the following state.
+
+The state can be queried by taking the dot product with a query vector, returning a scalar.
+The state can be updated by adding an update vector. 
+
+> Because of the way layers can only update the state by adding an Update into it, and not by replacing the entire thing, I often think of the Transformer as a “functional program” implemented on a very unusual machine. We pass the state stream through and repeatedly update it to produce to a new state, but we never mutate it in-place or completely throw it away. In this model, we might think of the “model architecture” and the layers as the “instructions” for our weird machines, and the weights as our “operands” for those instructions.
+
+> We will shortly end up with vectors of States, one per token position. Traditionally we represent these directly as 2d tensors.
+
+> Layers: A Transformer work starts with an embedding layer, followed by some number of blocks (which we refer to as “residual blocks” or “resblocks”), and finally an unembedding layer.
+
+> The purpose of embedding and unembedding is to convert between tokens to and from the internal state.
+
 
 **What is an attention mechanism in machine learning?**
 
