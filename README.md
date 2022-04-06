@@ -1213,6 +1213,11 @@ The state can be updated by adding an update vector.
 
 > The purpose of embedding and unembedding is to convert between tokens to and from the internal state.
 
+> The meat of the transformer is the N_LAYERS “residual blocks,” which happen one after another in between the embedding and the unembedding. Each block consists of an attention layer, followed by an MLP layer.
+
+> Transformers use “multi-headed” attention; each attention layer consists of a number of different attention heads operating a smaller subspace of size D_HEAD. Each head is made up of four different (linear) functions [Q,K,V,O]. Attention is the only operation that mixes information between token positions. 
+
+
 
 **What is an attention mechanism in machine learning?**
 
