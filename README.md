@@ -1002,6 +1002,9 @@ This: {0, 0, 1, 0, 0}. A one-hot vector has all components set to zero except fo
 
 A neural networks transforms points from one coordinate system into another coordinate system, until the various categories we are looking for (dogs, traffic lights, action prompts) form clusters. Then we can classify a new data point by how closely it maps to each cluster. 
 
+An approximation of some unknown ["oracle function"](https://optozorax.github.io/e/emergevolution/):
+> The neural network makes it easy to write down the approximation of some function using numbers. What is a neural network that receives a picture and returns who is shown in this picture: a dog or a cat? This is an approximation of a real function (oracle), which always correctly determines what is a dog and what is a cat. That is, we do not know the internal structure of the oracle function (and we will never know), but we can approximate it by simply taking inputs and outputs.
+
 [Video](https://www.youtube.com/watch?v=UOvPeC8WOt8).
 
 [Essay](http://colah.github.io/posts/2014-03-NN-Manifolds-Topology/)
