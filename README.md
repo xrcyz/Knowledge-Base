@@ -218,6 +218,29 @@ Project idea: extend the concept to image generation; where `x` is the current c
 
 Project idea: create a network z = f(x.y) with randomised layers. Draw the 3D surface of the network. When you select a node, highlight the area of the surface that is sensitive to that node. Create some kind of UI to explore weights. Draw a second surface that trains to the first surface in realtime. 
 
+***Turing Patterns in 3D cellular automata***
+
+Okay, let's say I want to code a turing pattern into the neural network update rule. The inputs to the neural network are the current voxel state, the first moore neighborhood, and the second moore neighborhood. The output is the new voxel state.
+
+The rules say that we use neighborhood 1 as an activation signal and neighborhood 2 as an inhibition signal. A voxel that is between folds should have basically zero active neighbors in the inner radius, and be picking up two folds in the outer radius, giving it a disproportionately negative signal to activate. A voxel at a growing tip has a high local neighbor count and a low distant neighbor count (no second fold), so it grows.
+
+Unfortunately our CA can only see the gradient between moore neighborhoods one and two... 
+
+| contour  | approx. sum 1st moore neighborhood | approx. sum 2nd moore neighborhood |
+| ---      | ---                                | ---                                |
+| 1.0      | 8 * 1.0 + 9 * 0.8 + 9 * 0.8 = 22.4 | 72 (88 is the upper bound)         | 
+| 0.8      | 8 * 0.8 + 9 * 1.0 + 9 * 0.6 = 20.8 | 68                                 |
+| 0.6      | 8 * 0.6 + 9 * 0.8 + 9 * 0.4 = 15.6 | 59                                 |
+| 0.4      | 8 * 0.4 + 9 * 0.6 + 9 * 0.2 = 10.4 | 39                                 |
+| 0.2      | 8 * 0.2 + 9 * 0.4 + 9 * 0.0 =  5.2 | 25                                 |
+| 0.0      | 8 * 0.0 + 9 * 0.2 + 9 * 0.0 =  1.8 | 13                                 |
+
+
+
+Rules:
+- ???
+
+
 ***Convnets***
 
 Interestingly, since every cell in the cellular automata shares the same update rule, then this is technically a "convolutional neural network". The four layers (9:4:2:1) of our neural network form the "kernel", and a grid of kernels are applied to the input image to calculate the output image (the next state of the cellular automata). Our CNN has a "kernel size" of 3, a "step" of 1, and "pads" the input image by wrapping out-of-bound pixels to the opposite edge. 
