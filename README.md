@@ -220,25 +220,19 @@ Project idea: create a network z = f(x.y) with randomised layers. Draw the 3D su
 
 ***Turing Patterns in 3D cellular automata***
 
-Okay, let's say I want to code a turing pattern into the neural network update rule. The inputs to the neural network are the current voxel state, the first moore neighborhood, and the second moore neighborhood. The output is the new voxel state.
+Okay, let's say I want to code a turing pattern into the neural network update rule. 
 
-The rules say that we use neighborhood 1 as an activation signal and neighborhood 2 as an inhibition signal. A voxel that is between folds should have basically zero active neighbors in the inner radius, and be picking up two folds in the outer radius, giving it a disproportionately negative signal to activate. A voxel at a growing tip has a high local neighbor count and a low distant neighbor count (no second fold), so it grows.
+The [rules](https://www.sciencedirect.com/science/article/abs/pii/0025556484900609) say that we sum an inner neighborhood to get an activation signal and an outer neighborhood to get an inhibition signal. A voxel that is between folds should have basically zero active neighbors in the inner radius, and two folds in the outer radius, giving it a disproportionately negative signal to activate. A voxel at a growing tip has a high local neighbor count and a low distant neighbor count (no second fold), so it grows.
 
-Unfortunately our CA can only see the gradient between moore neighborhoods one and two... 
+We can tweak the cellular automata setup by replacing moore neighborhoods with a sum of voxels inside a radius. I was going to hand-weight a network, but examples popped up in random search straight away, so I'm going to stop there. 
 
-| contour  | approx. sum 1st moore neighborhood | approx. sum 2nd moore neighborhood |
-| ---      | ---                                | ---                                |
-| 1.0      | 8 * 1.0 + 9 * 0.8 + 9 * 0.8 = 22.4 | 72 (88 is the upper bound)         | 
-| 0.8      | 8 * 0.8 + 9 * 1.0 + 9 * 0.6 = 20.8 | 68                                 |
-| 0.6      | 8 * 0.6 + 9 * 0.8 + 9 * 0.4 = 15.6 | 59                                 |
-| 0.4      | 8 * 0.4 + 9 * 0.6 + 9 * 0.2 = 10.4 | 39                                 |
-| 0.2      | 8 * 0.2 + 9 * 0.4 + 9 * 0.0 =  5.2 | 25                                 |
-| 0.0      | 8 * 0.0 + 9 * 0.2 + 9 * 0.0 =  1.8 | 13                                 |
+![mnca cells](/images/voxel%20reaction%20diffusion%20raymarch.png)
 
-
-
-Rules:
-- ???
+Examples:
+- [coral](https://openprocessing.org/sketch/1552449)
+- [wormies](https://openprocessing.org/sketch/1552824)
+- [cells](https://openprocessing.org/sketch/1551560)
+- [✨micromachines✨](https://openprocessing.org/sketch/1552866)
 
 
 ***Convnets***
