@@ -992,12 +992,13 @@ Projects up next:
 **What is the hype with machine learning?**
 ------
 
-- A basic neural net is a classifier. It decides if data is above or below a classifying line. Useful but not super exciting. 
-- With a little sauce you can run the neural net in reverse, starting with a classification working backwards to a sample point. This can be used for generating novel samples (faces, art, ...). 
-- If you take a generator, and feed it back into a classifier,then you get a generative adversarial network. This trains the generator to match training data.
-- If you take a classifier, and feed it into a generator, then you get an autoencoder. This trains the encoder to find efficient descriptors of the training data.
-- If you you take a classifier, and train it in on actions in an environment, then you get Q learning. This matches states to actions for highest reward.
-- If you take a series of classifiers, and use them to map an image to a bank of class arrays, then you get a convolutional neural net. The individual classifiers ("kernels") are trained to extract features from an image. 
+Machine learning can be used to discover algorithms by finding a function that maps training inputs to training targets. 
+
+But what is it good for?
+- Image search and tagging on Facebook and Google
+- Recommendation systems on Youtube and Netflix
+- Autonomous cars and robots at Tesla and Boston Dynamics
+- Protein discovery at Deepmind
 
 **What is supervised and unsupervised machine learning?**
 
@@ -1217,6 +1218,41 @@ The gates are all sigmoid, the memory in/out are tanh. I'm unclear if a gate has
 Resources:
 - [transformers for software engineers](https://blog.nelhage.com/post/transformers-for-software-engineers/)
 - [transformer circuits](https://transformer-circuits.pub/)
+- [transformers from scratch](http://peterbloem.nl/blog/transformers)
+- [Transformer Feed-Forward Layers Are Key-Value Memories](https://arxiv.org/abs/2012.14913)
+
+> Self-attention is a sequence-to-sequence operation: a sequence of vectors goes in, and a sequence of vectors comes out. Let’s call the input vectors x1,x2..xt and the corresponding output vectors y1,y2..yt. The vectors all have dimension k. To produce an output vector yi, the self attention operation takes a weighted average over all the input vectors $y_i = \sum_{j} w_ij * x_j$. Where j indexes over the whole sequence and the weights sum of one over all j (softmax). The weight wij is not a parameter, as in a normal neural net, but it is derived from a function over x_i and x_j, for example a dot product. 
+
+So the output element `y[i]` is the dot product of weights from `y[i]` to all `x[j]`. The weight is calculated as `w[i][j] = dot(x[i],x[j])`. 
+
+```
+for(let i = 0; i < y.length; i++)
+{
+ y[i] = 0;
+ 
+ let weights = [];
+ for(let j = 0; j < x.length; j++)
+ {
+  weights[j] = dot(x[i],x[j]); //The dot product expresses how related two vectors in the input sequence are
+ }
+ 
+ weights = softmax(weights); //turn raw weights into positive values that sum to 1.0
+ 
+ for(let j = 0; j < x.length; j++)
+ {
+  y[i] += weights[j] * x[j];
+ } 
+}
+```
+
+> To apply self-attention, we simply assign each word t in our vocabulary an embedding vector vt (the values of which we’ll learn). This is what’s known as an embedding layer in sequence modeling. It turns the word sequence [the,cat,walks,on,the,street] into a vector sequence v. The self-attention layer outputs another sequence; y_cat is the weighted sum over all the embedding vectors in the first sequence, weighted by their (normalized) dot-product with v_cat. 
+
+We train the embedding layers to learn embeddings that yield high dot products for related terms, like 'cat' and 'walks'. 
+
+> Upstream mechanisms, like an embedding layer, drive the self-attention by learning representations with particular dot products (although we’ll add a few parameters later).
+
+sdfsdfs
+
 
 > At the highest level, an autoregressive language model (including the decoder-only Transformer) will take in a sequence of text (which we’ll refer to as a “context”), and output a sequence of “logits” the same length as the context. These logits represent, at each position, the model’s prediction for the next token. At each position, there is one logit value per entry in our vocabulary; by taking a softmax over the logit vector, we can get a probability distribution over tokens.
 
