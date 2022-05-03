@@ -1245,13 +1245,30 @@ for(let i = 0; i < y.length; i++)
 }
 ```
 
-> To apply self-attention, we simply assign each word t in our vocabulary an embedding vector vt (the values of which we’ll learn). This is what’s known as an embedding layer in sequence modeling. It turns the word sequence [the,cat,walks,on,the,street] into a vector sequence v. The self-attention layer outputs another sequence; y_cat is the weighted sum over all the embedding vectors in the first sequence, weighted by their (normalized) dot-product with v_cat. 
+> To apply self-attention, we map each word t in our vocabulary an embedding vector vt (the values of which we’ll learn). This is what’s known as an embedding layer in sequence modeling. It turns the word sequence [the,cat,walks,on,the,street] into a vector sequence. The self-attention layer outputs another sequence; y_cat is the weighted sum over all the embedding vectors in the first sequence, weighted by their (normalized) dot-product with v_cat. 
 
 We train the embedding layers to learn embeddings that yield high dot products for related terms, like 'cat' and 'walks'. 
 
 > Upstream mechanisms, like an embedding layer, drive the self-attention by learning representations with particular dot products (although we’ll add a few parameters later).
 
-sdfsdfs
+There are three different weight matrices `[w_query,w_key,w_value]` which are multiplied by x_i to (a) cross x_i with x to get y_i, (b) cross x_i with x to get y_j, (c) transform x_i before doing the weighted sum.
+
+```
+let query = [];
+let key = [];
+let value = [];
+
+for(let i = 0; i < y.length; i++)
+{
+ y[i] = 0;
+ 
+ for(let j = 0; j < x.length; j++)
+ {
+  
+ }
+ 
+}
+```
 
 
 > At the highest level, an autoregressive language model (including the decoder-only Transformer) will take in a sequence of text (which we’ll refer to as a “context”), and output a sequence of “logits” the same length as the context. These logits represent, at each position, the model’s prediction for the next token. At each position, there is one logit value per entry in our vocabulary; by taking a softmax over the logit vector, we can get a probability distribution over tokens.
