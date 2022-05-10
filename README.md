@@ -1316,7 +1316,7 @@ A neural network that maps a camera-object pair to a viewport pixel array. Given
 
 **What is transfer learning?**
 
-TBA.
+Instead of starting with a tabula rasa, you take a pretrained network that was trained on a similar problem, and retrain it on a new data set. We can assume the underlying algorithm for (for example) image detection won't change, just some of the biases so now you're detecting fractures in x-rays instead of cats in photos. 
 
 **What is a Fourier Transform?**
 
