@@ -1031,6 +1031,8 @@ An approximation of some unknown ["oracle function"](https://optozorax.github.io
 
 **What is a tensor?**
 
+> Well 1D is a vector, 2D is a matrix, and then we want to stop inventing new words for all the other scales of dimensions, so we use ‘n dimension tensor’. The actual history of the word comes from wanting to represent stress on an object as a field that varies at different locations - so it was a tensor (tension) field.
+
 In code, its a multi-dimensional array. But there are some math rules about how to use it (they are typed, and have vector-like properties). 
 
 From [Introduction to Tensors](https://www.grc.nasa.gov/www/k-12/Numbers/Math/documents/Tensors_TM2002211716.pdf):
