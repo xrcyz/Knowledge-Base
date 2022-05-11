@@ -1004,6 +1004,20 @@ But what is it good for?
 
 TBA.
 
+**What is an activation function?**
+
+To do - discuss the role of an activation function in building the slopes of a neural network.
+
+> If you’re thinking like a programmer, it clicked for me when I could see that ReLU acts like a conditional If statement.
+> 
+> If positive,
+> then activation passed through,
+> else not.
+> 
+> Now given all the ReLUs in a network, and there’s a lot of conditional stuff the network can be trained to do. That’s one way to build intuition about it.
+
+
+
 **What is online and offline learning?**
 
 TBA.
