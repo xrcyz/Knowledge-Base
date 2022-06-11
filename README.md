@@ -989,10 +989,10 @@ Projects up next:
 - Train another neural network
 
 
-**What is the hype with machine learning?**
+**What is machine learning?**
 ------
 
-Machine learning can be used to discover algorithms by finding a function that maps training inputs to training targets. 
+"machine learning is the process of automating the discovery of rules for solving complex problems" - [Deep Learning with Javascript](https://www.manning.com/books/deep-learning-with-javascript)
 
 But what is it good for?
 - Image search and tagging on Facebook and Google
