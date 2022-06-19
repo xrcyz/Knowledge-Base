@@ -1144,6 +1144,9 @@ A guassian mixture model is [a superposition of overlapping bell curves](https:/
 
 **What is a policy?**
 
+> In RL, a ‘policy’ is a map from game state to action.
+- [src](https://johnowhitaker.github.io/datasciencecastnet_blog/2020/01/24/swoggle-part-2-building-a-policy-network-with-pytorch-dealing-with-cheaty-agents-and-beating-the-game.html)
+
 The policy tells us which action to take in state `s`. It can be deterministic `π(s) = a` or stochastic `π(a, s) = probability of taking action`.
 
 **What is reinforcement learning?**
