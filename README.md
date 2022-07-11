@@ -1002,7 +1002,8 @@ But what is it good for?
 
 **What is supervised and unsupervised machine learning?**
 
-TBA.
+- Supervised learning means that the training data is labelled.
+- Unsupervised learning deals with unlabelled data: map clusters in the data to (unknown) classes. 
 
 **What is an activation function?**
 
@@ -1015,12 +1016,6 @@ To do - discuss the role of an activation function in building the slopes of a n
 > else not.
 > 
 > Now given all the ReLUs in a network, and there’s a lot of conditional stuff the network can be trained to do. That’s one way to build intuition about it.
-
-
-
-**What is online and offline learning?**
-
-TBA.
 
 **What is a support vector machine?**
 
@@ -1149,7 +1144,13 @@ A guassian mixture model is [a superposition of overlapping bell curves](https:/
 
 The policy tells us which action to take in state `s`. It can be deterministic `π(s) = a` or stochastic `π(a, s) = probability of taking action`.
 
+**What is online and offline learning?**
+
+Whether an RL agent is trained on batches of saved trials (offline), or incrementally in live trials (online).
+
 **What is reinforcement learning?**
+
+> The model takes actions to achieve a goal while maximizing a reward that is defined. This system relies on trial and error with accurate “trials” providing rewards. The system undergoes many iterations to find a combination of rules that achieves the best results. 
 
 > Reinforcement learning is defined not by characterizing learning methods, but by characterizing a learning problem. [[source]](http://incompleteideas.net/book/first/ebook/node7.html)
 
